@@ -1,0 +1,86 @@
+{
+  "name": "aplikasi-gbwt",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-brands-svg-icons": "^6.5.2",
+    "@fortawesome/free-regular-svg-icons": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
+    "@popperjs/core": "^2.11.8",
+    "@vuepic/vue-datepicker": "^8.8.1",
+    "axios": "^1.6.8",
+    "body-parser": "^1.20.2",
+    "bootstrap": "^5.3.3",
+    "core-js": "^3.8.3",
+    "cors": "^2.8.5",
+    "date-fns": "^3.6.0",
+    "express": "^4.19.2",
+    "express-json": "^1.0.0",
+    "fs": "0.0.1-security",
+    "jquery": "^3.7.1",
+    "moment": "^2.30.1",
+    "multer": "1.4.5-lts.1",
+    "pdfjs-dist": "^4.4.168",
+    "pnpm": "^9.5.0",
+    "popper.js": "^1.16.1",
+    "serve-index": "^1.9.1",
+    "vue": "^3.4.31",
+    "vue-date-picker": "^2.5.0",
+    "vue-datepicker": "^1.3.0",
+    "vue-router": "^4.0.13",
+    "vuex": "^4.0.2",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.16",
+    "@babel/eslint-parser": "^7.12.16",
+    "@types/body-parser": "^1.19.5",
+    "@types/eslint": "^8.56.10",
+    "@types/estree": "^1.0.5",
+    "@types/http-errors": "^2.0.4",
+    "@types/node": "^20.14.6",
+    "@types/qs": "^6.9.15",
+    "@types/range-parser": "^1.2.7",
+    "@types/send": "^0.17.4",
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-plugin-eslint": "~5.0.0",
+    "@vue/cli-service": "^5.0.8",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "@babel/eslint-parser"
+    },
+    "rules": {
+      "vue/multi-word-component-names": 0
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "description": "## Project setup ``` pnpm install ```",
+  "main": "babel.config.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

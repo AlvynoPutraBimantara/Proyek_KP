@@ -1,0 +1,43 @@
+{
+  "SuratMasuk": [
+    {
+      "id": "2925",
+      "suratDari": "Test",
+      "tanggalSurat": "15/07/2024",
+      "noSurat": "111",
+      "perihal": "Test",
+      "diterimaTanggal": "15/07/2024",
+      "noAgenda": "111",
+      "sifat": "Penting",
+      "disposisiSekretaris": "Test",
+      "disposisiKasumpeg": "Test",
+      "tanggalDisposisi": "15/07/2024"
+    },
+    {
+      "id": "4717",
+      "suratDari": "Test2",
+      "tanggalSurat": "15/07/2024",
+      "noSurat": "222",
+      "perihal": "Test2",
+      "diterimaTanggal": "16/07/2024",
+      "noAgenda": "222",
+      "sifat": "Penting",
+      "disposisiSekretaris": "Test2",
+      "disposisiKasumpeg": "Test2",
+      "tanggalDisposisi": "17/07/2024"
+    },
+    {
+      "id": "6cb0",
+      "suratDari": "Test3",
+      "tanggalSurat": "15/07/2024",
+      "noSurat": "333",
+      "perihal": "Test3",
+      "diterimaTanggal": "15/07/2024",
+      "noAgenda": "333",
+      "sifat": "Penting",
+      "disposisiSekretaris": "Test3",
+      "disposisiKasumpeg": "Test3",
+      "tanggalDisposisi": "16/07/2024"
+    }
+  ]
+}
