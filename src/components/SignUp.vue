@@ -83,7 +83,7 @@ export default {
 
 <style scoped>
 .signup-container {
-  background-image: url("@/assets/images/warung.jpg");
+  background-image: url("@/assets/images/kantor.jpg");
   background-size: cover;
   background-position: center;
   height: 100vh;

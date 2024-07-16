@@ -1,4 +1,15 @@
 {
+  "User": [
+    {
+      "NamaWarung": "",
+      "Nama": "asd",
+      "Telp": "6287857909820",
+      "Alamat": "",
+      "Password": "asd",
+      "id": "4e50",
+      "role": "admin"
+    }
+  ],
   "SuratMasuk": [
     {
       "id": "2925",
@@ -38,6 +49,89 @@
       "disposisiSekretaris": "Test3",
       "disposisiKasumpeg": "Test3",
       "tanggalDisposisi": "16/07/2024"
+    },
+    {
+      "id": "2058",
+      "suratDari": "Test4",
+      "perihal": "Test4",
+      "sifat": "Biasa",
+      "disposisiSekretaris": "Test4",
+      "disposisiKasumpeg": "Test4",
+      "noAgenda": "12345",
+      "noSurat": "12345",
+      "tanggalSurat": "15/07/2024",
+      "diterimaTanggal": "15/07/2024",
+      "tanggalDisposisi": "15/07/2024",
+      "pdfUrl": null
+    },
+    {
+      "id": "d970",
+      "suratDari": "Test5",
+      "tanggalSurat": "16/07/2024",
+      "noSurat": "123456",
+      "perihal": "Test5",
+      "diterimaTanggal": "16/07/2024",
+      "noAgenda": "123456",
+      "sifat": "Biasa",
+      "disposisiSekretaris": "Test5",
+      "disposisiKasumpeg": "Test5",
+      "tanggalDisposisi": "16/07/2024",
+      "pdfUrl": "http://localhost:3001/uploads/1721091497231-1. Diskominfo Prov. Jatim (Undangan Kegiatan Bedah Ruang SIber Jatim Jilid III).pdf"
+    },
+    {
+      "id": "f007",
+      "suratDari": "Test6",
+      "tanggalSurat": "16/07/2024",
+      "noSurat": "123456789",
+      "perihal": "Test6",
+      "diterimaTanggal": "16/07/2024",
+      "noAgenda": "123456789",
+      "sifat": "Biasa",
+      "disposisiSekretaris": "Test6",
+      "disposisiKasumpeg": "Test6",
+      "tanggalDisposisi": "17/07/2024"
+    },
+    {
+      "id": "64b0",
+      "suratDari": "Test7",
+      "tanggalSurat": "16/07/2024",
+      "noSurat": "1234567",
+      "perihal": "Test7",
+      "diterimaTanggal": "16/07/2024",
+      "noAgenda": "1234567",
+      "sifat": "Biasa",
+      "disposisiSekretaris": "Test7",
+      "disposisiKasumpeg": "Test7",
+      "tanggalDisposisi": "16/07/2024",
+      "pdfUrl": "http://localhost:3001/uploads/1721092691799-3122510625 - Alvyno Putra B Proposal KP.pdf"
+    },
+    {
+      "id": "269a",
+      "suratDari": "Test8",
+      "tanggalSurat": "15/07/2024",
+      "noSurat": "12345678",
+      "perihal": "Test8",
+      "diterimaTanggal": "16/07/2024",
+      "noAgenda": "12345678",
+      "sifat": "Penting",
+      "disposisiSekretaris": "Test8",
+      "disposisiKasumpeg": "Test8",
+      "tanggalDisposisi": "16/07/2024",
+      "pdfUrl": "http://localhost:3001/uploads/1721115909463-8. Keluarga Besar Putra Putri (KBPP) POLRI Resort Kt SBY (Prmohonan Bantuan Pasrtisipasi Keg Sosial).pdf"
+    },
+    {
+      "id": "aa99",
+      "suratDari": "Test9",
+      "tanggalSurat": "14/07/2024",
+      "noSurat": "Test9",
+      "perihal": "Test9",
+      "diterimaTanggal": "15/07/2024",
+      "noAgenda": "Test9",
+      "sifat": "Biasa",
+      "disposisiSekretaris": "Test9",
+      "disposisiKasumpeg": "Test9",
+      "tanggalDisposisi": "16/07/2024",
+      "pdfUrl": "http://localhost:3001/uploads/1721118674774-3122510625 - Alvyno Putra B Proposal KP_Dinas Lingkungan Hidup.pdf"
     }
   ]
 }

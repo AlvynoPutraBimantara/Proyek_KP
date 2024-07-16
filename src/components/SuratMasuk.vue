@@ -89,6 +89,7 @@ export default {
         disposisiKasumpeg: "",
         tanggalDisposisi: ""
       },
+      pdfFile: null,
       pdfUrl: null
     };
   },
@@ -102,6 +103,17 @@ export default {
             diterimaTanggal: this.formatDate(this.DataProduk.diterimaTanggal),
             tanggalDisposisi: this.formatDate(this.DataProduk.tanggalDisposisi)
           };
+
+          if (this.pdfFile) {
+            const formData = new FormData();
+            formData.append("pdf", this.pdfFile);
+            const response = await axios.post(
+              "http://localhost:3001/uploads",
+              formData
+            );
+            formattedData.pdfUrl = `http://localhost:3001${response.data.pdfUrl}`;
+          }
+
           const result = await axios.post("http://localhost:3000/SuratMasuk", formattedData);
           if (result.status === 201) {
             this.$router.push({ name: "BukuAgendaMasuk" });
@@ -128,6 +140,7 @@ export default {
     handleFileUpload(event) {
       const file = event.target.files[0];
       if (file && file.type === "application/pdf") {
+        this.pdfFile = file;
         const reader = new FileReader();
         reader.onload = (e) => {
           const blob = new Blob([e.target.result], { type: 'application/pdf' });
@@ -141,6 +154,7 @@ export default {
   }
 };
 </script>
+
 
 <style scoped>
 .main-container {
@@ -211,3 +225,4 @@ export default {
   max-width: 100%;
 }
 </style>
+

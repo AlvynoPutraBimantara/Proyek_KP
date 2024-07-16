@@ -16,7 +16,12 @@ app.get("/", (req, res) => {
 });
 
 const dbFilePath = path.join(__dirname, "db.json");
+const uploadsDir = path.join(__dirname, "uploads");
 const imagesDir = path.join(__dirname, "images");
+
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
 
 if (!fs.existsSync(imagesDir)) {
   fs.mkdirSync(imagesDir);
@@ -29,7 +34,10 @@ const getData = () => {
       Orders: [],
       Cart: [],
       Transactions: [],
-      User: [], //
+      User: [],
+      DataProduk: [],
+      DataKategori: [],
+      RiwayatTransaksi: [],
     };
     fs.writeFileSync(dbFilePath, JSON.stringify(initialData, null, 2));
   }
@@ -46,7 +54,7 @@ const formatDateString = (dateString) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, imagesDir);
+    cb(null, uploadsDir);
   },
   filename: (req, file, cb) => {
     cb(null, `${Date.now()}-${file.originalname}`);
@@ -54,12 +62,20 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploads", express.static(uploadsDir));
 app.use("/images", express.static(imagesDir));
 
 
 
-app.post("/uploads", upload.single("image"), (req, res) => {
+app.post("/uploads", upload.single("pdf"), (req, res) => {
+  if (!req.file) {
+    return res.status(400).send("No file uploaded.");
+  }
+  const pdfUrl = `/uploads/${req.file.filename}`;
+  res.status(201).json({ pdfUrl });
+});
+
+app.post("/images", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }
@@ -74,7 +90,7 @@ app.get("/User", (req, res) => {
 
 app.get("/User/:id", (req, res) => {
   const data = getData();
-  const user = data.User.find((u) => u.id === req.params.id);
+  const user = data.User.find((u) => u.id === parseInt(req.params.id));
   if (user) {
     res.json(user);
   } else {
@@ -84,7 +100,7 @@ app.get("/User/:id", (req, res) => {
 
 app.put("/User/:id", (req, res) => {
   const data = getData();
-  const userIndex = data.User.findIndex((u) => u.id === req.params.id);
+  const userIndex = data.User.findIndex((u) => u.id === parseInt(req.params.id));
   if (userIndex !== -1) {
     data.User[userIndex] = req.body;
     saveData(data);
@@ -94,37 +110,33 @@ app.put("/User/:id", (req, res) => {
   }
 });
 
-
 app.get("/SuratMasuk", (req, res) => {
-  fs.readFile("SuratMasuk.json", (err, data) => {
-    if (err) throw err;
-    let suratMasuk = JSON.parse(data);
-    suratMasuk = suratMasuk.map((surat) => ({
-      ...surat,
-      tanggalSurat: formatDateString(surat.tanggalSurat),
-      diterimaTanggal: formatDateString(surat.diterimaTanggal),
-      tanggalDisposisi: formatDateString(surat.tanggalDisposisi),
-    }));
-    res.send(suratMasuk);
-  });
+  const data = getData();
+  res.json(data.SuratMasuk);
 });
-
 
 app.post("/SuratMasuk", (req, res) => {
   const data = getData();
   const newProduct = req.body;
-  newProduct.id = data.DataProduk.length ? data.DataProduk[data.DataProduk.length - 1].id + 1 : 1;
-  data.DataProduk.push(newProduct);
+  newProduct.id = data.SuratMasuk.length ? data.SuratMasuk[data.SuratMasuk.length - 1].id + 1 : 1;
+
+  // Use the formatDateString function to format the dates
+  newProduct.tanggalSurat = formatDateString(newProduct.tanggalSurat);
+  newProduct.diterimaTanggal = formatDateString(newProduct.diterimaTanggal);
+  newProduct.tanggalDisposisi = formatDateString(newProduct.tanggalDisposisi);
+
+  data.SuratMasuk.push(newProduct);
   saveData(data);
   res.status(201).json(newProduct);
 });
+
 app.put("/SuratMasuk/:id", (req, res) => {
   const data = getData();
-  const productId = req.params.id;
+  const productId = parseInt(req.params.id);
   const updatedProduct = req.body;
-  const productIndex = data.DataProduk.findIndex((p) => p.id === productId);
+  const productIndex = data.SuratMasuk.findIndex((p) => p.id === productId);
   if (productIndex !== -1) {
-    data.DataProduk[productIndex] = updatedProduct;
+    data.SuratMasuk[productIndex] = updatedProduct;
     saveData(data);
     res.status(200).json(updatedProduct);
   } else {
@@ -140,7 +152,7 @@ app.get("/Orders", (req, res) => {
 app.post("/Orders", (req, res) => {
   const data = getData();
   const newOrder = req.body;
-  newOrder.timestamp = new Date().toISOString(); // Add timestamp
+  newOrder.timestamp = new Date().toISOString();
   data.Orders.push(newOrder);
   saveData(data);
   res.status(201).json(newOrder);
@@ -148,7 +160,7 @@ app.post("/Orders", (req, res) => {
 
 app.delete("/Orders/:id", (req, res) => {
   const data = getData();
-  const orderId = req.params.id;
+  const orderId = parseInt(req.params.id);
   const orderIndex = data.Orders.findIndex((order) => order.id === orderId);
   if (orderIndex !== -1) {
     data.Orders.splice(orderIndex, 1);
@@ -167,7 +179,6 @@ app.get("/Cart", (req, res) => {
 app.post("/Cart", (req, res) => {
   const data = getData();
   const newCartItem = req.body;
-
   data.Cart.push(newCartItem);
   saveData(data);
   res.status(201).json(newCartItem);
@@ -175,7 +186,7 @@ app.post("/Cart", (req, res) => {
 
 app.delete("/Cart/:id", (req, res) => {
   const data = getData();
-  const cartItemId = req.params.id;
+  const cartItemId = parseInt(req.params.id);
   data.Cart = data.Cart.filter((item) => item.id !== cartItemId);
   saveData(data);
   res.status(204).end();
@@ -218,7 +229,7 @@ app.get("/Transactions", (req, res) => {
 app.post("/Transactions", (req, res) => {
   const data = getData();
   const newTransaction = req.body;
-  newTransaction.timestamp = new Date().toISOString(); // Add timestamp
+  newTransaction.timestamp = new Date().toISOString();
   console.log(`Transaction by user ${newTransaction.user} is being processed`);
   data.Transactions.push(newTransaction);
   saveData(data);
@@ -227,7 +238,7 @@ app.post("/Transactions", (req, res) => {
 
 app.delete("/Transactions/:id", (req, res) => {
   const data = getData();
-  const transactionId = req.params.id;
+  const transactionId = parseInt(req.params.id);
   const transactionIndex = data.Transactions.findIndex(
     (transaction) => transaction.id === transactionId
   );
@@ -240,13 +251,9 @@ app.delete("/Transactions/:id", (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
-
 app.put("/DataKategori/:id", (req, res) => {
   const data = getData();
-  const kategoriId = req.params.id;
+  const kategoriId = parseInt(req.params.id);
   const updatedKategori = req.body;
   const kategoriIndex = data.DataKategori.findIndex((k) => k.id === kategoriId);
   if (kategoriIndex !== -1) {
@@ -269,7 +276,7 @@ app.get("/RiwayatTransaksi", (req, res) => {
 app.post("/RiwayatTransaksi", (req, res) => {
   const data = getData();
   const newTransaction = req.body;
-  newTransaction.timestamp = new Date().toISOString(); // Add timestamp
+  newTransaction.timestamp = new Date().toISOString();
   data.RiwayatTransaksi.push(newTransaction);
   saveData(data);
   res.status(201).json(newTransaction);
@@ -277,18 +284,19 @@ app.post("/RiwayatTransaksi", (req, res) => {
 
 app.delete("/RiwayatTransaksi/:id", (req, res) => {
   const data = getData();
-  const transactionId = req.params.id;
+  const transactionId = parseInt(req.params.id);
   const transactionIndex = data.RiwayatTransaksi.findIndex(
     (transaction) => transaction.id === transactionId
   );
   if (transactionIndex !== -1) {
     data.RiwayatTransaksi.splice(transactionIndex, 1);
     saveData(data);
-    res.status(204).send(); // No content
+    res.status(204).send();
   } else {
     res.status(404).send("Transaction not found");
   }
 });
 
-
-
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
