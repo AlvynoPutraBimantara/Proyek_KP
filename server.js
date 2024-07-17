@@ -120,7 +120,7 @@ app.post("/SuratMasuk", (req, res) => {
   const newProduct = req.body;
   newProduct.id = data.SuratMasuk.length ? data.SuratMasuk[data.SuratMasuk.length - 1].id + 1 : 1;
 
-  // Use the formatDateString function to format the dates
+
   newProduct.tanggalSurat = formatDateString(newProduct.tanggalSurat);
   newProduct.diterimaTanggal = formatDateString(newProduct.diterimaTanggal);
   newProduct.tanggalDisposisi = formatDateString(newProduct.tanggalDisposisi);

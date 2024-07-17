@@ -141,7 +141,7 @@
             <tr v-for="(item, index) in sortedSuratMasuk" :key="item.id">
               <td>{{ index + 1 }}</td>
               <td>
-                <img :src="item.pdfThumbnail" @click="viewPdf(item.pdfUrl)" class="pdf-thumbnail" />
+                <font-awesome-icon :icon="['fas', 'file-pdf']" @click="viewPdf(item.pdfUrl)"  />
               </td>
               <td>{{ item.suratDari }}</td>
               <td>{{ item.tanggalSurat }}</td>
@@ -202,7 +202,7 @@ export default {
         this.SuratMasuk = result.data.map(surat => ({
           ...surat,
           pdfThumbnail: `/uploads/${surat.pdfThumbnail}`,
-          pdfUrl: surat.pdfUrl // Keep the original URL
+          pdfUrl: surat.pdfUrl 
         }));
       } catch (error) {
         console.error("Error loading data:", error);
@@ -211,19 +211,32 @@ export default {
     toggleSortMenu(column) {
       this.sortMenu = this.sortMenu === column ? '' : column;
     },
-    sortTable(key) {
-      this.sortKey = key;
+    sortTable(sortKey) {
+      this.sortKey = sortKey;
       this.sortMenu = '';
     },
-    viewPdf(url) {
-      // Set the full URL for the PDF viewer
-      this.selectedPdfUrl = url;
+    viewPdf(pdfUrl) {
+      this.selectedPdfUrl = pdfUrl;
     },
+    
     exportToExcel() {
-      const ws = XLSX.utils.json_to_sheet(this.SuratMasuk);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Surat Masuk");
-      XLSX.writeFile(wb, "SuratMasuk.xlsx");
+      const data = this.sortedSuratMasuk.map((item, index) => ({
+        "No.": index + 1,
+        "Surat Dari": item.suratDari,
+        "Tgl. Surat": item.tanggalSurat,
+        "No. Surat": item.noSurat,
+        "Perihal": item.perihal,
+        "Diterima Tgl.": item.diterimaTanggal,
+        "No. Agenda": item.noAgenda,
+        "Sifat": item.sifat,
+        "Disposisi Sekretaris": item.disposisiSekretaris,
+        "Disposisi Kasumpeg": item.disposisiKasumpeg,
+        "Tgl Disposisi": item.tanggalDisposisi,
+      }));
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "BukuAgendaMasuk");
+      XLSX.writeFile(workbook, "Buku Agenda Surat Masuk.xlsx");
     },
     editItem(id) {
       this.$router.push({ name: 'EditSuratMasuk', params: { id } });
@@ -354,18 +367,15 @@ button:hover {
 }
 
 .pdf-viewer {
-  width: 50%;
-  padding-right: 20px;
+  width: 66%;
+  padding-right: 10px;
+
+  margin-bottom: 20px;
 }
 
 @media (max-width: 768px) {
   .main-container {
     flex-direction: column;
-  }
-  
-  .pdf-viewer {
-    width: 100%;
-    margin-bottom: 20px;
   }
   
   .table-container {

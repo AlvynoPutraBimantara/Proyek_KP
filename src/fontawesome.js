@@ -6,9 +6,10 @@ import {
   faReceipt,
   faCircleInfo,
   faSort,
+  faFilePdf
 } from "@fortawesome/free-solid-svg-icons";
 import { faWhatsapp } from "@fortawesome/free-brands-svg-icons"; // Add this import
 
-library.add(faHome, faShoppingCart, faWhatsapp, faReceipt, faCircleInfo, faSort);
+library.add(faHome, faShoppingCart, faWhatsapp, faReceipt, faCircleInfo, faSort,faFilePdf);
 
 export default FontAwesomeIcon;

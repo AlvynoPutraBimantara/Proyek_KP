@@ -9,37 +9,37 @@
         <form class="update" @submit.prevent="submitProduct">
           <div class="form-group">
             <label for="suratDari">Surat Dari</label>
-            <input type="text" id="suratDari" v-model="DataProduk.suratDari" autocomplete="off" />
+            <input type="text" id="suratDari" v-model="SuratMasuk.suratDari" autocomplete="off" />
           </div>
 
           <div class="form-group">
             <label for="tanggalSurat">Tanggal Surat</label>
-            <input type="date" id="tanggalSurat" v-model="DataProduk.tanggalSurat" />
+            <input type="date" id="tanggalSurat" v-model="SuratMasuk.tanggalSurat" />
           </div>
 
           <div class="form-group">
             <label for="noSurat">No. Surat</label>
-            <input type="text" id="noSurat" v-model="DataProduk.noSurat" autocomplete="off" />
+            <input type="text" id="noSurat" v-model="SuratMasuk.noSurat" autocomplete="off" />
           </div>
 
           <div class="form-group">
             <label for="perihal">Perihal</label>
-            <input type="text" id="perihal" v-model="DataProduk.perihal" autocomplete="off" />
+            <input type="text" id="perihal" v-model="SuratMasuk.perihal" autocomplete="off" />
           </div>
 
           <div class="form-group">
             <label for="diterimaTanggal">Diterima Tanggal</label>
-            <input type="date" id="diterimaTanggal" v-model="DataProduk.diterimaTanggal" />
+            <input type="date" id="diterimaTanggal" v-model="SuratMasuk.diterimaTanggal" />
           </div>
 
           <div class="form-group">
             <label for="noAgenda">No. Agenda</label>
-            <input type="text" id="noAgenda" v-model="DataProduk.noAgenda" autocomplete="off" />
+            <input type="text" id="noAgenda" v-model="SuratMasuk.noAgenda" autocomplete="off" />
           </div>
 
           <div class="form-group">
             <label for="sifat">Sifat</label>
-            <select id="sifat" v-model="DataProduk.sifat">
+            <select id="sifat" v-model="SuratMasuk.sifat">
               <option disabled value="">Pilih Sifat</option>
               <option value="Biasa">Biasa</option>
               <option value="Penting">Penting</option>
@@ -48,22 +48,22 @@
 
           <div class="form-group">
             <label for="disposisiSekretaris">Disposisi Sekretaris</label>
-            <input type="text" id="disposisiSekretaris" v-model="DataProduk.disposisiSekretaris" autocomplete="off" />
+            <input type="text" id="disposisiSekretaris" v-model="SuratMasuk.disposisiSekretaris" autocomplete="off" />
           </div>
 
           <div class="form-group">
             <label for="disposisiKasumpeg">Disposisi Kasumpeg</label>
-            <input type="text" id="disposisiKasumpeg" v-model="DataProduk.disposisiKasumpeg" autocomplete="off" />
+            <input type="text" id="disposisiKasumpeg" v-model="SuratMasuk.disposisiKasumpeg" autocomplete="off" />
           </div>
 
           <div class="form-group">
             <label for="tanggalDisposisi">Tanggal Disposisi</label>
-            <input type="date" id="tanggalDisposisi" v-model="DataProduk.tanggalDisposisi" />
+            <input type="date" id="tanggalDisposisi" v-model="SuratMasuk.tanggalDisposisi" />
           </div>
-
+          <button type="button" @click="triggerFileUpload">Import</button>
           <button type="submit">Masukan</button>
           <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
-          <button type="button" @click="triggerFileUpload">Import</button>
+          
         </form>
       </div>
     </div>
@@ -77,7 +77,7 @@ export default {
   name: "SuratMasuk",
   data() {
     return {
-      DataProduk: {
+      SuratMasuk: {
         suratDari: "",
         tanggalSurat: "",
         noSurat: "",
@@ -98,10 +98,10 @@ export default {
       if (this.validateForm()) {
         try {
           const formattedData = {
-            ...this.DataProduk,
-            tanggalSurat: this.formatDate(this.DataProduk.tanggalSurat),
-            diterimaTanggal: this.formatDate(this.DataProduk.diterimaTanggal),
-            tanggalDisposisi: this.formatDate(this.DataProduk.tanggalDisposisi)
+            ...this.SuratMasuk,
+            tanggalSurat: this.formatDate(this.SuratMasuk.tanggalSurat),
+            diterimaTanggal: this.formatDate(this.SuratMasuk.diterimaTanggal),
+            tanggalDisposisi: this.formatDate(this.SuratMasuk.tanggalDisposisi)
           };
 
           if (this.pdfFile) {
@@ -127,7 +127,7 @@ export default {
       }
     },
     validateForm() {
-      return Object.values(this.DataProduk).every(value => value !== "");
+      return Object.values(this.SuratMasuk).every(value => value !== "");
     },
     formatDate(dateString) {
       if (!dateString) return "";
@@ -154,7 +154,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
 .main-container {
