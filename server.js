@@ -19,6 +19,7 @@ const dbFilePath = path.join(__dirname, "db.json");
 const uploadsDir = path.join(__dirname, "uploads");
 const imagesDir = path.join(__dirname, "images");
 
+
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir);
 }

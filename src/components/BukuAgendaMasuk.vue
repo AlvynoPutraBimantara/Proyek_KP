@@ -166,7 +166,8 @@
 
 <script>
 import axios from "axios";
-import * as XLSX from "xlsx";
+import * as XLSX from 'xlsx';
+//import * as SheetJSStyle from 'sheetjs-style';
 
 export default {
   name: "BukuAgendaMasuk",
@@ -233,11 +234,83 @@ export default {
         "Disposisi Kasumpeg": item.disposisiKasumpeg,
         "Tgl Disposisi": item.tanggalDisposisi,
       }));
-      const worksheet = XLSX.utils.json_to_sheet(data);
+
+      // Create worksheet
+      const worksheet = {};
+      const header = [
+        ["BUKU AGENDA SURAT MASUK DI TATA USAHA"],
+        ["NO", "SURAT DARI", "TGL SURAT", "NO. SURAT", "PERIHAL", "DITERIMA TGL", "NO. AGENDA", "SIFAT", "DISPOSISI SEKRETARIS", "DISPOSISI KASUMPEG", "TGL DISPOSISI"],
+        ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
+      ];
+
+      // Add header to worksheet
+      header.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          const cellRef = XLSX.utils.encode_cell({ r: rowIndex, c: colIndex });
+          worksheet[cellRef] = { v: cell, s: rowIndex === 0 ? { font: { bold: true } } : {} };
+        });
+      });
+
+     
+      data.forEach((row, rowIndex) => {
+        Object.values(row).forEach((cell, colIndex) => {
+          const cellRef = XLSX.utils.encode_cell({ r: rowIndex + header.length, c: colIndex });
+          worksheet[cellRef] = { v: cell };
+        });
+      });
+
+      // Define the range
+      const range = { s: { c: 0, r: 0 }, e: { c: 12, r: data.length + header.length - 1 } };
+      worksheet['!ref'] = XLSX.utils.encode_range(range);
+
+      // Merge cells for the title
+      worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 12 } }];
+
+      // Create workbook and add the worksheet
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "BukuAgendaMasuk");
-      XLSX.writeFile(workbook, "Buku Agenda Surat Masuk.xlsx");
+
+      // Apply styling
+      const headerStyle = {
+        font: { bold: true, color: { rgb: "FFFFFF" } },
+        fill: { fgColor: { rgb: "4F81BD" } },
+        border: {
+          top: { style: "thin", color: { rgb: "000000" } },
+          bottom: { style: "thin", color: { rgb: "000000" } },
+          left: { style: "thin", color: { rgb: "000000" } },
+          right: { style: "thin", color: { rgb: "000000" } },
+        },
+      };
+
+      const cellStyle = {
+        border: {
+          top: { style: "thin", color: { rgb: "000000" } },
+          bottom: { style: "thin", color: { rgb: "000000" } },
+          left: { style: "thin", color: { rgb: "000000" } },
+          right: { style: "thin", color: { rgb: "000000" } },
+        },
+      };
+
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const address = XLSX.utils.encode_col(C) + "1";
+        if (!worksheet[address]) continue;
+        worksheet[address].s = headerStyle;
+      }
+
+      for (let R = range.s.r + 1; R <= range.e.r; ++R) {
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          const address = XLSX.utils.encode_cell({ r: R, c: C });
+          if (!worksheet[address]) continue;
+          worksheet[address].s = cellStyle;
+        }
+      }
+
+      // Save the workbook
+      XLSX.writeFile(workbook, "BukuAgendaMasuk.xlsx");
     },
+
+  
+
     editItem(id) {
       this.$router.push({ name: 'EditSuratMasuk', params: { id } });
     }
@@ -383,3 +456,4 @@ button:hover {
   }
 }
 </style>
+
