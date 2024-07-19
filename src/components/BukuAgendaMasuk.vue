@@ -1,3 +1,4 @@
+
 <template>
   <div class="data-produk-container">
     <div class="header-container">
@@ -166,8 +167,8 @@
 
 <script>
 import axios from "axios";
-import * as XLSX from 'xlsx';
-//import * as SheetJSStyle from 'sheetjs-style';
+//import * as XLSX from 'xlsx';
+import * as SheetJSStyle from 'sheetjs-style';
 
 export default {
   name: "BukuAgendaMasuk",
@@ -191,7 +192,7 @@ export default {
         if (order === 'asc') {
           return a[key] > b[key] ? 1 : -1;
         } else {
-          return a[key] < b[key] ? 1 : -1;
+          return a[key] < b[key] ? -1 : 1;
         }
       });
     }
@@ -221,95 +222,90 @@ export default {
     },
     
     exportToExcel() {
-      const data = this.sortedSuratMasuk.map((item, index) => ({
-        "No.": index + 1,
-        "Surat Dari": item.suratDari,
-        "Tgl. Surat": item.tanggalSurat,
-        "No. Surat": item.noSurat,
-        "Perihal": item.perihal,
-        "Diterima Tgl.": item.diterimaTanggal,
-        "No. Agenda": item.noAgenda,
-        "Sifat": item.sifat,
-        "Disposisi Sekretaris": item.disposisiSekretaris,
-        "Disposisi Kasumpeg": item.disposisiKasumpeg,
-        "Tgl Disposisi": item.tanggalDisposisi,
-      }));
+  const data = this.sortedSuratMasuk.map((item, index) => ({
+    "No.": index + 1,
+    "Surat Dari": item.suratDari,
+    "Tgl. Surat": item.tanggalSurat,
+    "No. Surat": item.noSurat,
+    "Perihal": item.perihal,
+    "Diterima Tgl.": item.diterimaTanggal,
+    "No. Agenda": item.noAgenda,
+    "Sifat": item.sifat,
+    "Disposisi Sekretaris": item.disposisiSekretaris,
+    "Disposisi Kasumpeg": item.disposisiKasumpeg,
+    "Tgl Disposisi": item.tanggalDisposisi,
+  }));
 
-      // Create worksheet
-      const worksheet = {};
-      const header = [
-        ["BUKU AGENDA SURAT MASUK DI TATA USAHA"],
-        ["NO", "SURAT DARI", "TGL SURAT", "NO. SURAT", "PERIHAL", "DITERIMA TGL", "NO. AGENDA", "SIFAT", "DISPOSISI SEKRETARIS", "DISPOSISI KASUMPEG", "TGL DISPOSISI"],
-        ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
-      ];
+  const worksheet = {};
 
-      // Add header to worksheet
-      header.forEach((row, rowIndex) => {
-        row.forEach((cell, colIndex) => {
-          const cellRef = XLSX.utils.encode_cell({ r: rowIndex, c: colIndex });
-          worksheet[cellRef] = { v: cell, s: rowIndex === 0 ? { font: { bold: true } } : {} };
-        });
-      });
+  const headers = [
+    ["BUKU AGENDA SURAT MASUK DI TATA USAHA"],
+    ["BULAN "],
+    [],
+    ["NO.", "   SURAT DARI   ", "TGL SURAT", "   NO. SURAT   ", "   PERIHAL   ", "DITERIMA TGL", "   NO. AGENDA   ", "SIFAT", "   DISPOSISI SEKRETARIS   ", "   DISPOSISI KASUMPEG   ", "TGL DISPOSISI"],
+    ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
+  ];
 
-     
-      data.forEach((row, rowIndex) => {
-        Object.values(row).forEach((cell, colIndex) => {
-          const cellRef = XLSX.utils.encode_cell({ r: rowIndex + header.length, c: colIndex });
-          worksheet[cellRef] = { v: cell };
-        });
-      });
+  const commonAlignment = { horizontal: "center", vertical: "center", wrapText: true };
 
-      // Define the range
-      const range = { s: { c: 0, r: 0 }, e: { c: 12, r: data.length + header.length - 1 } };
-      worksheet['!ref'] = XLSX.utils.encode_range(range);
+  const styles = {
+    header: { font: { bold: true, sz: 22 }, alignment: { horizontal: "center", vertical: "middle" }, wrapText: true },
+    subHeader: { fill: { fgColor: { rgb: "9DC3E6" } }, font: { bold: true, sz: 12 }, alignment: commonAlignment, border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } } },
+    columnNumbers: { fill: { fgColor: { rgb: "FFFF00" } }, font: { bold: true, sz: 12 }, alignment: commonAlignment, border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } } },
+    thickBorder: { border: { top: { style: "thick" }, bottom: { style: "thick" }, left: { style: "thick" }, right: { style: "thick" } } },
+    thinBorder: { border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } } }
+  };
 
-      // Merge cells for the title
-      worksheet['!merges'] = [{ s: { r: 0, c: 0 }, e: { r: 0, c: 12 } }];
-
-      // Create workbook and add the worksheet
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "BukuAgendaMasuk");
-
-      // Apply styling
-      const headerStyle = {
-        font: { bold: true, color: { rgb: "FFFFFF" } },
-        fill: { fgColor: { rgb: "4F81BD" } },
-        border: {
-          top: { style: "thin", color: { rgb: "000000" } },
-          bottom: { style: "thin", color: { rgb: "000000" } },
-          left: { style: "thin", color: { rgb: "000000" } },
-          right: { style: "thin", color: { rgb: "000000" } },
-        },
+  // Add headers to the worksheet
+  headers.forEach((row, rowIndex) => {
+    row.forEach((cell, colIndex) => {
+      const cellRef = SheetJSStyle.utils.encode_cell({ r: rowIndex, c: colIndex + 1 });
+      worksheet[cellRef] = {
+        v: cell,
+        s: rowIndex === 0 || rowIndex === 1 ? styles.header : rowIndex === 3 ? styles.subHeader : styles.columnNumbers,
       };
+    });
+  });
 
-      const cellStyle = {
-        border: {
-          top: { style: "thin", color: { rgb: "000000" } },
-          bottom: { style: "thin", color: { rgb: "000000" } },
-          left: { style: "thin", color: { rgb: "000000" } },
-          right: { style: "thin", color: { rgb: "000000" } },
-        },
+  // Merge cells for the title and the second row
+  worksheet["!merges"] = [
+    { s: { r: 0, c: 1 }, e: { r: 0, c: 13 } },
+    { s: { r: 1, c: 1 }, e: { r: 1, c: 13 } }
+  ];
+
+  // Add data to the worksheet
+  data.forEach((row, rowIndex) => {
+    Object.values(row).forEach((cell, colIndex) => {
+      const cellRef = SheetJSStyle.utils.encode_cell({ r: rowIndex + headers.length, c: colIndex + 1 });
+      worksheet[cellRef] = {
+        v: cell,
+        s: { ...styles.thinBorder, alignment: commonAlignment },
       };
+    });
+  });
 
-      for (let C = range.s.c; C <= range.e.c; ++C) {
-        const address = XLSX.utils.encode_col(C) + "1";
-        if (!worksheet[address]) continue;
-        worksheet[address].s = headerStyle;
-      }
+  // Calculate column widths based on the widest text in each column
+  const colWidths = headers[3].map((header, colIndex) => {
+    const headerWidth = header.length;
+    const maxDataWidth = Math.max(...data.map(row => (row[headers[3][colIndex]] || '').toString().length));
+    return { wch: Math.max(headerWidth, maxDataWidth) + 5 };
+  });
 
-      for (let R = range.s.r + 1; R <= range.e.r; ++R) {
-        for (let C = range.s.c; C <= range.e.c; ++C) {
-          const address = XLSX.utils.encode_cell({ r: R, c: C });
-          if (!worksheet[address]) continue;
-          worksheet[address].s = cellStyle;
-        }
-      }
+  // Define the range to cover the entire table with the added empty column
+  const range = { s: { c: 1, r: 0 }, e: { c: 13, r: data.length + headers.length - 1 } };
+  worksheet['!ref'] = SheetJSStyle.utils.encode_range(range);
 
-      // Save the workbook
-      XLSX.writeFile(workbook, "BukuAgendaMasuk.xlsx");
-    },
+  // Set column widths dynamically based on content
+  worksheet['!cols'] = [{ wch: 5 }].concat(colWidths);
 
-  
+  // Define the workbook and append the worksheet
+  const workbook = SheetJSStyle.utils.book_new();
+  SheetJSStyle.utils.book_append_sheet(workbook, worksheet, "BukuAgendaMasuk");
+
+  // Export the workbook to an Excel file
+  SheetJSStyle.writeFile(workbook, "BukuAgendaMasuk.xlsx");
+}
+,
 
     editItem(id) {
       this.$router.push({ name: 'EditSuratMasuk', params: { id } });
@@ -384,6 +380,9 @@ h1 {
   text-align: left;
   padding: 8px;
   position: relative;
+  word-wrap: break-word;
+  white-space: pre-wrap; 
+  max-width: 10vw; 
 }
 
 th {

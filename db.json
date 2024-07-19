@@ -13,15 +13,15 @@
   "SuratMasuk": [
     {
       "id": "a303",
-      "suratDari": "Test1",
+      "suratDari": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
       "tanggalSurat": "17/07/2024",
-      "noSurat": "Test1",
-      "perihal": "Test1",
+      "noSurat": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
+      "perihal": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
       "diterimaTanggal": "17/07/2024",
-      "noAgenda": "Test1",
+      "noAgenda": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
       "sifat": "Biasa",
-      "disposisiSekretaris": "Test1",
-      "disposisiKasumpeg": "Test1",
+      "disposisiSekretaris": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
+      "disposisiKasumpeg": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
       "tanggalDisposisi": "17/07/2024",
       "pdfUrl": "http://localhost:3001/uploads/1721179751348-1. Diskominfo Prov. Jatim (Undangan Kegiatan Bedah Ruang SIber Jatim Jilid III).pdf"
     },

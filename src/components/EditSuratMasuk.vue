@@ -149,6 +149,7 @@ export default {
   flex-direction: row;
   align-items: center;
   margin-bottom: 10px;
+  
 }
 
 .form-group label {
@@ -157,15 +158,16 @@ export default {
 }
 
 .update input,
-.update select,
-.update button {
+.update select
+ {
   display: block;
   padding: 10px;
-  width: 400px;
+  width: 800px;
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
+  align-items: center;
 }
 
 .update button {
@@ -174,6 +176,10 @@ export default {
   border: none;
   cursor: pointer;
   margin-top: 20px;
+  align-items: center;
+  border-radius: 4px;
+  width: 200px;
+  padding: 10px;
 }
 
 .update button:hover {
