@@ -205,7 +205,7 @@ export default {
       "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
         "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
       ], // Add months array
-      years: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
+      years: [ 2024 , 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
     };
   },
   computed: {
@@ -270,8 +270,8 @@ export default {
       const worksheet = {};
 
       const headers = [
-        ["BUKU AGENDA SURAT KELUAR DI TATA USAHA"],
-        ["BULAN " + this.selectedMonth], // Insert selected month here
+        ["BUKU AGENDA SURAT MASUK DI TATA USAHA"],
+        ["BULAN " + this.selectedMonth + " " + this.selectedYear],
         [],
         [
           "NO.",
@@ -410,7 +410,8 @@ export default {
       );
 
       // Export the workbook to an Excel file
-      SheetJSStyle.writeFile(workbook, "BukuAgendaMasuk.xlsx");
+      const fileName = `Buku Agenda Surat Masuk ${this.selectedMonth} ${this.selectedYear}.xlsx`;
+      SheetJSStyle.writeFile(workbook, fileName);
     },
     editItem(id) {
       this.$router.push({ name: "EditSuratMasuk", params: { id: id } });

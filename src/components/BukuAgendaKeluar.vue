@@ -3,18 +3,18 @@
       <div class="header-container">
         <h1>BUKU AGENDA SURAT KELUAR DI TATA USAHA</h1>
         <div class="dropdown-container">
-          <select v-model="selectedMonth" class="month-dropdown">
+          <select v-model="selectedMonth" class="month-dropdown" @change="loadData">
             <option disabled value="">Pilih Bulan</option>
             <option v-for="month in months" :key="month" :value="month">
               {{ month }}
             </option>
           </select>
-          <select v-model="selectedYear" class="year-dropdown">
-          <option disabled value="">Pilih Tahun</option>
-          <option v-for="year in years" :key="year" :value="year">
-            {{ year }}
-          </option>
-        </select>
+          <select v-model="selectedYear" class="year-dropdown" @change="loadData">
+            <option disabled value="">Pilih Tahun</option>
+            <option v-for="year in years" :key="year" :value="year">
+              {{ year }}
+            </option>
+          </select>
           <button @click="exportToExcel" class="export-button">
             Export ke Excel
           </button>
@@ -119,10 +119,7 @@
                   <span @click="toggleSortMenu('disposisiSekretaris')">
                     <font-awesome-icon :icon="['fas', 'sort']" />
                   </span>
-                  <div
-                    v-if="sortMenu === 'disposisiSekretaris'"
-                    class="sort-menu"
-                  >
+                  <div v-if="sortMenu === 'disposisiSekretaris'" class="sort-menu">
                     <ul>
                       <li @click="sortTable('disposisiSekretaris_asc')">A-Z</li>
                       <li @click="sortTable('disposisiSekretaris_desc')">Z-A</li>
@@ -157,13 +154,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="(item, index) in sortedSuratMasuk" :key="item.id">
+              <tr v-for="(item, index) in sortedSuratKeluar" :key="item.id">
                 <td>{{ index + 1 }}</td>
                 <td>
-                  <font-awesome-icon
-                    :icon="['fas', 'file-pdf']"
-                    @click="viewPdf(item.pdfUrl)"
-                  />
+                  <font-awesome-icon :icon="['fas', 'file-pdf']" @click="viewPdf(item.pdfUrl)" />
                 </td>
                 <td>{{ item.suratDari }}</td>
                 <td>{{ item.tanggalSurat }}</td>
@@ -186,74 +180,114 @@
     </div>
   </template>
   
+  
   <script>
- import axios from "axios";
-import * as SheetJSStyle from "sheetjs-style";
-
-export default {
-  name: "BukuAgendaMasuk",
-  data() {
-    return {
-      SuratMasuk: [],
-      sortKey: "",
-      sortMenu: "",
-      selectedPdfUrl: null,
-      showPdfViewer: true,
-      selectedMonth: "", // Add selectedMonth data property
-      selectedYear: "",
-      months: [
-      "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
-        "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
-      ], // Add months array
-      years: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
-    };
-  },
-  computed: {
-    sortedSuratMasuk() {
-      return [...this.SuratMasuk].sort((a, b) => {
-        let [key, order] = this.sortKey.split("_");
-        if (
-          key === "tanggalSurat" ||
-          key === "diterimaTanggal" ||
-          key === "tanggalDisposisi"
-        ) {
-          return order === "asc"
-            ? new Date(a[key]) - new Date(b[key])
-            : new Date(b[key]) - new Date(a[key]);
-        }
-        if (order === "asc") {
-          return a[key] > b[key] ? 1 : -1;
-        } else {
-          return a[key] < b[key] ? -1 : 1;
-        }
-      });
+  import axios from "axios";
+  import * as SheetJSStyle from "sheetjs-style";
+  
+  export default {
+    name: "BukuAgendaKeluar",
+    data() {
+      return {
+        SuratKeluar: [],
+        sortKey: "",
+        sortMenu: "",
+        selectedPdfUrl: null,
+        showPdfViewer: true,
+        selectedMonth: "",
+        selectedYear: "",
+        months: [
+          "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
+          "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
+        ],
+        years: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
+      };
     },
-  },
-  methods: {
-    async loadData() {
-      try {
-        let result = await axios.get("http://localhost:3000/SuratKeluar");
-        this.SuratMasuk = result.data.map((surat) => ({
-          ...surat,
-          pdfThumbnail: `/uploads/${surat.pdfThumbnail}`,
-          pdfUrl: surat.pdfUrl,
-        }));
-      } catch (error) {
-        console.error("Error loading data:", error);
+    computed: {
+      sortedSuratKeluar() {
+        let sorted = [...this.SuratKeluar];
+        switch (this.sortKey) {
+          case "suratDari_asc":
+            sorted.sort((a, b) => a.suratDari.localeCompare(b.suratDari));
+            break;
+          case "suratDari_desc":
+            sorted.sort((a, b) => b.suratDari.localeCompare(a.suratDari));
+            break;
+          case "tanggalSurat_asc":
+            sorted.sort((a, b) => new Date(a.tanggalSurat) - new Date(b.tanggalSurat));
+            break;
+          case "tanggalSurat_desc":
+            sorted.sort((a, b) => new Date(b.tanggalSurat) - new Date(a.tanggalSurat));
+            break;
+          case "noSurat_asc":
+            sorted.sort((a, b) => a.noSurat.localeCompare(b.noSurat));
+            break;
+          case "noSurat_desc":
+            sorted.sort((a, b) => b.noSurat.localeCompare(a.noSurat));
+            break;
+          case "perihal_asc":
+            sorted.sort((a, b) => a.perihal.localeCompare(b.perihal));
+            break;
+          case "perihal_desc":
+            sorted.sort((a, b) => b.perihal.localeCompare(a.perihal));
+            break;
+          case "diterimaTanggal_asc":
+            sorted.sort((a, b) => new Date(a.diterimaTanggal) - new Date(b.diterimaTanggal));
+            break;
+          case "diterimaTanggal_desc":
+            sorted.sort((a, b) => new Date(b.diterimaTanggal) - new Date(a.diterimaTanggal));
+            break;
+          case "noAgenda_asc":
+            sorted.sort((a, b) => a.noAgenda.localeCompare(b.noAgenda));
+            break;
+          case "noAgenda_desc":
+            sorted.sort((a, b) => b.noAgenda.localeCompare(a.noAgenda));
+            break;
+          case "sifat_biasa":
+            sorted = sorted.filter((item) => item.sifat === "Biasa");
+            break;
+          case "sifat_penting":
+            sorted = sorted.filter((item) => item.sifat === "Penting");
+            break;
+          case "disposisiSekretaris_asc":
+            sorted.sort((a, b) => a.disposisiSekretaris.localeCompare(b.disposisiSekretaris));
+            break;
+          case "disposisiSekretaris_desc":
+            sorted.sort((a, b) => b.disposisiSekretaris.localeCompare(a.disposisiSekretaris));
+            break;
+          case "disposisiKasumpeg_asc":
+            sorted.sort((a, b) => a.disposisiKasumpeg.localeCompare(b.disposisiKasumpeg));
+            break;
+          case "disposisiKasumpeg_desc":
+            sorted.sort((a, b) => b.disposisiKasumpeg.localeCompare(a.disposisiKasumpeg));
+            break;
+          case "tanggalDisposisi_asc":
+            sorted.sort((a, b) => new Date(a.tanggalDisposisi) - new Date(b.tanggalDisposisi));
+            break;
+          case "tanggalDisposisi_desc":
+            sorted.sort((a, b) => new Date(b.tanggalDisposisi) - new Date(a.tanggalDisposisi));
+            break;
+        }
+        return sorted;
       }
     },
-    toggleSortMenu(column) {
-      this.sortMenu = this.sortMenu === column ? "" : column;
-    },
-    sortTable(sortKey) {
-      this.sortKey = sortKey;
-      this.sortMenu = "";
-    },
-    viewPdf(pdfUrl) {
-      this.selectedPdfUrl = pdfUrl;
-    },
-    exportToExcel() {
-      const data = this.sortedSuratMasuk.map((item, index) => ({
+    methods: {
+      
+      loadData() {
+        const params = {};
+        if (this.selectedMonth) params.bulan = this.selectedMonth;
+        if (this.selectedYear) params.tahun = this.selectedYear;
+  
+        axios.get("http://localhost:3000/SuratKeluar", { params })
+          .then(response => {
+            this.SuratKeluar = response.data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      },
+      exportToExcel() {
+      const data = this.sortedSuratKeluar.map((item, index) => ({
         "No.": index + 1,
         "Surat Dari": item.suratDari,
         "Tgl. Surat": item.tanggalSurat,
@@ -271,7 +305,7 @@ export default {
 
       const headers = [
         ["BUKU AGENDA SURAT KELUAR DI TATA USAHA"],
-        ["BULAN " + this.selectedMonth], // Insert selected month here
+        ["BULAN " + this.selectedMonth + this.selectedYear], 
         [],
         [
           "NO.",
@@ -410,189 +444,203 @@ export default {
       );
 
       // Export the workbook to an Excel file
-      SheetJSStyle.writeFile(workbook, "BukuAgendaKeluar.xlsx");
+      SheetJSStyle.writeFile(workbook, "BukuAgendaKeluar.xlsx" + this.selectedMonth + this.selectedYear);
     },
-    editItem(id) {
-      this.$router.push({ name: "EditSuratKeluar", params: { id: id } });
+      toggleSortMenu(column) {
+        if (this.sortMenu === column) {
+          this.sortMenu = "";
+        } else {
+          this.sortMenu = column;
+        }
+      },
+      sortTable(key) {
+        this.sortKey = key;
+        this.sortMenu = "";
+      },
+      viewPdf(pdfUrl) {
+        this.selectedPdfUrl = pdfUrl;
+      },
+      editItem(id) {
+        this.$router.push({ name: "EditSuratKeluar", params: { id: id } });
+      }
     },
-    
-  },
-  mounted() {
-    this.loadData();
-  },
-};
-
+    mounted() {
+      this.loadData();
+    }
+  };
   </script>
   
-  <style scoped>
-  .data-produk-container {
-    padding: 20px;
-  }
   
-  .header-container {
+  <style scoped>
+    .data-produk-container {
+      padding: 20px;
+    }
+    
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    h1 {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .toggle-button {
+      margin-right: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .export-button {
+      padding: 0.5rem 1rem;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    
+    .export-button:hover {
+      background-color: lightgreen;
+    }
+    
+    .main-container {
+      display: flex;
+    }
+    
+    .table-container {
+      max-width: 100%;
+      overflow-x: auto;
+      margin: 20px;
+      padding: 10px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      width: 100%;
+    }
+    
+    .table-container table {
+      width: 100%;
+      border-collapse: collapse;
+      border: 1px solid #ddd;
+    }
+    
+    .table-container th,
+    .table-container td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+      padding: 8px;
+      position: relative;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      max-width: 10vw;
+    }
+    
+    th {
+      background-color: #f4f4f4;
+    }
+    
+    .sort-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: white;
+      border: 1px solid #ddd;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1;
+      list-style-type: none;
+      margin: 0;
+      padding: 5px;
+    }
+    
+    .sort-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .sort-menu li {
+      padding: 5px 10px;
+      cursor: pointer;
+      padding: 5px;
+    }
+    
+    .sort-menu li:hover {
+      background: #f4f4f4;
+      background-color: #ddd;
+    }
+    
+    button {
+      padding: 5px 10px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    
+    button:hover {
+      background-color: #0056b3;
+    }
+    
+    .pdf-thumbnail {
+      width: 50px;
+      height: auto;
+      cursor: pointer;
+    }
+    
+    .pdf-viewer {
+      width: 66%;
+      padding-right: 10px;
+    
+      margin-bottom: 20px;
+    }
+    
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+      }
+    
+      .table-container {
+        width: 100%;
+      }
+    }
+  
+    .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+    margin-bottom: 10px;
   }
   
-  h1 {
-    flex: 1;
-    text-align: center;
+  .month-dropdown {
+    padding: 5px;
+    margin-right: 10px;
   }
   
-  .toggle-button {
-    margin-right: 1rem;
-    padding: 0.5rem 1rem;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+  .year-dropdown {
+    padding: 5px;
+    margin-right: 10px;
   }
-  
   .export-button {
-    padding: 0.5rem 1rem;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    padding: 5px 10px;
   }
   
-  .export-button:hover {
-    background-color: lightgreen;
-  }
-  
-  .main-container {
+  .dropdown-container {
     display: flex;
+    align-items: center;
   }
-  
-  .table-container {
-    max-width: 100%;
-    overflow-x: auto;
-    margin: 20px;
-    padding: 10px;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    width: 100%;
-  }
-  
-  .table-container table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #ddd;
-  }
-  
-  .table-container th,
-  .table-container td {
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: left;
-    padding: 8px;
-    position: relative;
-    word-wrap: break-word;
-    white-space: pre-wrap;
-    max-width: 10vw;
-  }
-  
-  th {
-    background-color: #f4f4f4;
-  }
-  
-  .sort-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: white;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    z-index: 1;
-    list-style-type: none;
-    margin: 0;
-    padding: 5px;
-  }
-  
-  .sort-menu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .sort-menu li {
-    padding: 5px 10px;
-    cursor: pointer;
-    padding: 5px;
-  }
-  
-  .sort-menu li:hover {
-    background: #f4f4f4;
-    background-color: #ddd;
-  }
-  
-  button {
-    padding: 5px 10px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 3px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  
-  .pdf-thumbnail {
-    width: 50px;
-    height: auto;
-    cursor: pointer;
-  }
-  
-  .pdf-viewer {
-    width: 66%;
-    padding-right: 10px;
-  
-    margin-bottom: 20px;
-  }
-  
-  @media (max-width: 768px) {
-    .main-container {
-      flex-direction: column;
-    }
-  
-    .table-container {
-      width: 100%;
-    }
-  }
-
-  .header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.month-dropdown {
-  padding: 5px;
-  margin-right: 10px;
-}
-
-.year-dropdown {
-  padding: 5px;
-  margin-right: 10px;
-}
-.export-button {
-  padding: 5px 10px;
-}
-
-.dropdown-container {
-  display: flex;
-  align-items: center;
-}
-  </style>
+    </style>
+    
   

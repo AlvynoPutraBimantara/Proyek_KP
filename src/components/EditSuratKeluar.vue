@@ -7,7 +7,7 @@
         </div>
         <div class="update-container">
           <form class="update" @submit.prevent="submitProduct">
-         
+            <!-- Form fields -->
             <div class="form-group">
               <label for="suratDari">Surat Dari</label>
               <input type="text" id="suratDari" v-model="DataProduk.suratDari" autocomplete="off" />
@@ -103,8 +103,8 @@
         selectedMonth: "", // Add selectedMonth data property
         selectedYear: "", // Add selectedYear data property
         months: [
-          "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-          "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+         "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
+          "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
         ], // Add months array
         years: Array.from({ length: 20 }, (_, i) => 2024 + i) // Add years array dynamically
       };
