@@ -7,6 +7,7 @@
       </div>
       <div class="update-container">
         <form class="update" @submit.prevent="submitProduct">
+          <!-- Form fields -->
           <div class="form-group">
             <label for="suratDari">Surat Dari</label>
             <input type="text" id="suratDari" v-model="DataProduk.suratDari" autocomplete="off" />
@@ -51,7 +52,9 @@
             <label for="tanggalDisposisi">Tanggal Disposisi</label>
             <input type="date" id="tanggalDisposisi" v-model="DataProduk.tanggalDisposisi" />
           </div>
+          <button type="button" @click="triggerFileUpload">Import</button>
           <button type="submit">SIMPAN</button>
+          <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
         </form>
       </div>
     </div>
@@ -77,6 +80,7 @@ export default {
         disposisiKasumpeg: "",
         tanggalDisposisi: ""
       },
+      pdfFile: null,
       pdfUrl: null
     };
   },
@@ -107,6 +111,14 @@ export default {
           diterimaTanggal: this.formatDateToBackend(this.DataProduk.diterimaTanggal),
           tanggalDisposisi: this.formatDateToBackend(this.DataProduk.tanggalDisposisi)
         };
+
+        if (this.pdfFile) {
+          const formData = new FormData();
+          formData.append("pdf", this.pdfFile);
+          const response = await axios.post("http://localhost:3001/uploads", formData);
+          formattedData.pdfUrl = `http://localhost:3001${response.data.pdfUrl}`;
+        }
+
         const result = await axios.put(`http://localhost:3000/SuratMasuk/${id}`, formattedData);
         if (result.status === 200) {
           this.$router.push({ name: "BukuAgendaMasuk" });
@@ -125,6 +137,23 @@ export default {
       if (!date) return "";
       const [year, month, day] = date.split("-");
       return `${day}/${month}/${year}`;
+    },
+    triggerFileUpload() {
+      this.$refs.fileInput.click();
+    },
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file && file.type === "application/pdf") {
+        this.pdfFile = file;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const blob = new Blob([e.target.result], { type: 'application/pdf' });
+          this.pdfUrl = URL.createObjectURL(blob);
+        };
+        reader.readAsArrayBuffer(file);
+      } else {
+        alert("Please select a valid PDF file.");
+      }
     }
   }
 };
@@ -149,7 +178,6 @@ export default {
   flex-direction: row;
   align-items: center;
   margin-bottom: 10px;
-  
 }
 
 .form-group label {
@@ -158,8 +186,7 @@ export default {
 }
 
 .update input,
-.update select
- {
+.update select {
   display: block;
   padding: 10px;
   width: 800px;
@@ -167,7 +194,6 @@ export default {
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 16px;
-  align-items: center;
 }
 
 .update button {
@@ -195,7 +221,7 @@ export default {
   .main-container {
     flex-direction: column;
   }
-  
+
   .pdf-viewer {
     width: 100%;
     margin-bottom: 20px;

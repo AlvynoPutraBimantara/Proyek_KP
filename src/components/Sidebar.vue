@@ -12,6 +12,26 @@
         class="list-group-item list-group-item-action bg-light"
         >INPUT SURAT MASUK</router-link
       >
+      <router-link
+        to="/BukuAgendaMasuk"
+        class="list-group-item list-group-item-action bg-light"
+        >BUKU AGENDA SURAT KELUAR</router-link
+      >
+      <router-link
+        to="/SuratMasuk"
+        class="list-group-item list-group-item-action bg-light"
+        >INPUT SURAT KELUAR</router-link
+      >
+      <router-link
+        to="/TambahPengguna"
+        class="list-group-item list-group-item-action bg-light"
+        >TAMBAH PENGGUNA</router-link
+      >
+      <router-link
+        to="/DataPengguna"
+        class="list-group-item list-group-item-action bg-light"
+        >DATA PENGGUNA</router-link
+      >
       <a
         v-on:click="logout"
         href="#"

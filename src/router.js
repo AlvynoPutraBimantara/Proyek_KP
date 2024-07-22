@@ -5,6 +5,10 @@ import BukuAgendaMasuk from "./components/BukuAgendaMasuk.vue";
 import SuratMasuk from "./components/SuratMasuk.vue";
 import LandingPage from "./components/LandingPage.vue";
 import EditSuratMasuk from "./components/EditSuratMasuk.vue";
+import TambahPengguna from "./components/TambahPengguna.vue";
+import DataPengguna from "./components/DataPengguna.vue";
+import SuratKeluar from "./components/SuratKeluar.vue";
+import BukuAgendaKeluar from "./components/BukuAgendaKeluar.vue";
 
 const routes = [
   {
@@ -36,6 +40,26 @@ const routes = [
     name: "EditSuratMasuk",
     component: EditSuratMasuk,
     path: "/EditSuratMasuk/:id",
+  },
+  {
+    name: "TambahPengguna",
+    component: TambahPengguna,
+    path: "/TambahPengguna",
+  },
+  {
+    name: "DataPengguna",
+    component: DataPengguna,
+    path: "/DataPengguna",
+  },
+  {
+    name: "BukuAgendaKeluar",
+    component: BukuAgendaKeluar,
+    path: "/BukuAgendaKeluar",
+  },
+  {
+    name: "SuratKeluar",
+    component: SuratKeluar,
+    path: "/SuratKeluar",
   },
 ];
 

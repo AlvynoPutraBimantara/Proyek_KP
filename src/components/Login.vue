@@ -10,9 +10,7 @@
           placeholder="Masukan Password"
         />
         <button v-on:click="login">Login</button>
-        <p>
-          <router-link to="/sign-up">Daftar</router-link>
-        </p>
+       
       </div>
     </div>
   </div>

@@ -12,10 +12,24 @@
     </router-link>
     <router-link
       v-if="isAdmin"
+      to="/BukuAgendaKeluar"
+      :class="{ active: isActive('/BukuAgendaKeluar') }"
+    >
+      BUKU AGENDA SURAT KELUAR
+    </router-link>
+    <router-link
+      v-if="isAdmin"
       to="/SuratMasuk"
       :class="{ active: isActive('/SuratMasuk') }"
     >
-     INPUT SURAT MASUK
+      INPUT SURAT MASUK
+    </router-link>
+    <router-link
+      v-if="isAdmin"
+      to="/SuratKeluar"
+      :class="{ active: isActive('/SuratKeluar') }"
+    >
+      INPUT SURAT KELUAR
     </router-link>
     <a @click.prevent="logout" href="#">Logout</a>
   </nav>
@@ -54,8 +68,8 @@ export default {
   align-items: left;
   padding: 0 20px;
   width: 100%;
-  gap: 10px;
- 
+  gap: 8px;
+
   box-sizing: border-box; /* Ensure padding doesn't affect the width */
 }
 
@@ -65,7 +79,7 @@ export default {
   padding: 20px;
   padding-left: 20px;
   text-align: center;
-  font-size: 19px;
+  font-size: 15px;
   border-radius: 5px;
   text-decoration: none;
 }

@@ -43,6 +43,8 @@ export default {
 .title {
   font-size: xxx-large;
   margin: 0 0 30px 0;
+  align-items: center;
+  justify-content: center;
 }
 
 .subtitle {
@@ -52,6 +54,8 @@ export default {
 .button-container {
   display: flex;
   gap: 20px;
+  align-items: center;
+  justify-content: center;
 }
 
 .button {
@@ -63,6 +67,8 @@ export default {
   color: white;
   border: none;
   transition: background-color 0.3s ease;
+  align-items: center;
+  justify-content: center;
 }
 
 .button:hover {

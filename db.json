@@ -8,6 +8,21 @@
       "Password": "asd",
       "id": "4e50",
       "role": "admin"
+    },
+    {
+      "id": "3b12",
+      "Nama": "Test1",
+      "Password": "asd"
+    },
+    {
+      "id": "8da2",
+      "Nama": "Test2",
+      "Password": "asd"
+    },
+    {
+      "id": "4a3f",
+      "Nama": "Test3",
+      "Password": "asd"
     }
   ],
   "SuratMasuk": [
@@ -23,7 +38,7 @@
       "disposisiSekretaris": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
       "disposisiKasumpeg": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
       "tanggalDisposisi": "17/07/2024",
-      "pdfUrl": "http://localhost:3001/uploads/1721179751348-1. Diskominfo Prov. Jatim (Undangan Kegiatan Bedah Ruang SIber Jatim Jilid III).pdf"
+      "pdfUrl": "http://localhost:3001/uploads/1721357446791-3. Universitas Pembangunan Nasional Fakultas Teknik (Permohonan Magang MBKM An. Nadhim Ihsananda Prodi Teknik Industri).pdf"
     },
     {
       "id": "9d1b",
@@ -150,6 +165,36 @@
       "disposisiKasumpeg": "Test10",
       "tanggalDisposisi": "17/07/2024",
       "pdfUrl": "http://localhost:3001/uploads/1721180234877-10. Nota Dinas Kadis DLH Prov. Jatim (Rapat Persiapan Evaluasi Renja Tw II Th 2024 dan Evaluasi Internal SAKIP Th 2024.pdf"
+    }
+  ],
+  "SuratKeluar": [
+    {
+      "id": "f1d7",
+      "suratDari": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
+      "tanggalSurat": "22/07/2024",
+      "noSurat": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
+      "perihal": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
+      "diterimaTanggal": "22/07/2024",
+      "noAgenda": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
+      "sifat": "Biasa",
+      "disposisiSekretaris": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
+      "disposisiKasumpeg": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
+      "tanggalDisposisi": "22/07/2024",
+      "pdfUrl": "http://localhost:3001/uploads/1721612441993-2. Diskominfo Prov. Jatim (Rapat Koordinasi Pemanfaatan PDNS).pdf"
+    },
+    {
+      "id": "3be8",
+      "suratDari": "Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2",
+      "tanggalSurat": "22/07/2024",
+      "noSurat": "Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2",
+      "perihal": "Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2",
+      "diterimaTanggal": "22/07/2024",
+      "noAgenda": "Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2",
+      "sifat": "Penting",
+      "disposisiSekretaris": "Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2",
+      "disposisiKasumpeg": "Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2",
+      "tanggalDisposisi": "22/07/2024",
+      "pdfUrl": "http://localhost:3001/uploads/1721612614443-3. Universitas Pembangunan Nasional Fakultas Teknik (Permohonan Magang MBKM An. Nadhim Ihsananda Prodi Teknik Industri).pdf"
     }
   ]
 }

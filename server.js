@@ -32,6 +32,7 @@ const getData = () => {
   if (!fs.existsSync(dbFilePath)) {
     const initialData = {
       SuratMasuk: [],
+      SuratKeluar: [],
       Orders: [],
       Cart: [],
       Transactions: [],
@@ -132,6 +133,40 @@ app.post("/SuratMasuk", (req, res) => {
 });
 
 app.put("/SuratMasuk/:id", (req, res) => {
+  const data = getData();
+  const productId = parseInt(req.params.id);
+  const updatedProduct = req.body;
+  const productIndex = data.SuratMasuk.findIndex((p) => p.id === productId);
+  if (productIndex !== -1) {
+    data.SuratMasuk[productIndex] = updatedProduct;
+    saveData(data);
+    res.status(200).json(updatedProduct);
+  } else {
+    res.status(404).send("Product not found");
+  }
+});
+
+app.get("/SuratKeluar", (req, res) => {
+  const data = getData();
+  res.json(data.SuratMasuk);
+});
+
+app.post("/SuratKeluar", (req, res) => {
+  const data = getData();
+  const newProduct = req.body;
+  newProduct.id = data.SuratMasuk.length ? data.SuratMasuk[data.SuratMasuk.length - 1].id + 1 : 1;
+
+
+  newProduct.tanggalSurat = formatDateString(newProduct.tanggalSurat);
+  newProduct.diterimaTanggal = formatDateString(newProduct.diterimaTanggal);
+  newProduct.tanggalDisposisi = formatDateString(newProduct.tanggalDisposisi);
+
+  data.SuratMasuk.push(newProduct);
+  saveData(data);
+  res.status(201).json(newProduct);
+});
+
+app.put("/SuratKeluar/:id", (req, res) => {
   const data = getData();
   const productId = parseInt(req.params.id);
   const updatedProduct = req.body;

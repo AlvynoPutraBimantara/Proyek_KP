@@ -1,9 +1,10 @@
-
 <template>
   <div class="data-produk-container">
     <div class="header-container">
       <h1>BUKU AGENDA SURAT MASUK DI TATA USAHA</h1>
-      <button @click="exportToExcel" class="export-button">Export ke Excel</button>
+      <button @click="exportToExcel" class="export-button">
+        Export ke Excel
+      </button>
     </div>
     <div class="main-container">
       <div v-if="selectedPdfUrl" class="pdf-viewer">
@@ -104,7 +105,10 @@
                 <span @click="toggleSortMenu('disposisiSekretaris')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
                 </span>
-                <div v-if="sortMenu === 'disposisiSekretaris'" class="sort-menu">
+                <div
+                  v-if="sortMenu === 'disposisiSekretaris'"
+                  class="sort-menu"
+                >
                   <ul>
                     <li @click="sortTable('disposisiSekretaris_asc')">A-Z</li>
                     <li @click="sortTable('disposisiSekretaris_desc')">Z-A</li>
@@ -142,7 +146,10 @@
             <tr v-for="(item, index) in sortedSuratMasuk" :key="item.id">
               <td>{{ index + 1 }}</td>
               <td>
-                <font-awesome-icon :icon="['fas', 'file-pdf']" @click="viewPdf(item.pdfUrl)"  />
+                <font-awesome-icon
+                  :icon="['fas', 'file-pdf']"
+                  @click="viewPdf(item.pdfUrl)"
+                />
               </td>
               <td>{{ item.suratDari }}</td>
               <td>{{ item.tanggalSurat }}</td>
@@ -168,152 +175,238 @@
 <script>
 import axios from "axios";
 //import * as XLSX from 'xlsx';
-import * as SheetJSStyle from 'sheetjs-style';
+import * as SheetJSStyle from "sheetjs-style";
 
 export default {
   name: "BukuAgendaMasuk",
   data() {
     return {
       SuratMasuk: [],
-      sortKey: '',
-      sortMenu: '',
-      selectedPdfUrl: null
+      sortKey: "",
+      sortMenu: "",
+      selectedPdfUrl: null,
+      showPdfViewer: true,
     };
   },
   computed: {
     sortedSuratMasuk() {
       return [...this.SuratMasuk].sort((a, b) => {
-        let [key, order] = this.sortKey.split('_');
-        if (key === 'tanggalSurat' || key === 'diterimaTanggal' || key === 'tanggalDisposisi') {
-          return order === 'asc'
+        let [key, order] = this.sortKey.split("_");
+        if (
+          key === "tanggalSurat" ||
+          key === "diterimaTanggal" ||
+          key === "tanggalDisposisi"
+        ) {
+          return order === "asc"
             ? new Date(a[key]) - new Date(b[key])
             : new Date(b[key]) - new Date(a[key]);
         }
-        if (order === 'asc') {
+        if (order === "asc") {
           return a[key] > b[key] ? 1 : -1;
         } else {
           return a[key] < b[key] ? -1 : 1;
         }
       });
-    }
+    },
   },
   methods: {
     async loadData() {
       try {
         let result = await axios.get("http://localhost:3000/SuratMasuk");
-        this.SuratMasuk = result.data.map(surat => ({
+        this.SuratMasuk = result.data.map((surat) => ({
           ...surat,
           pdfThumbnail: `/uploads/${surat.pdfThumbnail}`,
-          pdfUrl: surat.pdfUrl 
+          pdfUrl: surat.pdfUrl,
         }));
       } catch (error) {
         console.error("Error loading data:", error);
       }
     },
     toggleSortMenu(column) {
-      this.sortMenu = this.sortMenu === column ? '' : column;
+      this.sortMenu = this.sortMenu === column ? "" : column;
     },
     sortTable(sortKey) {
       this.sortKey = sortKey;
-      this.sortMenu = '';
+      this.sortMenu = "";
     },
     viewPdf(pdfUrl) {
       this.selectedPdfUrl = pdfUrl;
     },
-    
+
     exportToExcel() {
-  const data = this.sortedSuratMasuk.map((item, index) => ({
-    "No.": index + 1,
-    "Surat Dari": item.suratDari,
-    "Tgl. Surat": item.tanggalSurat,
-    "No. Surat": item.noSurat,
-    "Perihal": item.perihal,
-    "Diterima Tgl.": item.diterimaTanggal,
-    "No. Agenda": item.noAgenda,
-    "Sifat": item.sifat,
-    "Disposisi Sekretaris": item.disposisiSekretaris,
-    "Disposisi Kasumpeg": item.disposisiKasumpeg,
-    "Tgl Disposisi": item.tanggalDisposisi,
-  }));
+      const data = this.sortedSuratMasuk.map((item, index) => ({
+        "No.": index + 1,
+        "Surat Dari": item.suratDari,
+        "Tgl. Surat": item.tanggalSurat,
+        "No. Surat": item.noSurat,
+        Perihal: item.perihal,
+        "Diterima Tgl.": item.diterimaTanggal,
+        "No. Agenda": item.noAgenda,
+        Sifat: item.sifat,
+        "Disposisi Sekretaris": item.disposisiSekretaris,
+        "Disposisi Kasumpeg": item.disposisiKasumpeg,
+        "Tgl Disposisi": item.tanggalDisposisi,
+      }));
 
-  const worksheet = {};
+      const worksheet = {};
 
-  const headers = [
-    ["BUKU AGENDA SURAT MASUK DI TATA USAHA"],
-    ["BULAN "],
-    [],
-    ["NO.", "   SURAT DARI   ", "TGL SURAT", "   NO. SURAT   ", "   PERIHAL   ", "DITERIMA TGL", "   NO. AGENDA   ", "SIFAT", "   DISPOSISI SEKRETARIS   ", "   DISPOSISI KASUMPEG   ", "TGL DISPOSISI"],
-    ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"]
-  ];
+      const headers = [
+        ["BUKU AGENDA SURAT MASUK DI TATA USAHA"],
+        ["BULAN "],
+        [],
+        [
+          "NO.",
+          "   SURAT DARI   ",
+          "TGL SURAT",
+          "   NO. SURAT   ",
+          "   PERIHAL   ",
+          "DITERIMA TGL",
+          "   NO. AGENDA   ",
+          "SIFAT",
+          "   DISPOSISI SEKRETARIS   ",
+          "   DISPOSISI KASUMPEG   ",
+          "TGL DISPOSISI",
+        ],
+        ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
+      ];
 
-  const commonAlignment = { horizontal: "center", vertical: "center", wrapText: true };
-
-  const styles = {
-    header: { font: { bold: true, sz: 22 }, alignment: { horizontal: "center", vertical: "middle" }, wrapText: true },
-    subHeader: { fill: { fgColor: { rgb: "9DC3E6" } }, font: { bold: true, sz: 12 }, alignment: commonAlignment, border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } } },
-    columnNumbers: { fill: { fgColor: { rgb: "FFFF00" } }, font: { bold: true, sz: 12 }, alignment: commonAlignment, border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } } },
-    thickBorder: { border: { top: { style: "thick" }, bottom: { style: "thick" }, left: { style: "thick" }, right: { style: "thick" } } },
-    thinBorder: { border: { top: { style: "thin" }, bottom: { style: "thin" }, left: { style: "thin" }, right: { style: "thin" } } }
-  };
-
-  // Add headers to the worksheet
-  headers.forEach((row, rowIndex) => {
-    row.forEach((cell, colIndex) => {
-      const cellRef = SheetJSStyle.utils.encode_cell({ r: rowIndex, c: colIndex + 1 });
-      worksheet[cellRef] = {
-        v: cell,
-        s: rowIndex === 0 || rowIndex === 1 ? styles.header : rowIndex === 3 ? styles.subHeader : styles.columnNumbers,
+      const commonAlignment = {
+        horizontal: "center",
+        vertical: "center",
+        wrapText: true,
       };
-    });
-  });
 
-  // Merge cells for the title and the second row
-  worksheet["!merges"] = [
-    { s: { r: 0, c: 1 }, e: { r: 0, c: 13 } },
-    { s: { r: 1, c: 1 }, e: { r: 1, c: 13 } }
-  ];
-
-  // Add data to the worksheet
-  data.forEach((row, rowIndex) => {
-    Object.values(row).forEach((cell, colIndex) => {
-      const cellRef = SheetJSStyle.utils.encode_cell({ r: rowIndex + headers.length, c: colIndex + 1 });
-      worksheet[cellRef] = {
-        v: cell,
-        s: { ...styles.thinBorder, alignment: commonAlignment },
+      const styles = {
+        header: {
+          font: { bold: true, sz: 22 },
+          alignment: { horizontal: "center", vertical: "middle" },
+          wrapText: true,
+        },
+        subHeader: {
+          fill: { fgColor: { rgb: "9DC3E6" } },
+          font: { bold: true, sz: 12 },
+          alignment: commonAlignment,
+          border: {
+            top: { style: "thin" },
+            bottom: { style: "thin" },
+            left: { style: "thin" },
+            right: { style: "thin" },
+          },
+        },
+        columnNumbers: {
+          fill: { fgColor: { rgb: "FFFF00" } },
+          font: { bold: true, sz: 12 },
+          alignment: commonAlignment,
+          border: {
+            top: { style: "thin" },
+            bottom: { style: "thin" },
+            left: { style: "thin" },
+            right: { style: "thin" },
+          },
+        },
+        thickBorder: {
+          border: {
+            top: { style: "thick" },
+            bottom: { style: "thick" },
+            left: { style: "thick" },
+            right: { style: "thick" },
+          },
+        },
+        thinBorder: {
+          border: {
+            top: { style: "thin" },
+            bottom: { style: "thin" },
+            left: { style: "thin" },
+            right: { style: "thin" },
+          },
+        },
       };
-    });
-  });
 
-  // Calculate column widths based on the widest text in each column
-  const colWidths = headers[3].map((header, colIndex) => {
-    const headerWidth = header.length;
-    const maxDataWidth = Math.max(...data.map(row => (row[headers[3][colIndex]] || '').toString().length));
-    return { wch: Math.max(headerWidth, maxDataWidth) + 5 };
-  });
+      // Add headers to the worksheet
+      headers.forEach((row, rowIndex) => {
+        row.forEach((cell, colIndex) => {
+          const cellRef = SheetJSStyle.utils.encode_cell({
+            r: rowIndex,
+            c: colIndex + 1,
+          });
+          worksheet[cellRef] = {
+            v: cell,
+            s:
+              rowIndex === 0 || rowIndex === 1
+                ? styles.header
+                : rowIndex === 3
+                ? styles.subHeader
+                : styles.columnNumbers,
+          };
+        });
+      });
 
-  // Define the range to cover the entire table with the added empty column
-  const range = { s: { c: 1, r: 0 }, e: { c: 13, r: data.length + headers.length - 1 } };
-  worksheet['!ref'] = SheetJSStyle.utils.encode_range(range);
+      // Merge cells for the title and the second row
+      worksheet["!merges"] = [
+        { s: { r: 0, c: 1 }, e: { r: 0, c: 11 } },
+        { s: { r: 1, c: 1 }, e: { r: 1, c: 11 } },
+      ];
 
-  // Set column widths dynamically based on content
-  worksheet['!cols'] = [{ wch: 5 }].concat(colWidths);
+      // Add data to the worksheet
+      data.forEach((row, rowIndex) => {
+        Object.values(row).forEach((cell, colIndex) => {
+          const cellRef = SheetJSStyle.utils.encode_cell({
+            r: rowIndex + headers.length,
+            c: colIndex + 1,
+          });
+          worksheet[cellRef] = {
+            v: cell,
+            s: { ...styles.thinBorder, alignment: commonAlignment },
+          };
+        });
+      });
 
-  // Define the workbook and append the worksheet
-  const workbook = SheetJSStyle.utils.book_new();
-  SheetJSStyle.utils.book_append_sheet(workbook, worksheet, "BukuAgendaMasuk");
+      // Calculate column widths based on the widest text in each column
+      const colWidths = headers[3].map((header, colIndex) => {
+        const headerWidth = header.length;
+        const maxDataWidth = Math.max(
+          ...data.map(
+            (row) => (row[headers[3][colIndex]] || "").toString().length
+          )
+        );
+        return { wch: Math.max(headerWidth, maxDataWidth) + 5 };
+      });
 
-  // Export the workbook to an Excel file
-  SheetJSStyle.writeFile(workbook, "BukuAgendaMasuk.xlsx");
-}
-,
+      // Define the range to cover the entire table with the added empty column
+      const range = {
+        s: { c: 1, r: 0 },
+        e: { c: 11, r: data.length + headers.length - 1 },
+      };
+      worksheet["!ref"] = SheetJSStyle.utils.encode_range(range);
 
+      // Set column widths dynamically based on content
+      worksheet["!cols"] = [{ wch: 5 }].concat(colWidths);
+
+      // Define the workbook and append the worksheet
+      const workbook = SheetJSStyle.utils.book_new();
+      SheetJSStyle.utils.book_append_sheet(
+        workbook,
+        worksheet,
+        "BukuAgendaMasuk"
+      );
+
+      // Export the workbook to an Excel file
+      SheetJSStyle.writeFile(workbook, "BukuAgendaMasuk.xlsx");
+    },
     editItem(id) {
-      this.$router.push({ name: 'EditSuratMasuk', params: { id } });
-    }
+      this.$router.push({ name: "EditSuratMasuk", params: { id } });
+    },
   },
   mounted() {
     this.loadData();
-  }
+  },
+  viewPdf(url) {
+    this.selectedPdfUrl = url;
+    this.showPdfViewer = true;
+  },
+  togglePdfViewer() {
+    this.showPdfViewer = !this.showPdfViewer;
+  },
 };
 </script>
 
@@ -337,19 +430,27 @@ h1 {
   text-align: center;
 }
 
-.export-button {
-  padding: 10px 20px;
+.toggle-button {
+  margin-right: 1rem;
+  padding: 0.5rem 1rem;
   background-color: #007bff;
   color: white;
   border: none;
-  cursor: pointer;
   border-radius: 4px;
-  border-radius: 5px;
-  font-size: 16px;
+  cursor: pointer;
+}
+
+.export-button {
+  padding: 0.5rem 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .export-button:hover {
-  background-color: #0056b3;
+  background-color: lightgreen;
 }
 
 .main-container {
@@ -381,8 +482,8 @@ h1 {
   padding: 8px;
   position: relative;
   word-wrap: break-word;
-  white-space: pre-wrap; 
-  max-width: 10vw; 
+  white-space: pre-wrap;
+  max-width: 10vw;
 }
 
 th {
@@ -449,10 +550,9 @@ button:hover {
   .main-container {
     flex-direction: column;
   }
-  
+
   .table-container {
     width: 100%;
   }
 }
 </style>
-
