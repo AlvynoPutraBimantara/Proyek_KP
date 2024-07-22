@@ -305,7 +305,7 @@
 
       const headers = [
         ["BUKU AGENDA SURAT KELUAR DI TATA USAHA"],
-        ["BULAN " + this.selectedMonth + this.selectedYear], 
+        ["BULAN " + this.selectedMonth +" "+ this.selectedYear], 
         [],
         [
           "NO.",
@@ -444,7 +444,7 @@
       );
 
       // Export the workbook to an Excel file
-      SheetJSStyle.writeFile(workbook, "BukuAgendaKeluar.xlsx" + this.selectedMonth + this.selectedYear);
+      SheetJSStyle.writeFile(workbook, `BukuAgendaKeluar ${this.selectedMonth} ${this.selectedYear}.xlsx`);
     },
       toggleSortMenu(column) {
         if (this.sortMenu === column) {
