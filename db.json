@@ -216,7 +216,9 @@
       "disposisiSekretaris": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
       "disposisiKasumpeg": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
       "tanggalDisposisi": "22/07/2024",
-      "pdfUrl": "http://localhost:3001/uploads/1721612441993-2. Diskominfo Prov. Jatim (Rapat Koordinasi Pemanfaatan PDNS).pdf"
+      "pdfUrl": "http://localhost:3001/uploads/1721612441993-2. Diskominfo Prov. Jatim (Rapat Koordinasi Pemanfaatan PDNS).pdf",
+      "bulan": "Juli",
+      "tahun": 2024
     },
     {
       "id": "3be8",
@@ -230,7 +232,25 @@
       "disposisiSekretaris": "Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2",
       "disposisiKasumpeg": "Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2Test2",
       "tanggalDisposisi": "22/07/2024",
-      "pdfUrl": "http://localhost:3001/uploads/1721612614443-3. Universitas Pembangunan Nasional Fakultas Teknik (Permohonan Magang MBKM An. Nadhim Ihsananda Prodi Teknik Industri).pdf"
+      "pdfUrl": "http://localhost:3001/uploads/1721612614443-3. Universitas Pembangunan Nasional Fakultas Teknik (Permohonan Magang MBKM An. Nadhim Ihsananda Prodi Teknik Industri).pdf",
+      "bulan": "Juli",
+      "tahun": 2024
+    },
+    {
+      "id": "90ef",
+      "suratDari": "Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3",
+      "tanggalSurat": "22/07/2024",
+      "noSurat": "Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3",
+      "perihal": "Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3",
+      "diterimaTanggal": "22/07/2024",
+      "noAgenda": "Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3",
+      "sifat": "Biasa",
+      "disposisiSekretaris": "Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3",
+      "disposisiKasumpeg": "Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3Test3",
+      "tanggalDisposisi": "22/07/2024",
+      "bulan": "Juli",
+      "tahun": 2024,
+      "pdfUrl": "http://localhost:3001/uploads/1721622745027-4. Kompi Kavaleri 3, Tupai Setia Cakti (Permohonan Dukungan & Partisipasi dlm rangka Fun Bike TA 2024).pdf"
     }
   ]
 }

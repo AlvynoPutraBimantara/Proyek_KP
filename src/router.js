@@ -9,6 +9,8 @@ import TambahPengguna from "./components/TambahPengguna.vue";
 import DataPengguna from "./components/DataPengguna.vue";
 import SuratKeluar from "./components/SuratKeluar.vue";
 import BukuAgendaKeluar from "./components/BukuAgendaKeluar.vue";
+import EditSuratKeluar from "./components/EditSuratKeluar.vue";
+
 
 const routes = [
   {
@@ -60,6 +62,11 @@ const routes = [
     name: "SuratKeluar",
     component: SuratKeluar,
     path: "/SuratKeluar",
+  },
+  {
+    name: "EditSuratKeluar",
+    component: EditSuratKeluar,
+    path: "/EditSuratKeluar/:id",
   },
 ];
 

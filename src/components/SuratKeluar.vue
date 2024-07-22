@@ -60,6 +60,25 @@
               <label for="tanggalDisposisi">Tanggal Disposisi</label>
               <input type="date" id="tanggalDisposisi" v-model="SuratKeluar.tanggalDisposisi" />
             </div>
+            <div class="form-group">
+              <label for="bulan">Bulan</label>
+              <select id="bulan" v-model="selectedMonth">
+                <option disabled value="">Pilih Bulan</option>
+                <option v-for="month in months" :key="month" :value="month">
+                  {{ month }}
+                </option>
+              </select>
+            </div>
+  
+            <div class="form-group">
+              <label for="tahun">Tahun</label>
+              <select id="tahun" v-model="selectedYear">
+                <option disabled value="">Pilih Tahun</option>
+                <option v-for="year in years" :key="year" :value="year">
+                  {{ year }}
+                </option>
+              </select>
+            </div>
             <button type="button" @click="triggerFileUpload">Import</button>
             <button type="submit">Masukan</button>
             <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
@@ -69,6 +88,7 @@
       </div>
     </div>
   </template>
+  
   
   <script>
   import axios from "axios";
@@ -90,7 +110,14 @@
           tanggalDisposisi: ""
         },
         pdfFile: null,
-        pdfUrl: null
+        pdfUrl: null,
+        selectedMonth: "", // Add selectedMonth data property
+        selectedYear: "", // Add selectedYear data property
+        months: [
+          "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+          "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ], // Add months array
+        years: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
       };
     },
     methods: {
@@ -101,7 +128,9 @@
               ...this.SuratKeluar,
               tanggalSurat: this.formatDate(this.SuratKeluar.tanggalSurat),
               diterimaTanggal: this.formatDate(this.SuratKeluar.diterimaTanggal),
-              tanggalDisposisi: this.formatDate(this.SuratKeluar.tanggalDisposisi)
+              tanggalDisposisi: this.formatDate(this.SuratKeluar.tanggalDisposisi),
+              bulan: this.selectedMonth, // Include selected month
+              tahun: this.selectedYear // Include selected year
             };
   
             if (this.pdfFile) {
@@ -127,7 +156,9 @@
         }
       },
       validateForm() {
-        return Object.values(this.SuratKeluar).every(value => value !== "");
+        return Object.values(this.SuratKeluar).every(value => value !== "") &&
+               this.selectedMonth !== "" &&
+               this.selectedYear !== "";
       },
       formatDate(dateString) {
         if (!dateString) return "";
@@ -153,6 +184,7 @@
       }
     }
   };
+  
   </script>
   
   <style scoped>

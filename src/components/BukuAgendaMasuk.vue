@@ -415,9 +415,7 @@ export default {
     editItem(id) {
       this.$router.push({ name: "EditSuratMasuk", params: { id: id } });
     },
-    deleteItem(id) {
-      this.$router.push({ name: "DeleteSuratMasuk", params: { id: id } });
-    },
+    
   },
   mounted() {
     this.loadData();

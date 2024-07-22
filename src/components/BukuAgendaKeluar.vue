@@ -413,11 +413,9 @@ export default {
       SheetJSStyle.writeFile(workbook, "BukuAgendaKeluar.xlsx");
     },
     editItem(id) {
-      this.$router.push({ name: "EditSuratMasuk", params: { id: id } });
+      this.$router.push({ name: "EditSuratKeluar", params: { id: id } });
     },
-    deleteItem(id) {
-      this.$router.push({ name: "DeleteSuratMasuk", params: { id: id } });
-    },
+    
   },
   mounted() {
     this.loadData();
