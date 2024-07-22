@@ -38,7 +38,9 @@
       "disposisiSekretaris": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
       "disposisiKasumpeg": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
       "tanggalDisposisi": "17/07/2024",
-      "pdfUrl": "http://localhost:3001/uploads/1721357446791-3. Universitas Pembangunan Nasional Fakultas Teknik (Permohonan Magang MBKM An. Nadhim Ihsananda Prodi Teknik Industri).pdf"
+      "pdfUrl": "http://localhost:3001/uploads/1721357446791-3. Universitas Pembangunan Nasional Fakultas Teknik (Permohonan Magang MBKM An. Nadhim Ihsananda Prodi Teknik Industri).pdf",
+      "bulan": "Juli",
+      "tahun": 2024
     },
     {
       "id": "9d1b",
@@ -52,7 +54,9 @@
       "disposisiSekretaris": "Test2",
       "disposisiKasumpeg": "Test2",
       "tanggalDisposisi": "17/07/2024",
-      "pdfUrl": "http://localhost:3001/uploads/1721179827125-2. Diskominfo Prov. Jatim (Rapat Koordinasi Pemanfaatan PDNS).pdf"
+      "pdfUrl": "http://localhost:3001/uploads/1721179827125-2. Diskominfo Prov. Jatim (Rapat Koordinasi Pemanfaatan PDNS).pdf",
+      "bulan": "Juli",
+      "tahun": 2024
     },
     {
       "id": "51a6",
@@ -66,7 +70,9 @@
       "disposisiSekretaris": "Test3",
       "disposisiKasumpeg": "Test3",
       "tanggalDisposisi": "17/07/2024",
-      "pdfUrl": "http://localhost:3001/uploads/1721179865260-3. Universitas Pembangunan Nasional Fakultas Teknik (Permohonan Magang MBKM An. Nadhim Ihsananda Prodi Teknik Industri).pdf"
+      "pdfUrl": "http://localhost:3001/uploads/1721179865260-3. Universitas Pembangunan Nasional Fakultas Teknik (Permohonan Magang MBKM An. Nadhim Ihsananda Prodi Teknik Industri).pdf",
+      "bulan": "Juli",
+      "tahun": 2024
     },
     {
       "id": "1008",
@@ -80,7 +86,9 @@
       "disposisiSekretaris": "Test4",
       "disposisiKasumpeg": "Test4",
       "tanggalDisposisi": "17/07/2024",
-      "pdfUrl": "http://localhost:3001/uploads/1721179929837-4. Kompi Kavaleri 3, Tupai Setia Cakti (Permohonan Dukungan & Partisipasi dlm rangka Fun Bike TA 2024).pdf"
+      "pdfUrl": "http://localhost:3001/uploads/1721179929837-4. Kompi Kavaleri 3, Tupai Setia Cakti (Permohonan Dukungan & Partisipasi dlm rangka Fun Bike TA 2024).pdf",
+      "bulan": "Juli",
+      "tahun": 2024
     },
     {
       "id": "de60",
@@ -94,7 +102,9 @@
       "disposisiSekretaris": "Test5",
       "disposisiKasumpeg": "Test5",
       "tanggalDisposisi": "17/07/2024",
-      "pdfUrl": "http://localhost:3001/uploads/1721179965381-5. Sekda Prov. Jatim (Pelakasanaan Audit Kearsipan Internal).pdf"
+      "pdfUrl": "http://localhost:3001/uploads/1721179965381-5. Sekda Prov. Jatim (Pelakasanaan Audit Kearsipan Internal).pdf",
+      "bulan": "Juli",
+      "tahun": 2024
     },
     {
       "id": "811b",
@@ -108,7 +118,9 @@
       "disposisiSekretaris": "Test6",
       "disposisiKasumpeg": "Test6",
       "tanggalDisposisi": "17/07/2024",
-      "pdfUrl": "http://localhost:3001/uploads/1721180063246-6. BKD Prov. Jatim (Pengambilan Petikan, Piagam Satyalancana Karya Satya Periode November 2022).pdf"
+      "pdfUrl": "http://localhost:3001/uploads/1721180063246-6. BKD Prov. Jatim (Pengambilan Petikan, Piagam Satyalancana Karya Satya Periode November 2022).pdf",
+      "bulan": "Juli",
+      "tahun": 2024
     },
     {
       "id": "1146",
@@ -122,7 +134,9 @@
       "disposisiSekretaris": "Test7",
       "disposisiKasumpeg": "Test7",
       "tanggalDisposisi": "17/07/2024",
-      "pdfUrl": "http://localhost:3001/uploads/1721180117093-7. SMKN 1 DRIYOREJO GRESIK (PERMOHONAN PKL TH PEMBELAJARAN 2024,2025 an. FITRIA NOVITA SARI & SANI).pdf"
+      "pdfUrl": "http://localhost:3001/uploads/1721180117093-7. SMKN 1 DRIYOREJO GRESIK (PERMOHONAN PKL TH PEMBELAJARAN 2024,2025 an. FITRIA NOVITA SARI & SANI).pdf",
+      "bulan": "Juli",
+      "tahun": 2024
     },
     {
       "id": "9f11",
@@ -136,7 +150,9 @@
       "disposisiSekretaris": "Test8",
       "disposisiKasumpeg": "Test8",
       "tanggalDisposisi": "17/07/2024",
-      "pdfUrl": "http://localhost:3001/uploads/1721180163949-8. Keluarga Besar Putra Putri (KBPP) POLRI Resort Kt SBY (Prmohonan Bantuan Pasrtisipasi Keg Sosial).pdf"
+      "pdfUrl": "http://localhost:3001/uploads/1721180163949-8. Keluarga Besar Putra Putri (KBPP) POLRI Resort Kt SBY (Prmohonan Bantuan Pasrtisipasi Keg Sosial).pdf",
+      "bulan": "Juli",
+      "tahun": 2024
     },
     {
       "id": "9675",
@@ -150,7 +166,9 @@
       "disposisiSekretaris": "Test9",
       "disposisiKasumpeg": "Test9",
       "tanggalDisposisi": "17/07/2024",
-      "pdfUrl": "http://localhost:3001/uploads/1721180192271-9. Diskominfo Prov. Jatim (Pemberitahuan Akun Media Sosial Resmi Instansi Terverifikasi Meta Indonesia).pdf"
+      "pdfUrl": "http://localhost:3001/uploads/1721180192271-9. Diskominfo Prov. Jatim (Pemberitahuan Akun Media Sosial Resmi Instansi Terverifikasi Meta Indonesia).pdf",
+      "bulan": "Juli",
+      "tahun": 2024
     },
     {
       "id": "98ae",
@@ -164,7 +182,25 @@
       "disposisiSekretaris": "Test10",
       "disposisiKasumpeg": "Test10",
       "tanggalDisposisi": "17/07/2024",
-      "pdfUrl": "http://localhost:3001/uploads/1721180234877-10. Nota Dinas Kadis DLH Prov. Jatim (Rapat Persiapan Evaluasi Renja Tw II Th 2024 dan Evaluasi Internal SAKIP Th 2024.pdf"
+      "pdfUrl": "http://localhost:3001/uploads/1721180234877-10. Nota Dinas Kadis DLH Prov. Jatim (Rapat Persiapan Evaluasi Renja Tw II Th 2024 dan Evaluasi Internal SAKIP Th 2024.pdf",
+      "bulan": "Juli",
+      "tahun": 2024
+    },
+    {
+      "id": "bd92",
+      "suratDari": "Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11",
+      "tanggalSurat": "22/07/2024",
+      "noSurat": "Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11",
+      "perihal": "Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11",
+      "diterimaTanggal": "22/07/2024",
+      "noAgenda": "Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11",
+      "sifat": "Biasa",
+      "disposisiSekretaris": "Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11",
+      "disposisiKasumpeg": "Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11Test11",
+      "tanggalDisposisi": "22/07/2024",
+      "bulan": "Juli",
+      "tahun": 2024,
+      "pdfUrl": "http://localhost:3001/uploads/1721617174984-9. Diskominfo Prov. Jatim (Pemberitahuan Akun Media Sosial Resmi Instansi Terverifikasi Meta Indonesia).pdf"
     }
   ],
   "SuratKeluar": [

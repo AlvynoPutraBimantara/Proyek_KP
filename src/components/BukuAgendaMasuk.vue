@@ -2,9 +2,23 @@
   <div class="data-produk-container">
     <div class="header-container">
       <h1>BUKU AGENDA SURAT MASUK DI TATA USAHA</h1>
-      <button @click="exportToExcel" class="export-button">
-        Export ke Excel
-      </button>
+      <div class="dropdown-container">
+        <select v-model="selectedMonth" class="month-dropdown">
+          <option disabled value="">Pilih Bulan</option>
+          <option v-for="month in months" :key="month" :value="month">
+            {{ month }}
+          </option>
+        </select>
+        <select v-model="selectedYear" class="year-dropdown">
+          <option disabled value="">Pilih Tahun</option>
+          <option v-for="year in years" :key="year" :value="year">
+            {{ year }}
+          </option>
+        </select>
+        <button @click="exportToExcel" class="export-button">
+          Export ke Excel
+        </button>
+      </div>
     </div>
     <div class="main-container">
       <div v-if="selectedPdfUrl" class="pdf-viewer">
@@ -173,8 +187,7 @@
 </template>
 
 <script>
-import axios from "axios";
-//import * as XLSX from 'xlsx';
+ import axios from "axios";
 import * as SheetJSStyle from "sheetjs-style";
 
 export default {
@@ -186,6 +199,13 @@ export default {
       sortMenu: "",
       selectedPdfUrl: null,
       showPdfViewer: true,
+      selectedMonth: "", // Add selectedMonth data property
+      selectedYear: "",
+      months: [
+      "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
+        "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
+      ], // Add months array
+      years: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
     };
   },
   computed: {
@@ -232,7 +252,6 @@ export default {
     viewPdf(pdfUrl) {
       this.selectedPdfUrl = pdfUrl;
     },
-
     exportToExcel() {
       const data = this.sortedSuratMasuk.map((item, index) => ({
         "No.": index + 1,
@@ -251,8 +270,8 @@ export default {
       const worksheet = {};
 
       const headers = [
-        ["BUKU AGENDA SURAT MASUK DI TATA USAHA"],
-        ["BULAN "],
+        ["BUKU AGENDA SURAT KELUAR DI TATA USAHA"],
+        ["BULAN " + this.selectedMonth], // Insert selected month here
         [],
         [
           "NO.",
@@ -394,21 +413,18 @@ export default {
       SheetJSStyle.writeFile(workbook, "BukuAgendaMasuk.xlsx");
     },
     editItem(id) {
-      this.$router.push({ name: "EditSuratMasuk", params: { id } });
+      this.$router.push({ name: "EditSuratMasuk", params: { id: id } });
+    },
+    deleteItem(id) {
+      this.$router.push({ name: "DeleteSuratMasuk", params: { id: id } });
     },
   },
   mounted() {
     this.loadData();
   },
-  viewPdf(url) {
-    this.selectedPdfUrl = url;
-    this.showPdfViewer = true;
-  },
-  togglePdfViewer() {
-    this.showPdfViewer = !this.showPdfViewer;
-  },
 };
-</script>
+
+  </script>
 
 <style scoped>
 .data-produk-container {
@@ -555,4 +571,32 @@ button:hover {
     width: 100%;
   }
 }
+
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.month-dropdown {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.year-dropdown {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.export-button {
+  padding: 5px 10px;
+}
+
+.dropdown-container {
+  display: flex;
+  align-items: center;
+}
+
 </style>

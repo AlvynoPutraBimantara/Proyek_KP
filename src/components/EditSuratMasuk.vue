@@ -52,6 +52,24 @@
             <label for="tanggalDisposisi">Tanggal Disposisi</label>
             <input type="date" id="tanggalDisposisi" v-model="DataProduk.tanggalDisposisi" />
           </div>
+          <div class="form-group">
+            <label for="bulan">Bulan</label>
+            <select id="bulan" v-model="selectedMonth">
+              <option disabled value="">Pilih Bulan</option>
+              <option v-for="month in months" :key="month" :value="month">
+                {{ month }}
+              </option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="tahun">Tahun</label>
+            <select id="tahun" v-model="selectedYear">
+              <option disabled value="">Pilih Tahun</option>
+              <option v-for="year in years" :key="year" :value="year">
+                {{ year }}
+              </option>
+            </select>
+          </div>
           <button type="button" @click="triggerFileUpload">Import</button>
           <button type="submit">SIMPAN</button>
           <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
@@ -65,7 +83,7 @@
 import axios from "axios";
 
 export default {
-  name: "EditSuratMasuk",
+  name: "SuratMasuk",
   data() {
     return {
       DataProduk: {
@@ -81,7 +99,14 @@ export default {
         tanggalDisposisi: ""
       },
       pdfFile: null,
-      pdfUrl: null
+      pdfUrl: null,
+      selectedMonth: "", // Add selectedMonth data property
+      selectedYear: "", // Add selectedYear data property
+      months: [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      ], // Add months array
+      years: Array.from({ length: 20 }, (_, i) => 2024 + i) // Add years array dynamically
     };
   },
   async created() {
@@ -93,8 +118,10 @@ export default {
         ...data,
         tanggalSurat: this.formatDateToInput(data.tanggalSurat),
         diterimaTanggal: this.formatDateToInput(data.diterimaTanggal),
-        tanggalDisposisi: this.formatDateToInput(data.tanggalDisposisi)
+        tanggalDisposisi: this.formatDateToInput(data.tanggalDisposisi),
       };
+      this.selectedMonth = data.bulan; // Set selectedMonth based on fetched data
+      this.selectedYear = data.tahun; // Set selectedYear based on fetched data
       this.pdfUrl = data.pdfUrl;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -109,7 +136,9 @@ export default {
           ...this.DataProduk,
           tanggalSurat: this.formatDateToBackend(this.DataProduk.tanggalSurat),
           diterimaTanggal: this.formatDateToBackend(this.DataProduk.diterimaTanggal),
-          tanggalDisposisi: this.formatDateToBackend(this.DataProduk.tanggalDisposisi)
+          tanggalDisposisi: this.formatDateToBackend(this.DataProduk.tanggalDisposisi),
+          bulan: this.selectedMonth, // Include selected month in submission
+          tahun: this.selectedYear // Include selected year in submission
         };
 
         if (this.pdfFile) {
