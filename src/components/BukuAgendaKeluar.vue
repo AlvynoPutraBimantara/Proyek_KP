@@ -472,158 +472,118 @@
   
   
   <style scoped>
-
-.data-produk-container {
-  padding: 20px;
-}
-
-
-h1 {
-  margin-bottom: 20px;
-}
-
-.dropdown-container {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.month-dropdown,
-.year-dropdown {
-  padding: 5px;
-}
-
-.export-button {
-  padding: 5px 10px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.export-button:hover {
-  background-color: lightgreen;
-}
-
-.toggle-button {
-  margin-right: 1rem;
-  padding: 0.5rem 1rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.export-button {
-  padding: 0.5rem 1rem;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.export-button:hover {
-  background-color: lightgreen;
-}
-
-.main-container {
-  display: flex;
-}
-
-.table-container {
-  max-width: 100%;
-  overflow-x: auto;
-  margin: 20px;
-  padding: 10px;
-  background-color: #fff;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  width: 100%;
-}
-
-.table-container table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid #ddd;
-}
-
-.table-container th,
-.table-container td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: left;
-  padding: 8px;
-  position: relative;
-  word-wrap: break-word;
-  white-space: pre-wrap;
-  max-width: 10vw;
-}
-
-th {
-  background-color: #f4f4f4;
-}
-
-.sort-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background: white;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1;
-  list-style-type: none;
-  margin: 0;
-  padding: 5px;
-}
-
-.sort-menu ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.sort-menu li {
-  padding: 5px 10px;
-  cursor: pointer;
-  padding: 5px;
-}
-
-.sort-menu li:hover {
-  background: #f4f4f4;
-  background-color: #ddd;
-}
-
-button {
-  padding: 5px 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-.pdf-viewer {
-  width: 66%;
-  padding-right: 10px;
-
-  margin-bottom: 20px;
-}
-
-@media (max-width: 768px) {
-  .main-container {
-    flex-direction: column;
+  .data-produk-container {
+    padding: 20px;
   }
-
+  
+  h1 {
+    margin-bottom: 20px;
+  }
+  
+  .dropdown-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .month-dropdown,
+  .year-dropdown {
+    padding: 5px;
+  }
+  
+  .export-button {
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .export-button:hover {
+    background-color: lightgreen;
+  }
+  
+  .main-container {
+    display: flex;
+  }
+  
   .table-container {
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 20px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
     width: 100%;
   }
-}
-
-</style>
+  
+  .table-container table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+  }
+  
+  .table-container th,
+  .table-container td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    max-width: 10vw;
+  }
+  
+  th {
+    background-color: #f4f4f4;
+  }
+  
+  .sort-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1;
+    list-style-type: none;
+    margin: 0;
+    padding: 5px;
+  }
+  
+  .sort-menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sort-menu li {
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+  
+  .sort-menu li:hover {
+    background: #ddd;
+  }
+  
+  button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .pdf-viewer {
+    width: 66%;
+    padding-right: 10px;
+    margin-bottom: 20px;
+  }
+  </style>
+  
