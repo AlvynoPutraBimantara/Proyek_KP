@@ -233,21 +233,26 @@ export default {
     },
   },
   methods: {
-    
     loadData() {
-      const params = {};
-      if (this.selectedMonth) params.bulan = this.selectedMonth;
-      if (this.selectedYear) params.tahun = this.selectedYear;
+      if (this.selectedMonth && this.selectedYear) {
+        const params = {
+          bulan: this.selectedMonth,
+          tahun: this.selectedYear
+        };
 
-      axios.get("http://localhost:3000/SuratMasuk", { params })
-        .then(response => {
-          this.SuratMasuk = response.data;
-        })
-        .catch(error => {
-          console.error(error);
-        });
+        axios.get("http://localhost:3000/SuratMasuk", { params })
+          .then(response => {
+            this.SuratMasuk = response.data.filter(item => 
+              item.bulan === this.selectedMonth && item.tahun === this.selectedYear
+            );
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      } else {
+        this.SuratMasuk = [];
+      }
     },
-  
     exportToExcel() {
     const data = this.sortedSuratMasuk.map((item, index) => ({
       "No.": index + 1,
