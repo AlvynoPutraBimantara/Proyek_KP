@@ -22,6 +22,8 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir);
 }
 
+app.use('/uploads', express.static(uploadsDir));
+
 const getData = () => {
   if (!fs.existsSync(dbFilePath)) {
     const initialData = {
@@ -50,9 +52,8 @@ const storage = multer.diskStorage({
     cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
-const upload = multer({ storage });
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+const upload = multer({ storage });
 
 app.post("/uploads", upload.single("pdf"), (req, res) => {
   if (!req.file) {
@@ -141,6 +142,20 @@ app.post("/SuratKeluar", (req, res) => {
   res.status(201).json(newProduct);
 });
 
+app.put("/SuratKeluar/:id", (req, res) => {
+  const data = getData();
+  const productId = parseInt(req.params.id);
+  const updatedProduct = req.body;
+  const productIndex = data.SuratKeluar.findIndex((p) => p.id === productId);
+  if (productIndex !== -1) {
+    data.SuratKeluar[productIndex] = updatedProduct;
+    saveData(data);
+    res.status(200).json(updatedProduct);
+  } else {
+    res.status(404).send("Product not found");
+  }
+});
+
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });

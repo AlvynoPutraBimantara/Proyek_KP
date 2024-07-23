@@ -4,33 +4,37 @@
       Menu
     </button>
     <router-link
-      v-if="isAdmin"
+      v-if="isAdmin || isUser"
       to="/BukuAgendaMasuk"
       :class="{ active: isActive('/BukuAgendaMasuk') }"
     >
       BUKU AGENDA SURAT MASUK
     </router-link>
+    
     <router-link
-      v-if="isAdmin"
+      v-if="isAdmin || isUser"
       to="/BukuAgendaKeluar"
       :class="{ active: isActive('/BukuAgendaKeluar') }"
     >
       BUKU AGENDA SURAT KELUAR
     </router-link>
+    
     <router-link
-      v-if="isAdmin"
+      v-if="isAdmin || isUser"
       to="/SuratMasuk"
       :class="{ active: isActive('/SuratMasuk') }"
     >
       INPUT SURAT MASUK
     </router-link>
+   
     <router-link
-      v-if="isAdmin"
+      v-if="isAdmin || isUser"
       to="/SuratKeluar"
       :class="{ active: isActive('/SuratKeluar') }"
     >
       INPUT SURAT KELUAR
     </router-link>
+
     <a @click.prevent="logout" href="#">Logout</a>
   </nav>
 </template>
@@ -42,6 +46,10 @@ export default {
     isAdmin() {
       const user = JSON.parse(localStorage.getItem("user-info"));
       return user && user.role === "admin";
+    },
+    isUser() {
+      const user = JSON.parse(localStorage.getItem("user-info"));
+      return user && user.role !== "admin";
     },
   },
   methods: {
@@ -69,7 +77,6 @@ export default {
   padding: 0 20px;
   width: 100%;
   gap: 8px;
-
   box-sizing: border-box; /* Ensure padding doesn't affect the width */
 }
 

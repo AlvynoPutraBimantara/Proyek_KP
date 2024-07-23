@@ -2,6 +2,7 @@
   <div id="wrapper" class="d-flex">
     <!-- Sidebar -->
     <Sidebar v-if="isAdmin" @logout="logout" />
+    <UserSidebar v-if="isUser" @logout="logout" />
     <!-- /#sidebar-wrapper -->
 
     <!-- Page Content -->
@@ -24,12 +25,14 @@ import "jquery/dist/jquery.min.js";
 import "./App.css";
 import Sidebar from "./components/Sidebar.vue";
 import Header from "./components/Header.vue";
+import UserSidebar from "./components/UserSidebar.vue";
 
 export default {
   name: "App",
   components: {
     Sidebar,
     Header,
+    UserSidebar
   },
   computed: {
     isLoggedIn() {
@@ -43,12 +46,6 @@ export default {
       const user = JSON.parse(localStorage.getItem("user-info"));
       return user && user.role !== "admin";
     },
-    isGuest() {
-      return (
-        !localStorage.getItem("user-info") &&
-        localStorage.getItem("guest") === "true"
-      );
-    },
   },
   methods: {
     logout() {
@@ -59,7 +56,7 @@ export default {
     },
   },
   mounted() {
-    if (!this.isLoggedIn && !this.isGuest) {
+    if (!this.isLoggedIn) {
       this.$router.push({ name: "LandingPage" });
     }
   },
