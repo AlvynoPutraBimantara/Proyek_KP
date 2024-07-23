@@ -201,6 +201,22 @@
       "bulan": "JULI",
       "tahun": 2024,
       "pdfUrl": "http://localhost:3001/uploads/1721617174984-9. Diskominfo Prov. Jatim (Pemberitahuan Akun Media Sosial Resmi Instansi Terverifikasi Meta Indonesia).pdf"
+    },
+    {
+      "id": "0956",
+      "suratDari": "test12",
+      "tanggalSurat": "23/07/2024",
+      "noSurat": "test12",
+      "perihal": "test12",
+      "diterimaTanggal": "23/07/2024",
+      "noAgenda": "test12",
+      "sifat": "Penting",
+      "disposisiSekretaris": "test12",
+      "disposisiKasumpeg": "test12",
+      "tanggalDisposisi": "23/07/2024",
+      "bulan": "JANUARI",
+      "tahun": 2025,
+      "pdfUrl": "http://localhost:3001/uploads/1721720527106-5. Sekda Prov. Jatim (Pelakasanaan Audit Kearsipan Internal).pdf"
     }
   ],
   "SuratKeluar": [
@@ -267,6 +283,22 @@
       "bulan": "JULI",
       "tahun": 2024,
       "pdfUrl": "http://localhost:3001/uploads/1721628685753-16. CV. BAROKAH PAMEKASAN (Sosialiasi dan Penawaran Seragam Dinas ASN).pdf"
+    },
+    {
+      "id": "def6",
+      "suratDari": "Test13",
+      "tanggalSurat": "23/07/2024",
+      "noSurat": "Test13",
+      "perihal": "Test13",
+      "diterimaTanggal": "23/07/2024",
+      "noAgenda": "Test13",
+      "sifat": "Biasa",
+      "disposisiSekretaris": "Test13",
+      "disposisiKasumpeg": "Test13",
+      "tanggalDisposisi": "23/07/2024",
+      "bulan": "JULI",
+      "tahun": 2025,
+      "pdfUrl": "http://localhost:3001/uploads/1721723675667-14. PJ Gubernur Jatim (Undangan Rangkaian Peringatan 1 Muharram Tahun 1446 H 2024 H dan Jalan Sehat.pdf"
     }
   ]
 }

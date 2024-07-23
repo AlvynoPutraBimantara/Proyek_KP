@@ -4,17 +4,17 @@
       <h1>BUKU AGENDA SURAT MASUK DI TATA USAHA</h1>
       <div class="dropdown-container">
         <select v-model="selectedMonth" class="month-dropdown" @change="loadData">
-          <option disabled value="">Pilih Bulan</option>
-          <option v-for="month in months" :key="month" :value="month">
-            {{ month }}
-          </option>
-        </select>
-        <select v-model="selectedYear" class="year-dropdown" @change="loadData">
-          <option disabled value="">Pilih Tahun</option>
-          <option v-for="year in years" :key="year" :value="year">
-            {{ year }}
-          </option>
-        </select>
+      <option disabled value="">Pilih Bulan</option>
+      <option v-for="month in months" :key="month" :value="month">
+        {{ month }}
+      </option>
+    </select>
+    <select v-model="selectedYear" class="year-dropdown" @change="loadData">
+      <option disabled value="">Pilih Tahun</option>
+      <option v-for="year in years" :key="year" :value="year">
+        {{ year }}
+      </option>
+    </select>
         <button @click="exportToExcel" class="export-button">
           Export ke Excel
         </button>
@@ -119,7 +119,10 @@
                 <span @click="toggleSortMenu('disposisiSekretaris')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
                 </span>
-                <div v-if="sortMenu === 'disposisiSekretaris'" class="sort-menu">
+                <div
+                  v-if="sortMenu === 'disposisiSekretaris'"
+                  class="sort-menu"
+                >
                   <ul>
                     <li @click="sortTable('disposisiSekretaris_asc')">A-Z</li>
                     <li @click="sortTable('disposisiSekretaris_desc')">Z-A</li>
@@ -157,7 +160,10 @@
             <tr v-for="(item, index) in sortedSuratMasuk" :key="item.id">
               <td>{{ index + 1 }}</td>
               <td>
-                <font-awesome-icon :icon="['fas', 'file-pdf']" @click="viewPdf(item.pdfUrl)" />
+                <font-awesome-icon
+                  :icon="['fas', 'file-pdf']"
+                  @click="viewPdf(item.pdfUrl)"
+                />
               </td>
               <td>{{ item.suratDari }}</td>
               <td>{{ item.tanggalSurat }}</td>
@@ -177,6 +183,8 @@
         </table>
       </div>
     </div>
+
+    
   </div>
 </template>
 
@@ -205,71 +213,24 @@ export default {
   },
   computed: {
     sortedSuratMasuk() {
-      let sorted = [...this.SuratMasuk];
-      switch (this.sortKey) {
-        case "suratDari_asc":
-          sorted.sort((a, b) => a.suratDari.localeCompare(b.suratDari));
-          break;
-        case "suratDari_desc":
-          sorted.sort((a, b) => b.suratDari.localeCompare(a.suratDari));
-          break;
-        case "tanggalSurat_asc":
-          sorted.sort((a, b) => new Date(a.tanggalSurat) - new Date(b.tanggalSurat));
-          break;
-        case "tanggalSurat_desc":
-          sorted.sort((a, b) => new Date(b.tanggalSurat) - new Date(a.tanggalSurat));
-          break;
-        case "noSurat_asc":
-          sorted.sort((a, b) => a.noSurat.localeCompare(b.noSurat));
-          break;
-        case "noSurat_desc":
-          sorted.sort((a, b) => b.noSurat.localeCompare(a.noSurat));
-          break;
-        case "perihal_asc":
-          sorted.sort((a, b) => a.perihal.localeCompare(b.perihal));
-          break;
-        case "perihal_desc":
-          sorted.sort((a, b) => b.perihal.localeCompare(a.perihal));
-          break;
-        case "diterimaTanggal_asc":
-          sorted.sort((a, b) => new Date(a.diterimaTanggal) - new Date(b.diterimaTanggal));
-          break;
-        case "diterimaTanggal_desc":
-          sorted.sort((a, b) => new Date(b.diterimaTanggal) - new Date(a.diterimaTanggal));
-          break;
-        case "noAgenda_asc":
-          sorted.sort((a, b) => a.noAgenda.localeCompare(b.noAgenda));
-          break;
-        case "noAgenda_desc":
-          sorted.sort((a, b) => b.noAgenda.localeCompare(a.noAgenda));
-          break;
-        case "sifat_biasa":
-          sorted = sorted.filter((item) => item.sifat === "Biasa");
-          break;
-        case "sifat_penting":
-          sorted = sorted.filter((item) => item.sifat === "Penting");
-          break;
-        case "disposisiSekretaris_asc":
-          sorted.sort((a, b) => a.disposisiSekretaris.localeCompare(b.disposisiSekretaris));
-          break;
-        case "disposisiSekretaris_desc":
-          sorted.sort((a, b) => b.disposisiSekretaris.localeCompare(a.disposisiSekretaris));
-          break;
-        case "disposisiKasumpeg_asc":
-          sorted.sort((a, b) => a.disposisiKasumpeg.localeCompare(b.disposisiKasumpeg));
-          break;
-        case "disposisiKasumpeg_desc":
-          sorted.sort((a, b) => b.disposisiKasumpeg.localeCompare(a.disposisiKasumpeg));
-          break;
-        case "tanggalDisposisi_asc":
-          sorted.sort((a, b) => new Date(a.tanggalDisposisi) - new Date(b.tanggalDisposisi));
-          break;
-        case "tanggalDisposisi_desc":
-          sorted.sort((a, b) => new Date(b.tanggalDisposisi) - new Date(a.tanggalDisposisi));
-          break;
-      }
-      return sorted;
-    }
+      return [...this.SuratMasuk].sort((a, b) => {
+        let [key, order] = this.sortKey.split("_");
+        if (
+          key === "tanggalSurat" ||
+          key === "diterimaTanggal" ||
+          key === "tanggalDisposisi"
+        ) {
+          return order === "asc"
+            ? new Date(a[key]) - new Date(b[key])
+            : new Date(b[key]) - new Date(a[key]);
+        }
+        if (order === "asc") {
+          return a[key] > b[key] ? 1 : -1;
+        } else {
+          return a[key] < b[key] ? -1 : 1;
+        }
+      });
+    },
   },
   methods: {
     
@@ -286,6 +247,7 @@ export default {
           console.error(error);
         });
     },
+  
     exportToExcel() {
     const data = this.sortedSuratMasuk.map((item, index) => ({
       "No.": index + 1,

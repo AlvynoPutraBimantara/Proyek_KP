@@ -7,7 +7,6 @@
       </div>
       <div class="update-container">
         <form class="update" @submit.prevent="submitProduct">
-          <!-- Form fields -->
           <div class="form-group">
             <label for="suratDari">Surat Dari</label>
             <input type="text" id="suratDari" v-model="DataProduk.suratDari" autocomplete="off" />
@@ -100,13 +99,13 @@ export default {
       },
       pdfFile: null,
       pdfUrl: null,
-      selectedMonth: "", // Add selectedMonth data property
-      selectedYear: "", // Add selectedYear data property
+      selectedMonth: "", 
+      selectedYear: "", 
       months: [
        "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
         "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
-      ], // Add months array
-      years: Array.from({ length: 20 }, (_, i) => 2024 + i) // Add years array dynamically
+      ], 
+      years: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
     };
   },
   async created() {
@@ -120,8 +119,8 @@ export default {
         diterimaTanggal: this.formatDateToInput(data.diterimaTanggal),
         tanggalDisposisi: this.formatDateToInput(data.tanggalDisposisi),
       };
-      this.selectedMonth = data.bulan; // Set selectedMonth based on fetched data
-      this.selectedYear = data.tahun; // Set selectedYear based on fetched data
+      this.selectedMonth = data.bulan; 
+      this.selectedYear = data.tahun; 
       this.pdfUrl = data.pdfUrl;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -137,8 +136,8 @@ export default {
           tanggalSurat: this.formatDateToBackend(this.DataProduk.tanggalSurat),
           diterimaTanggal: this.formatDateToBackend(this.DataProduk.diterimaTanggal),
           tanggalDisposisi: this.formatDateToBackend(this.DataProduk.tanggalDisposisi),
-          bulan: this.selectedMonth, // Include selected month in submission
-          tahun: this.selectedYear // Include selected year in submission
+          bulan: this.selectedMonth, 
+          tahun: this.selectedYear 
         };
 
         if (this.pdfFile) {
@@ -231,10 +230,9 @@ export default {
   border: none;
   cursor: pointer;
   margin-top: 20px;
-  align-items: center;
-  border-radius: 4px;
   width: 200px;
   padding: 10px;
+  border-radius: 4px;
 }
 
 .update button:hover {

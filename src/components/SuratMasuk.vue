@@ -60,7 +60,6 @@
             <label for="tanggalDisposisi">Tanggal Disposisi</label>
             <input type="date" id="tanggalDisposisi" v-model="SuratMasuk.tanggalDisposisi" />
           </div>
-
           <div class="form-group">
             <label for="bulan">Bulan</label>
             <select id="bulan" v-model="selectedMonth">
@@ -115,8 +114,8 @@ export default {
       selectedMonth: "", // Add selectedMonth data property
       selectedYear: "", // Add selectedYear data property
       months: [
-        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
+        "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
       ], // Add months array
       years: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
     };
