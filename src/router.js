@@ -11,7 +11,6 @@ import SuratKeluar from "./components/SuratKeluar.vue";
 import BukuAgendaKeluar from "./components/BukuAgendaKeluar.vue";
 import EditSuratKeluar from "./components/EditSuratKeluar.vue";
 
-
 const routes = [
   {
     path: "/",

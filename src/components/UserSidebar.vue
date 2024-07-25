@@ -22,12 +22,7 @@
           class="list-group-item list-group-item-action bg-light"
           >INPUT SURAT KELUAR</router-link
         >
-        <a
-          v-on:click="logout"
-          href="#"
-          class="list-group-item list-group-item-action bg-light"
-          >LOGOUT</a
-        >
+        
       </div>
     </div>
   </template>

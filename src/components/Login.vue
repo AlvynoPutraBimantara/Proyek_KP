@@ -4,13 +4,8 @@
     <div class="login-box">
       <div class="login">
         <input type="text" v-model="Nama" placeholder="Masukan nama" />
-        <input
-          type="password"
-          v-model="Password"
-          placeholder="Masukan Password"
-        />
-        <button v-on:click="login">Login</button>
-       
+        <input type="password" v-model="Password" placeholder="Masukan Password" />
+        <button @click="login">Login</button>
       </div>
     </div>
   </div>

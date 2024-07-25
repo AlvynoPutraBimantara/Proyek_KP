@@ -20,7 +20,7 @@ const getData = () => {
   return JSON.parse(fs.readFileSync(dbFilePath, "utf-8"));
 };
 
-const saveData = (data) => 
+const saveData = (data) =>
   fs.writeFileSync(dbFilePath, JSON.stringify(data, null, 2));
 
 app.get("/User", (req, res) => {
@@ -30,7 +30,7 @@ app.get("/User", (req, res) => {
 
 app.get("/User/:id", (req, res) => {
   const data = getData();
-  const userId = parseInt(req.params.id);
+  const userId = parseInt(req.params.id, 10);
   const user = data.User.find((u) => u.id === userId);
   if (user) {
     res.json(user);
@@ -50,7 +50,7 @@ app.post("/User", (req, res) => {
 
 app.put("/User/:id", (req, res) => {
   const data = getData();
-  const userId = parseInt(req.params.id);
+  const userId = parseInt(req.params.id, 10);
   const userIndex = data.User.findIndex((u) => u.id === userId);
   if (userIndex !== -1) {
     data.User[userIndex] = req.body;
