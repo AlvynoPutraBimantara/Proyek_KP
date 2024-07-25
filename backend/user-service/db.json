@@ -1,0 +1,24 @@
+{
+  "User": [
+    {
+      "Nama": "asd",
+      "Password": "asd",
+      "id": "4e50",
+      "role": "admin"
+    },
+    {
+      "id": "3b12",
+      "Nama": "Test1",
+      "Password": "asd"
+    },
+    {
+      "id": "8da2",
+      "Nama": "Test2",
+      "Password": "asd"
+    },
+    {
+      "id": "4a3f",
+      "Nama": "Test3",
+      "Password": "asd"
+    }
+  ]}

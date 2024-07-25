@@ -111,7 +111,7 @@
     async created() {
       const id = this.$route.params.id;
       try {
-        const result = await axios.get(`http://localhost:3000/SuratKeluar/${id}`);
+        const result = await axios.get(`http://localhost:3004/SuratKeluar/${id}`);
         const data = result.data;
         this.DataProduk = {
           ...data,
@@ -143,11 +143,11 @@
           if (this.pdfFile) {
             const formData = new FormData();
             formData.append("pdf", this.pdfFile);
-            const response = await axios.post("http://localhost:3001/uploads", formData);
-            formattedData.pdfUrl = `http://localhost:3001${response.data.pdfUrl}`;
+            const response = await axios.post("http://localhost:3005/uploads", formData);
+            formattedData.pdfUrl = `http://localhost:3005${response.data.pdfUrl}`;
           }
   
-          const result = await axios.put(`http://localhost:3000/SuratKeluar/${id}`, formattedData);
+          const result = await axios.put(`http://localhost:3004/SuratKeluar/${id}`, formattedData);
           if (result.status === 200) {
             this.$router.push({ name: "BukuAgendaKeluar" });
           }

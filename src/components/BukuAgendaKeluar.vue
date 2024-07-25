@@ -240,7 +240,7 @@ export default {
           tahun: this.selectedYear
         };
 
-        axios.get("http://localhost:3000/SuratKeluar", { params })
+        axios.get("http://localhost:3004/SuratKeluar/", { params })
           .then(response => {
             this.SuratKeluar = response.data.filter(item => 
               item.bulan === this.selectedMonth && item.tahun === this.selectedYear

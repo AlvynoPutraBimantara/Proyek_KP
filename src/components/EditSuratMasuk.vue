@@ -82,7 +82,7 @@
 import axios from "axios";
 
 export default {
-  name: "SuratMasuk",
+  name: "EditSuratMasuk",
   data() {
     return {
       DataProduk: {
@@ -99,19 +99,19 @@ export default {
       },
       pdfFile: null,
       pdfUrl: null,
-      selectedMonth: "", 
-      selectedYear: "", 
+      selectedMonth: "",
+      selectedYear: "",
       months: [
        "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
         "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
-      ], 
+      ],
       years: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
     };
   },
   async created() {
     const id = this.$route.params.id;
     try {
-      const result = await axios.get(`http://localhost:3000/SuratMasuk/${id}`);
+      const result = await axios.get(`http://localhost:3003/SuratMasuk/${id}`);
       const data = result.data;
       this.DataProduk = {
         ...data,
@@ -119,8 +119,8 @@ export default {
         diterimaTanggal: this.formatDateToInput(data.diterimaTanggal),
         tanggalDisposisi: this.formatDateToInput(data.tanggalDisposisi),
       };
-      this.selectedMonth = data.bulan; 
-      this.selectedYear = data.tahun; 
+      this.selectedMonth = data.bulan;
+      this.selectedYear = data.tahun;
       this.pdfUrl = data.pdfUrl;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -136,18 +136,18 @@ export default {
           tanggalSurat: this.formatDateToBackend(this.DataProduk.tanggalSurat),
           diterimaTanggal: this.formatDateToBackend(this.DataProduk.diterimaTanggal),
           tanggalDisposisi: this.formatDateToBackend(this.DataProduk.tanggalDisposisi),
-          bulan: this.selectedMonth, 
-          tahun: this.selectedYear 
+          bulan: this.selectedMonth,
+          tahun: this.selectedYear
         };
 
         if (this.pdfFile) {
           const formData = new FormData();
           formData.append("pdf", this.pdfFile);
-          const response = await axios.post("http://localhost:3001/uploads", formData);
-          formattedData.pdfUrl = `http://localhost:3001${response.data.pdfUrl}`;
+          const response = await axios.post("http://localhost:3005/uploads", formData);
+          formattedData.pdfUrl = `http://localhost:3005${response.data.pdfUrl}`;
         }
 
-        const result = await axios.put(`http://localhost:3000/SuratMasuk/${id}`, formattedData);
+        const result = await axios.put(`http://localhost:3003/SuratMasuk/${id}`, formattedData);
         if (result.status === 200) {
           this.$router.push({ name: "BukuAgendaMasuk" });
         }
@@ -185,7 +185,9 @@ export default {
     }
   }
 };
+
 </script>
+
 
 <style scoped>
 .update-container {

@@ -40,7 +40,7 @@ export default {
   methods: {
     async TambahWarung() {
       try {
-        const result = await axios.post("http://localhost:3000/User", {
+        const result = await axios.post("http://localhost:3002/User", {
           Nama: this.DataUser.Nama,
           Password: this.DataUser.Password,
         });

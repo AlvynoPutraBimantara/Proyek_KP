@@ -41,7 +41,7 @@ export default {
   components: {},
   methods: {
     async HapusUser(id) {
-      let result = await axios.delete(`http://localhost:3000/User/${id}`);
+      let result = await axios.delete(`http://localhost:3002/User/${id}`);
       if (result.status === 200) {
         this.loadData();
       }
@@ -56,7 +56,7 @@ export default {
       if (!user) {
         this.$router.push({ name: "SignUp" });
       } else {
-        let result = await axios.get("http://localhost:3000/User");
+        let result = await axios.get("http://localhost:3002/User");
         this.User = result.data.filter((user) => user.role !== "admin");
       }
     },

@@ -13,7 +13,7 @@
         >INPUT SURAT MASUK</router-link
       >
       <router-link
-        to="/BukuAgendaMasuk"
+        to="/BukuAgendaKeluar"
         class="list-group-item list-group-item-action bg-light"
         >BUKU AGENDA SURAT KELUAR</router-link
       >

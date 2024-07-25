@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "node server.js"
+    "start": "concurrently \"cd user-service && node server.js\" \"cd surat-masuk-service && node server.js\" \"cd surat-keluar-service && node server.js\" \"cd file-upload-service && node server.js\" \"cd api-gateway && node server.js\""
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
@@ -34,6 +34,7 @@
     "jquery": "^3.7.1",
     "moment": "^2.30.1",
     "multer": "1.4.5-lts.1",
+    "node-http-proxy": "^0.2.4",
     "pdfjs-dist": "^4.4.168",
     "pnpm": "^9.5.0",
     "popper.js": "^1.16.1",

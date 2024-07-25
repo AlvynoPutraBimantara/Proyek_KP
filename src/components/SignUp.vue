@@ -4,11 +4,6 @@
     <div class="signup-box">
       <div class="register">
         <input type="text" v-model="Nama" placeholder="Masukan nama" />
-        <input
-          type="text"
-          v-model="Telp"
-          placeholder="Masukan No.telp (+62-812345678910)"
-        />
         <input type="text" v-model="Alamat" placeholder="Masukan Alamat" />
         <input
           type="password"
@@ -54,7 +49,7 @@ export default {
       }
 
       try {
-        let result = await axios.post("http://localhost:3000/User", {
+        let result = await axios.post("http://localhost:3002/User", {
           Nama: this.Nama,
           Telp: this.Telp,
           Alamat: this.Alamat, // Include Alamat

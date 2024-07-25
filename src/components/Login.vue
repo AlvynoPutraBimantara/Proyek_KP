@@ -36,7 +36,7 @@ export default {
 
       try {
         let result = await axios.get(
-          `http://localhost:3000/User?Nama=${this.Nama}&Password=${this.Password}`
+          `http://localhost:3002/User?Nama=${this.Nama}&Password=${this.Password}`
         );
         if (result.status === 200 && result.data.length > 0) {
           const user = result.data[0];

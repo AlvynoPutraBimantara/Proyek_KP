@@ -137,13 +137,13 @@ export default {
             const formData = new FormData();
             formData.append("pdf", this.pdfFile);
             const response = await axios.post(
-              "http://localhost:3001/uploads",
+              "http://localhost:3005/uploads",
               formData
             );
-            formattedData.pdfUrl = `http://localhost:3001${response.data.pdfUrl}`;
+            formattedData.pdfUrl = `http://localhost:3005${response.data.pdfUrl}`;
           }
 
-          const result = await axios.post("http://localhost:3000/SuratMasuk", formattedData);
+          const result = await axios.post("http://localhost:3003/SuratMasuk", formattedData);
           if (result.status === 201) {
             this.$router.push({ name: "BukuAgendaMasuk" });
           }
