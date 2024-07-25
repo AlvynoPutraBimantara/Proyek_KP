@@ -20,7 +20,7 @@ const getData = () => {
   return JSON.parse(fs.readFileSync(dbFilePath, "utf-8"));
 };
 
-const saveData = (data) =>
+const saveData = (data) => 
   fs.writeFileSync(dbFilePath, JSON.stringify(data, null, 2));
 
 app.get("/User", (req, res) => {
@@ -30,7 +30,8 @@ app.get("/User", (req, res) => {
 
 app.get("/User/:id", (req, res) => {
   const data = getData();
-  const user = data.User.find((u) => u.id === req.params.id);
+  const userId = parseInt(req.params.id);
+  const user = data.User.find((u) => u.id === userId);
   if (user) {
     res.json(user);
   } else {
@@ -38,9 +39,19 @@ app.get("/User/:id", (req, res) => {
   }
 });
 
+app.post("/User", (req, res) => {
+  const data = getData();
+  const newUser = req.body;
+  newUser.id = data.User.length ? data.User[data.User.length - 1].id + 1 : 1;
+  data.User.push(newUser);
+  saveData(data);
+  res.status(201).json(newUser);
+});
+
 app.put("/User/:id", (req, res) => {
   const data = getData();
-  const userIndex = data.User.findIndex((u) => u.id === req.params.id);
+  const userId = parseInt(req.params.id);
+  const userIndex = data.User.findIndex((u) => u.id === userId);
   if (userIndex !== -1) {
     data.User[userIndex] = req.body;
     saveData(data);
@@ -53,4 +64,3 @@ app.put("/User/:id", (req, res) => {
 app.listen(port, () => {
   console.log(`User service running on port ${port}`);
 });
-

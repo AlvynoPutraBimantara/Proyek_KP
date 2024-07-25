@@ -1,4 +1,5 @@
-{"SuratKeluar": [
+{
+  "SuratKeluar": [
     {
       "id": "f1d7",
       "suratDari": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
@@ -78,5 +79,22 @@
       "bulan": "JULI",
       "tahun": 2025,
       "pdfUrl": "http://localhost:3005/uploads/1721723675667-14. PJ Gubernur Jatim (Undangan Rangkaian Peringatan 1 Muharram Tahun 1446 H 2024 H dan Jalan Sehat.pdf"
+    },
+    {
+      "suratDari": "Test5",
+      "tanggalSurat": "25/07/2024",
+      "noSurat": "Test5",
+      "perihal": "Test5",
+      "diterimaTanggal": "25/07/2024",
+      "noAgenda": "Test5",
+      "sifat": "Biasa",
+      "disposisiSekretaris": "Test5",
+      "disposisiKasumpeg": "Test5",
+      "tanggalDisposisi": "25/07/2024",
+      "bulan": "JULI",
+      "tahun": 2024,
+      "pdfUrl": "http://localhost:3005/uploads/1721876640705-22. BPSDM Prov. Jatim (Penawaran Pelaksanaan Sertifikasi JF Arsipasris Tahun 2024).pdf",
+      "id": "def61"
     }
-  ]}
+  ]
+}

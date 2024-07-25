@@ -2,7 +2,7 @@
   <div>
     <h1>Tambah Pengguna</h1>
     <div class="update-container">
-      <form class="update" @submit.prevent="TambahWarung">
+      <form class="update" @submit.prevent="TambahPengguna">
         <input
           type="text"
           name="Nama"
@@ -28,7 +28,6 @@ import axios from "axios";
 
 export default {
   name: "TambahPengguna",
-  components: {},
   data() {
     return {
       DataUser: {
@@ -38,22 +37,23 @@ export default {
     };
   },
   methods: {
-    async TambahWarung() {
-      try {
-        const result = await axios.post("http://localhost:3002/User", {
-          Nama: this.DataUser.Nama,
-          Password: this.DataUser.Password,
-        });
-        if (result.status === 201) {
-          this.$router.push({ name: "DataPengguna" });
-        }
-      } catch (error) {
-        console.error("Error adding user:", error);
-        alert(
-          "An error occurred while adding the user. Please try again later."
-        );
-      }
-    },
+    async TambahPengguna() {
+  try {
+    const result = await axios.post("http://localhost:3002/User", {
+      Nama: this.DataUser.Nama,
+      Password: this.DataUser.Password,
+    });
+    if (result.status === 201) {
+      this.$router.push({ name: "DataPengguna" });
+    }
+  } catch (error) {
+    console.error("Error adding user:", error);
+    alert(
+      "An error occurred while adding the user. Please try again later."
+    );
+  }
+}
+
   },
   mounted() {
     let user = localStorage.getItem("user-info");

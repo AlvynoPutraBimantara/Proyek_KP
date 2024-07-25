@@ -20,12 +20,22 @@ const getData = () => {
   return JSON.parse(fs.readFileSync(dbFilePath, "utf-8"));
 };
 
-const saveData = (data) =>
-  fs.writeFileSync(dbFilePath, JSON.stringify(data, null, 2));
+const saveData = (data) => fs.writeFileSync(dbFilePath, JSON.stringify(data, null, 2));
 
 app.get("/SuratKeluar", (req, res) => {
   const data = getData();
   res.json(data.SuratKeluar);
+});
+
+app.get("/SuratKeluar/:id", (req, res) => {
+  const data = getData();
+  const productId = req.params.id; // Use string ID
+  const product = data.SuratKeluar.find((p) => p.id === productId);
+  if (product) {
+    res.json(product);
+  } else {
+    res.status(404).send("Product not found");
+  }
 });
 
 app.post("/SuratKeluar", (req, res) => {
@@ -39,7 +49,7 @@ app.post("/SuratKeluar", (req, res) => {
 
 app.put("/SuratKeluar/:id", (req, res) => {
   const data = getData();
-  const productId = parseInt(req.params.id);
+  const productId = req.params.id; // Use string ID
   const updatedProduct = req.body;
   const productIndex = data.SuratKeluar.findIndex((p) => p.id === productId);
   if (productIndex !== -1) {
@@ -47,7 +57,7 @@ app.put("/SuratKeluar/:id", (req, res) => {
     saveData(data);
     res.status(200).json(updatedProduct);
   } else {
-    res.status(404).send("Product not found");
+    res.status(404).send("Data not found");
   }
 });
 

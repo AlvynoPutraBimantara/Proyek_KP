@@ -223,6 +223,22 @@
       "tahun": 2025,
       "pdfUrl": "http://localhost:3005/uploads/1721805783011-32. BPKAD Prov. Jatim (Undangan Rekonsiliasi Laporan Barang Milik Daerah Th 2024 Periode TW II dg membawa dokumen laporan mutasi barang TW II).pdf",
       "id": "095611"
+    },
+    {
+      "suratDari": "Test13",
+      "tanggalSurat": "25/07/2024",
+      "noSurat": "Test13",
+      "perihal": "Test13",
+      "diterimaTanggal": "25/07/2024",
+      "noAgenda": "Test13",
+      "sifat": "Penting",
+      "disposisiSekretaris": "Test13",
+      "disposisiKasumpeg": "Test13",
+      "tanggalDisposisi": "25/07/2024",
+      "bulan": "JULI",
+      "tahun": 2024,
+      "pdfUrl": "http://localhost:3005/uploads/1721876364060-40. Sekretariat Daerah (Rapat Persipan Sosialisasi Pengadaan Barjas Pemerintah yg Berkelanjutan).pdf",
+      "id": "0956111"
     }
   ]
 }
