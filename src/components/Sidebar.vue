@@ -32,12 +32,6 @@
         class="list-group-item list-group-item-action bg-light"
         >DATA PENGGUNA</router-link
       >
-      <a
-        v-on:click="logout"
-        href="#"
-        class="list-group-item list-group-item-action bg-light"
-        >Logout</a
-      >
     </div>
   </div>
 </template>

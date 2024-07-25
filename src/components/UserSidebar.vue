@@ -26,7 +26,7 @@
           v-on:click="logout"
           href="#"
           class="list-group-item list-group-item-action bg-light"
-          >Logout</a
+          >LOGOUT</a
         >
       </div>
     </div>

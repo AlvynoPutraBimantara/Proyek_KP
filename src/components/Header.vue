@@ -1,7 +1,7 @@
 <template>
   <nav class="nav">
     <button class="btn btn-primary" @click="toggleMenu" id="menu-toggle">
-      Menu
+      <font-awesome-icon :icon="['fas', 'bars']" />
     </button>
     <router-link
       v-if="isAdmin || isUser"
@@ -35,7 +35,7 @@
       INPUT SURAT KELUAR
     </router-link>
 
-    <a @click.prevent="logout" href="#">Logout</a>
+    <a @click.prevent="logout" class="logout-btn" href="#">Logout</a>
   </nav>
 </template>
 
@@ -76,8 +76,8 @@ export default {
   align-items: left;
   padding: 0 20px;
   width: 100%;
-  gap: 8px;
-  box-sizing: border-box; /* Ensure padding doesn't affect the width */
+  gap: 10px;
+  box-sizing: border-box;
 }
 
 .nav a,
@@ -96,5 +96,22 @@ export default {
 .nav a.active {
   background: #ddd;
   color: #333;
+}
+
+.logout-btn {
+  background-color: red;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  font-size: 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-left: auto;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: darkred;
+  color: white;
 }
 </style>
