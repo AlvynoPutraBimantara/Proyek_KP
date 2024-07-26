@@ -31,7 +31,12 @@ export default {
 
       try {
         let result = await axios.get(
-          `http://localhost:3002/User?Nama=${this.Nama}&Password=${this.Password}`
+          `http://localhost:3002/User`, {
+            params: {
+              Nama: this.Nama,
+              Password: this.Password
+            }
+          }
         );
         if (result.status === 200 && result.data.length > 0) {
           const user = result.data[0];
@@ -39,15 +44,16 @@ export default {
           localStorage.removeItem("guest");
           if (user.role === "admin") {
             this.$router.push({ name: "BukuAgendaMasuk" });
-          } 
-          
+          } else {
+            this.$router.push({ name: "BukuAgendaMasuk" });
+          }
           window.location.reload();
         } else {
           alert("Invalid credentials");
         }
       } catch (error) {
         console.error("Error during login:", error);
-        alert("An error occurred. Please try again later.");
+        alert("Username atau Password salah");
       }
     },
   },

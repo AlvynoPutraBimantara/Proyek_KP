@@ -41,9 +41,14 @@ export default {
   components: {},
   methods: {
     async HapusUser(id) {
-      let result = await axios.delete(`http://localhost:3002/User/${id}`);
-      if (result.status === 200) {
-        this.loadData();
+      try {
+        let result = await axios.delete(`http://localhost:3002/User/${id}`);
+        if (result.status === 200) {
+          this.loadData();
+        }
+      } catch (error) {
+        console.error("Error deleting user:", error);
+        alert("Failed to delete user.");
       }
     },
     confirmDelete(id) {
@@ -52,12 +57,12 @@ export default {
       }
     },
     async loadData() {
-      let user = localStorage.getItem("user-info");
-      if (!user) {
-        this.$router.push({ name: "SignUp" });
-      } else {
+      try {
         let result = await axios.get("http://localhost:3002/User");
         this.User = result.data.filter((user) => user.role !== "admin");
+      } catch (error) {
+        console.error("Error loading data:", error);
+        alert("Failed to load user data.");
       }
     },
   },

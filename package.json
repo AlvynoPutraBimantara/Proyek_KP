@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "start": "concurrently \"cd user-service && node server.js\" \"cd surat-masuk-service && node server.js\" \"cd surat-keluar-service && node server.js\" \"cd file-upload-service && node server.js\" \"cd api-gateway && node server.js\""
+    "start": "export NODE_OPTIONS=--max_old_space_size=4096 && vue-cli-service serve"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
