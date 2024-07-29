@@ -3,25 +3,19 @@
     <div class="header-container">
       <h1>BUKU AGENDA SURAT MASUK DI TATA USAHA</h1>
       <div class="dropdown-container">
-        <select
-          v-model="selectedMonth"
-          class="month-dropdown"
-          @change="loadData"
-        >
+        <select v-model="selectedMonth" class="month-dropdown" @change="applyFilters">
           <option disabled value="">Pilih Bulan</option>
           <option v-for="month in months" :key="month" :value="month">
             {{ month }}
           </option>
         </select>
-        <select v-model="selectedYear" class="year-dropdown" @change="loadData">
+        <select v-model="selectedYear" class="year-dropdown" @change="applyFilters">
           <option disabled value="">Pilih Tahun</option>
           <option v-for="year in years" :key="year" :value="year">
             {{ year }}
           </option>
         </select>
-        <button @click="exportToExcel" class="export-button">
-          Export ke Excel
-        </button>
+        <button @click="exportToExcel" class="export-button">Export ke Excel</button>
       </div>
       <div class="search-container">
         <input type="text" v-model="searchQuery" placeholder="Cari Surat..." />
@@ -127,10 +121,7 @@
                 <span @click="toggleSortMenu('disposisiSekretaris')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
                 </span>
-                <div
-                  v-if="sortMenu === 'disposisiSekretaris'"
-                  class="sort-menu"
-                >
+                <div v-if="sortMenu === 'disposisiSekretaris'" class="sort-menu">
                   <ul>
                     <li @click="sortTable('disposisiSekretaris_asc')">A-Z</li>
                     <li @click="sortTable('disposisiSekretaris_desc')">Z-A</li>
@@ -165,14 +156,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in sortedSuratMasuk" :key="item.id">
+            <tr v-for="(item, index) in filteredSuratMasuk" :key="item.id">
               <td>{{ index + 1 }}</td>
               <td>{{ item.bulan +" "+ item.tahun }}</td>
               <td>
-                <font-awesome-icon
-                  :icon="['fas', 'file-pdf']"
-                  @click="viewPdf(item.pdfUrl)"
-                />
+                <font-awesome-icon :icon="['fas', 'file-pdf']" @click="viewPdf(item.pdfUrl)" />
               </td>
               <td>{{ item.suratDari }}</td>
               <td>{{ item.tanggalSurat }}</td>
@@ -194,6 +182,7 @@
     </div>
   </div>
 </template>
+
 
 
 <script>
@@ -238,9 +227,61 @@ export default {
       loadData.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     },
+    filteredSuratMasuk() {
+      let filtered = this.SuratMasuk;
 
+      // Filter by selected month and year
+      if (this.selectedMonth) {
+        filtered = filtered.filter((item) => item.bulan === this.selectedMonth);
+      }
+      if (this.selectedYear) {
+        filtered = filtered.filter((item) => item.tahun === this.selectedYear);
+      }
+
+      // Filter by search query
+      if (this.searchQuery) {
+        const searchQueryLower = this.searchQuery.toLowerCase();
+        filtered = filtered.filter(
+          (item) =>
+            item.suratDari.toLowerCase().includes(searchQueryLower) ||
+            item.tanggalSurat.toLowerCase().includes(searchQueryLower) ||
+            item.noSurat.toLowerCase().includes(searchQueryLower) ||
+            item.perihal.toLowerCase().includes(searchQueryLower) ||
+            item.diterimaTanggal.toLowerCase().includes(searchQueryLower) ||
+            item.noAgenda.toLowerCase().includes(searchQueryLower) ||
+            item.sifat.toLowerCase().includes(searchQueryLower) ||
+            item.disposisiSekretaris.toLowerCase().includes(searchQueryLower) ||
+            item.disposisiKasumpeg.toLowerCase().includes(searchQueryLower) ||
+            item.tanggalDisposisi.toLowerCase().includes(searchQueryLower)
+        );
+      }
+
+      // Sort filtered data
+      if (this.sortKey) {
+        filtered = filtered.slice().sort((a, b) => {
+          const keys = this.sortKey.split('_');
+          const key = keys[0];
+          const order = keys[1];
+          let modifier = 1;
+
+          if (order === "desc") {
+            modifier = -1;
+          }
+
+          if (a[key] < b[key]) {
+            return -1 * modifier;
+          }
+          if (a[key] > b[key]) {
+            return 1 * modifier;
+          }
+          return 0;
+        });
+      }
+
+      return filtered;
+    },
     sortedSuratMasuk() {
-      let sortedArray = this.SuratMasuk.slice();
+      let sortedArray = this.filteredSuratMasuk.slice();
       const sortFunction = (a, b, key) => {
         if (key.includes("asc")) {
           return a[key.split("_")[0]] > b[key.split("_")[0]] ? 1 : -1;
@@ -274,31 +315,17 @@ export default {
       return sortedArray;
     },
   },
-  methods: {
-   
-   
-    loadData() {
-      if (this.selectedMonth && this.selectedYear) {
-        const params = {
-          bulan: this.selectedMonth,
-          tahun: this.selectedYear,
-        };
 
-        axios
-          .get("http://localhost:3003/SuratMasuk", { params })
-          .then((response) => {
-            this.SuratMasuk = response.data.filter(
-              (item) =>
-                item.bulan === this.selectedMonth &&
-                item.tahun === this.selectedYear
-            );
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      } else {
-        this.SuratMasuk = [];
-      }
+  methods: {
+   loadData() {
+    axios
+        .get("http://localhost:3003/SuratMasuk")
+        .then((response) => {
+          this.SuratMasuk = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
     },
     exportToExcel() {
       const data = this.sortedSuratMasuk.map((item, index) => ({
@@ -463,7 +490,10 @@ export default {
         `Buku Agenda Surat Masuk ${this.selectedMonth} ${this.selectedYear}.xlsx`
       );
     },
-    
+    applyFilters() {
+      // This function will be triggered when the dropdowns change.
+      // The filtering logic is already handled in the computed property 'filteredSuratMasuk'.
+    },
     toggleSortMenu(column) {
       if (this.sortMenu === column) {
         this.sortMenu = "";
