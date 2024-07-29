@@ -79,8 +79,8 @@
               </option>
             </select>
           </div>
-          <button type="button" @click="triggerFileUpload">Import</button>
-          <button type="submit">Masukan</button>
+          <button type="button" @click="triggerFileUpload">LAMPIRAN</button>
+          <button type="submit">SIMPAN</button>
           <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
           
         </form>

@@ -23,6 +23,9 @@
           Export ke Excel
         </button>
       </div>
+      <div class="search-container">
+        <input type="text" v-model="searchQuery" placeholder="Cari Surat..." />
+      </div>
     </div>
     <div class="main-container">
       <div v-if="selectedPdfUrl" class="pdf-viewer">
@@ -33,6 +36,7 @@
           <thead>
             <tr>
               <th>No.</th>
+              <th>Untuk Buku Agenda</th>
               <th>Preview PDF</th>
               <th>
                 Surat Dari
@@ -47,17 +51,17 @@
                 </div>
               </th>
               <th>
-  Tgl. Surat
-  <span @click="toggleSortMenu('tanggalSurat')">
-    <font-awesome-icon :icon="['fas', 'sort']" />
-  </span>
-  <div v-if="sortMenu === 'tanggalSurat'" class="sort-menu">
-    <ul>
-      <li @click="sortTable('tanggalSurat_asc')">Terlama</li>
-      <li @click="sortTable('tanggalSurat_desc')">Terbaru</li>
-    </ul>
-  </div>
-</th>
+                Tgl. Surat
+                <span @click="toggleSortMenu('tanggalSurat')">
+                  <font-awesome-icon :icon="['fas', 'sort']" />
+                </span>
+                <div v-if="sortMenu === 'tanggalSurat'" class="sort-menu">
+                  <ul>
+                    <li @click="sortTable('tanggalSurat_desc')">Terlama</li>
+                    <li @click="sortTable('tanggalSurat_asc')">Terbaru</li>
+                  </ul>
+                </div>
+              </th>
               <th>
                 No. Surat
                 <span @click="toggleSortMenu('noSurat')">
@@ -83,17 +87,17 @@
                 </div>
               </th>
               <th>
-  Diterima Tgl.
-  <span @click="toggleSortMenu('diterimaTanggal')">
-    <font-awesome-icon :icon="['fas', 'sort']" />
-  </span>
-  <div v-if="sortMenu === 'diterimaTanggal'" class="sort-menu">
-    <ul>
-      <li @click="sortTable('diterimaTanggal_asc')">Terlama</li>
-      <li @click="sortTable('diterimaTanggal_desc')">Terbaru</li>
-    </ul>
-  </div>
-</th>
+                Diterima Tgl.
+                <span @click="toggleSortMenu('diterimaTanggal')">
+                  <font-awesome-icon :icon="['fas', 'sort']" />
+                </span>
+                <div v-if="sortMenu === 'diterimaTanggal'" class="sort-menu">
+                  <ul>
+                    <li @click="sortTable('diterimaTanggal_desc')">Terlama</li>
+                    <li @click="sortTable('diterimaTanggal_asc')">Terbaru</li>
+                  </ul>
+                </div>
+              </th>
               <th>
                 No. Agenda
                 <span @click="toggleSortMenu('noAgenda')">
@@ -146,23 +150,24 @@
                 </div>
               </th>
               <th>
-  Tgl Disposisi
-  <span @click="toggleSortMenu('tanggalDisposisi')">
-    <font-awesome-icon :icon="['fas', 'sort']" />
-  </span>
-  <div v-if="sortMenu === 'tanggalDisposisi'" class="sort-menu">
-    <ul>
-      <li @click="sortTable('tanggalDisposisi_asc')">Terlama</li>
-      <li @click="sortTable('tanggalDisposisi_desc')">Terbaru</li>
-    </ul>
-  </div>
-</th>
+                Tgl Disposisi
+                <span @click="toggleSortMenu('tanggalDisposisi')">
+                  <font-awesome-icon :icon="['fas', 'sort']" />
+                </span>
+                <div v-if="sortMenu === 'tanggalDisposisi'" class="sort-menu">
+                  <ul>
+                    <li @click="sortTable('tanggalDisposisi_desc')">Terlama</li>
+                    <li @click="sortTable('tanggalDisposisi_asc')">Terbaru</li>
+                  </ul>
+                </div>
+              </th>
               <th>Aksi</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(item, index) in sortedSuratMasuk" :key="item.id">
               <td>{{ index + 1 }}</td>
+              <td>{{ item.bulan +" "+ item.tahun }}</td>
               <td>
                 <font-awesome-icon
                   :icon="['fas', 'file-pdf']"
@@ -202,6 +207,7 @@ export default {
       SuratMasuk: [],
       sortKey: "",
       sortMenu: "",
+      searchQuery: "",
       selectedPdfUrl: null,
       showPdfViewer: true,
       selectedMonth: "",
@@ -227,26 +233,46 @@ export default {
     };
   },
   computed: {
-    sortedSuratMasuk() {
-      let sortedData = [...this.SuratMasuk];
-      const sortKey = this.sortKey;
+    searchSurat() {
+      return this.loadData.filter((loadData) =>
+      loadData.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    },
 
-      if (sortKey) {
-        const [key, order] = sortKey.split("_");
-        sortedData.sort((a, b) => {
-          if (key === "tanggalSurat" || key === "diterimaTanggal" || key === "tanggalDisposisi") {
-            return order === "asc" ? new Date(a[key]) - new Date(b[key]) : new Date(b[key]) - new Date(a[key]);
-          } else {
-            if (a[key] < b[key]) return order === "asc" ? -1 : 1;
-            if (a[key] > b[key]) return order === "asc" ? 1 : -1;
-            return 0;
+    sortedSuratMasuk() {
+      let sortedArray = this.SuratMasuk.slice();
+      const sortFunction = (a, b, key) => {
+        if (key.includes("asc")) {
+          return a[key.split("_")[0]] > b[key.split("_")[0]] ? 1 : -1;
+        }
+        return a[key.split("_")[0]] < b[key.split("_")[0]] ? 1 : -1;
+      };
+
+      if (this.sortKey) {
+        sortedArray.sort((a, b) => {
+          switch (this.sortKey) {
+            case "tanggalSurat_asc":
+            case "tanggalSurat_desc":
+            case "diterimaTanggal_asc":
+            case "diterimaTanggal_desc":
+            case "tanggalDisposisi_asc":
+            case "tanggalDisposisi_desc":
+              return sortFunction(new Date(a[this.sortKey.split("_")[0]]), new Date(b[this.sortKey.split("_")[0]]), this.sortKey);
+            case "sifat_biasa":
+            case "sifat_penting":
+              if (this.sortKey === "sifat_biasa") {
+                return a.sifat === "Biasa" ? -1 : 1;
+              } else {
+                return a.sifat === "Penting" ? -1 : 1;
+              }
+            default:
+              return sortFunction(a, b, this.sortKey);
           }
         });
       }
 
-      return sortedData;
+      return sortedArray;
     },
-  
   },
   methods: {
    
@@ -563,5 +589,19 @@ button:hover {
   width: 66%;
   padding-right: 10px;
   margin-bottom: 20px;
+}
+
+.search-container {
+  flex: 1;
+  text-align: left;
+}
+
+.search-container input {
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 </style>

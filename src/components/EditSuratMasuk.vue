@@ -69,7 +69,7 @@
               </option>
             </select>
           </div>
-          <button type="button" @click="triggerFileUpload">Import</button>
+          <button type="button" @click="triggerFileUpload">LAMPIRAN</button>
           <button type="submit">SIMPAN</button>
           <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
         </form>
@@ -187,20 +187,32 @@ export default {
 };
 
 </script>
-
-
 <style scoped>
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+}
+
 .update-container {
-  flex: 1;
+  max-width: 800px;
   padding: 20px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
 }
 
-.main-container {
+.update {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
 }
 
 .form-group {
@@ -216,10 +228,11 @@ export default {
 }
 
 .update input,
-.update select {
+.update select,
+.update button {
   display: block;
   padding: 10px;
-  width: 800px;
+  width: 400px;
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -232,9 +245,6 @@ export default {
   border: none;
   cursor: pointer;
   margin-top: 20px;
-  width: 200px;
-  padding: 10px;
-  border-radius: 4px;
 }
 
 .update button:hover {
@@ -242,18 +252,8 @@ export default {
 }
 
 .pdf-viewer {
-  flex: 1;
-  margin-right: 20px;
-}
-
-@media (max-width: 768px) {
-  .main-container {
-    flex-direction: column;
-  }
-
-  .pdf-viewer {
-    width: 100%;
-    margin-bottom: 20px;
-  }
+  flex: 0 1 50%;
+  max-width: 100%;
 }
 </style>
+
