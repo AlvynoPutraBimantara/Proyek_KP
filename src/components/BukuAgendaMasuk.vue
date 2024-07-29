@@ -47,17 +47,17 @@
                 </div>
               </th>
               <th>
-                Tgl. Surat
-                <span @click="toggleSortMenu('tanggalSurat')">
-                  <font-awesome-icon :icon="['fas', 'sort']" />
-                </span>
-                <div v-if="sortMenu === 'tanggalSurat'" class="sort-menu">
-                  <ul>
-                    <li @click="sortTable('tanggalSurat_asc')">Terlama</li>
-                    <li @click="sortTable('tanggalSurat_desc')">Terbaru</li>
-                  </ul>
-                </div>
-              </th>
+  Tgl. Surat
+  <span @click="toggleSortMenu('tanggalSurat')">
+    <font-awesome-icon :icon="['fas', 'sort']" />
+  </span>
+  <div v-if="sortMenu === 'tanggalSurat'" class="sort-menu">
+    <ul>
+      <li @click="sortTable('tanggalSurat_asc')">Terlama</li>
+      <li @click="sortTable('tanggalSurat_desc')">Terbaru</li>
+    </ul>
+  </div>
+</th>
               <th>
                 No. Surat
                 <span @click="toggleSortMenu('noSurat')">
@@ -83,17 +83,17 @@
                 </div>
               </th>
               <th>
-                Diterima Tgl.
-                <span @click="toggleSortMenu('diterimaTanggal')">
-                  <font-awesome-icon :icon="['fas', 'sort']" />
-                </span>
-                <div v-if="sortMenu === 'diterimaTanggal'" class="sort-menu">
-                  <ul>
-                    <li @click="sortTable('diterimaTanggal_asc')">Terlama</li>
-                    <li @click="sortTable('diterimaTanggal_desc')">Terbaru</li>
-                  </ul>
-                </div>
-              </th>
+  Diterima Tgl.
+  <span @click="toggleSortMenu('diterimaTanggal')">
+    <font-awesome-icon :icon="['fas', 'sort']" />
+  </span>
+  <div v-if="sortMenu === 'diterimaTanggal'" class="sort-menu">
+    <ul>
+      <li @click="sortTable('diterimaTanggal_asc')">Terlama</li>
+      <li @click="sortTable('diterimaTanggal_desc')">Terbaru</li>
+    </ul>
+  </div>
+</th>
               <th>
                 No. Agenda
                 <span @click="toggleSortMenu('noAgenda')">
@@ -146,17 +146,17 @@
                 </div>
               </th>
               <th>
-                Tgl Disposisi
-                <span @click="toggleSortMenu('tanggalDisposisi')">
-                  <font-awesome-icon :icon="['fas', 'sort']" />
-                </span>
-                <div v-if="sortMenu === 'tanggalDisposisi'" class="sort-menu">
-                  <ul>
-                    <li @click="sortTable('tanggalDisposisi_asc')">Terlama</li>
-                    <li @click="sortTable('tanggalDisposisi_desc')">Terbaru</li>
-                  </ul>
-                </div>
-              </th>
+  Tgl Disposisi
+  <span @click="toggleSortMenu('tanggalDisposisi')">
+    <font-awesome-icon :icon="['fas', 'sort']" />
+  </span>
+  <div v-if="sortMenu === 'tanggalDisposisi'" class="sort-menu">
+    <ul>
+      <li @click="sortTable('tanggalDisposisi_asc')">Terlama</li>
+      <li @click="sortTable('tanggalDisposisi_desc')">Terbaru</li>
+    </ul>
+  </div>
+</th>
               <th>Aksi</th>
             </tr>
           </thead>
@@ -189,6 +189,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import axios from "axios";
@@ -227,26 +228,29 @@ export default {
   },
   computed: {
     sortedSuratMasuk() {
-      return [...this.SuratMasuk].sort((a, b) => {
-        let [key, order] = this.sortKey.split("_");
-        if (
-          key === "tanggalSurat" ||
-          key === "diterimaTanggal" ||
-          key === "tanggalDisposisi"
-        ) {
-          return order === "asc"
-            ? new Date(a[key]) - new Date(b[key])
-            : new Date(b[key]) - new Date(a[key]);
-        }
-        if (order === "asc") {
-          return a[key] > b[key] ? 1 : -1;
-        } else {
-          return a[key] < b[key] ? -1 : 1;
-        }
-      });
+      let sortedData = [...this.SuratMasuk];
+      const sortKey = this.sortKey;
+
+      if (sortKey) {
+        const [key, order] = sortKey.split("_");
+        sortedData.sort((a, b) => {
+          if (key === "tanggalSurat" || key === "diterimaTanggal" || key === "tanggalDisposisi") {
+            return order === "asc" ? new Date(a[key]) - new Date(b[key]) : new Date(b[key]) - new Date(a[key]);
+          } else {
+            if (a[key] < b[key]) return order === "asc" ? -1 : 1;
+            if (a[key] > b[key]) return order === "asc" ? 1 : -1;
+            return 0;
+          }
+        });
+      }
+
+      return sortedData;
     },
+  
   },
   methods: {
+   
+   
     loadData() {
       if (this.selectedMonth && this.selectedYear) {
         const params = {
@@ -433,6 +437,7 @@ export default {
         `Buku Agenda Surat Masuk ${this.selectedMonth} ${this.selectedYear}.xlsx`
       );
     },
+    
     toggleSortMenu(column) {
       if (this.sortMenu === column) {
         this.sortMenu = "";
@@ -457,9 +462,6 @@ export default {
 };
 </script>
 <style scoped>
-.data-produk-container {
-  padding: 20px;
-}
 
 h1 {
   margin-bottom: 20px;
@@ -507,13 +509,13 @@ h1 {
 .table-container table {
   width: 100%;
   border-collapse: collapse;
-  border: 1px solid #ddd;
+  border: 1px solid black;
 }
 
 .table-container th,
 .table-container td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 4px;
   text-align: left;
   word-wrap: break-word;
   white-space: pre-wrap;
@@ -526,34 +528,26 @@ th {
 
 .sort-menu {
   position: absolute;
-  top: 100%;
-  left: 0;
   background: white;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1;
-  list-style-type: none;
-  margin: 0;
-  padding: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 }
-
 .sort-menu ul {
   list-style: none;
-  padding: 0;
   margin: 0;
+  padding: 0;
 }
-
-.sort-menu li {
-  padding: 5px 10px;
+.sort-menu ul li {
+  padding: 10px;
   cursor: pointer;
 }
-
-.sort-menu li:hover {
-  background: #ddd;
+.sort-menu ul li:hover {
+  background-color: #f2f2f2;
 }
 
 button {
-  padding: 5px 10px;
+  padding: 0.05vw 0.10vw;
   background-color: #007bff;
   color: white;
   border: none;

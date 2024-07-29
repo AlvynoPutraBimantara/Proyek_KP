@@ -74,17 +74,17 @@ export default {
   background-color: darkblue;
   display: flex;
   align-items: left;
-  padding: 0 20px;
+  padding: 1vh 10px;
   width: 100%;
-  gap: 10px;
+  gap: 1vh;
   box-sizing: border-box;
 }
 
 .nav a,
 .nav button {
   color: aliceblue;
-  padding: 20px;
-  padding-left: 20px;
+  padding: 10px;
+  padding-left: 10px;
   text-align: center;
   font-size: 15px;
   border-radius: 5px;
