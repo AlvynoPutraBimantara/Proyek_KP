@@ -30,7 +30,6 @@
           <thead>
             <tr>
               <th>No.</th>
-              <th>Untuk Buku Agenda</th>
               <th>Preview PDF</th>
               <th>
                 Surat Dari
@@ -51,8 +50,8 @@
                 </span>
                 <div v-if="sortMenu === 'tanggalSurat'" class="sort-menu">
                   <ul>
-                    <li @click="sortTable('tanggalSurat_desc')">Terlama</li>
-                    <li @click="sortTable('tanggalSurat_asc')">Terbaru</li>
+                    <li @click="sortTable('tanggalSurat_asc')">Terlama</li>
+                    <li @click="sortTable('tanggalSurat_desc')">Terbaru</li>
                   </ul>
                 </div>
               </th>
@@ -87,8 +86,8 @@
                 </span>
                 <div v-if="sortMenu === 'diterimaTanggal'" class="sort-menu">
                   <ul>
-                    <li @click="sortTable('diterimaTanggal_desc')">Terlama</li>
-                    <li @click="sortTable('diterimaTanggal_asc')">Terbaru</li>
+                    <li @click="sortTable('diterimaTanggal_asc')">Terlama</li>
+                    <li @click="sortTable('diterimaTanggal_desc')">Terbaru</li>
                   </ul>
                 </div>
               </th>
@@ -121,7 +120,10 @@
                 <span @click="toggleSortMenu('disposisiSekretaris')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
                 </span>
-                <div v-if="sortMenu === 'disposisiSekretaris'" class="sort-menu">
+                <div
+                  v-if="sortMenu === 'disposisiSekretaris'"
+                  class="sort-menu"
+                >
                   <ul>
                     <li @click="sortTable('disposisiSekretaris_asc')">A-Z</li>
                     <li @click="sortTable('disposisiSekretaris_desc')">Z-A</li>
@@ -147,8 +149,8 @@
                 </span>
                 <div v-if="sortMenu === 'tanggalDisposisi'" class="sort-menu">
                   <ul>
-                    <li @click="sortTable('tanggalDisposisi_desc')">Terlama</li>
-                    <li @click="sortTable('tanggalDisposisi_asc')">Terbaru</li>
+                    <li @click="sortTable('tanggalDisposisi_asc')">Terlama</li>
+                    <li @click="sortTable('tanggalDisposisi_desc')">Terbaru</li>
                   </ul>
                 </div>
               </th>
@@ -156,11 +158,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, index) in filteredSuratMasuk" :key="item.id">
+            <tr v-for="(item, index) in sortedSuratMasuk" :key="item.id">
               <td>{{ index + 1 }}</td>
-              <td>{{ item.bulan +" "+ item.tahun }}</td>
               <td>
-                <font-awesome-icon :icon="['fas', 'file-pdf']" @click="viewPdf(item.pdfUrl)" />
+                <font-awesome-icon
+                  :icon="['fas', 'file-pdf']"
+                  @click="viewPdf(item.pdfUrl)"
+                />
               </td>
               <td>{{ item.suratDari }}</td>
               <td>{{ item.tanggalSurat }}</td>
@@ -182,7 +186,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 import axios from "axios";
