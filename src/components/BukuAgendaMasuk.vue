@@ -184,7 +184,6 @@
 </template>
 
 
-
 <script>
 import axios from "axios";
 import * as SheetJSStyle from "sheetjs-style";
@@ -552,14 +551,14 @@ h1 {
 }
 
 .table-container {
-  max-width: 100%;
+  width: 100%;
   overflow-x: auto;
-  margin: 20px;
-  padding: 10px;
+  margin: 5px;
+  padding: 5px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  width: 100%;
+  height: 75%;
 }
 
 .table-container table {
@@ -591,8 +590,6 @@ th {
 }
 .sort-menu ul {
   list-style: none;
-  margin: 0;
-  padding: 0;
 }
 .sort-menu ul li {
   padding: 10px;
@@ -628,6 +625,7 @@ button:hover {
 
 .search-container input {
   padding: 10px;
+  margin-bottom: 5px;
   font-size: 16px;
   width: 100%;
   max-width: 300px;
