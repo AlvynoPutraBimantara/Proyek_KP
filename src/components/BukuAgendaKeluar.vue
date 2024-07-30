@@ -3,25 +3,23 @@
     <div class="header-container">
       <h1>BUKU AGENDA SURAT KELUAR DI TATA USAHA</h1>
       <div class="dropdown-container">
-        <select
-          v-model="selectedMonth"
-          class="month-dropdown"
-          @change="loadData"
-        >
+        <button @click="clearFilters" class="clear-button">Reset filter</button>
+        <select v-model="selectedMonth" class="month-dropdown" @change="applyFilters">
           <option disabled value="">Pilih Bulan</option>
           <option v-for="month in months" :key="month" :value="month">
             {{ month }}
           </option>
         </select>
-        <select v-model="selectedYear" class="year-dropdown" @change="loadData">
+        <select v-model="selectedYear" class="year-dropdown" @change="applyFilters">
           <option disabled value="">Pilih Tahun</option>
           <option v-for="year in years" :key="year" :value="year">
             {{ year }}
           </option>
         </select>
-        <button @click="exportToExcel" class="export-button">
-          Export ke Excel
-        </button>
+        <button @click="exportToExcel" class="export-button">Export ke Excel</button>
+      </div>
+      <div class="search-container">
+        <input type="text" v-model="searchQuery" placeholder="Cari Surat..." />
       </div>
     </div>
     <div class="main-container">
@@ -33,6 +31,7 @@
           <thead>
             <tr>
               <th>No.</th>
+              <th>Untuk Buku Agenda</th>
               <th>Preview PDF</th>
               <th>
                 Surat Dari
@@ -163,6 +162,7 @@
           <tbody>
             <tr v-for="(item, index) in sortedSuratKeluar" :key="item.id">
               <td>{{ index + 1 }}</td>
+              <td>{{ item.bulan +" "+ item.tahun }}</td>
               <td>
                 <font-awesome-icon
                   :icon="['fas', 'file-pdf']"
@@ -190,10 +190,10 @@
   </div>
 </template>
 
-
 <script>
 import axios from "axios";
 import * as SheetJSStyle from "sheetjs-style";
+import naturalSort from 'javascript-natural-sort'
 
 export default {
   name: "BukuAgendaKeluar",
@@ -202,6 +202,7 @@ export default {
       SuratKeluar: [],
       sortKey: "",
       sortMenu: "",
+      searchQuery: "",
       selectedPdfUrl: null,
       showPdfViewer: true,
       selectedMonth: "",
@@ -221,60 +222,126 @@ export default {
         "DESEMBER",
       ],
       years: [
-        2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035,
+         2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035,
         2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044,
       ],
     };
   },
   computed: {
-    sortedSuratKeluar() {
-      let sortedData = [...this.SuratKeluar];
-      const sortKey = this.sortKey;
+    searchSurat() {
+      return this.loadData.filter((loadData) =>
+      loadData.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    },
+    filteredSuratKeluar() {
+      let filtered = this.SuratKeluar;
 
-      if (sortKey) {
-        const [key, order] = sortKey.split("_");
-        sortedData.sort((a, b) => {
-          if (key === "tanggalSurat" || key === "diterimaTanggal" || key === "tanggalDisposisi") {
-            return order === "asc" ? new Date(a[key]) - new Date(b[key]) : new Date(b[key]) - new Date(a[key]);
-          } else if (key === "sifat") {
-            const priority = { "Biasa": 1, "Penting": 2 };
-            return order === "biasa" ? priority[a[key]] - priority[b[key]] : priority[b[key]] - priority[a[key]];
-          } else {
-            if (a[key] < b[key]) return order === "asc" ? -1 : 1;
-            if (a[key] > b[key]) return order === "asc" ? 1 : -1;
-            return 0;
+      // Filter by selected month and year
+      if (this.selectedMonth) {
+        filtered = filtered.filter((item) => item.bulan === this.selectedMonth);
+      }
+      if (this.selectedYear) {
+        filtered = filtered.filter((item) => item.tahun === this.selectedYear);
+      }
+
+      // Filter by search query
+      if (this.searchQuery) {
+        const searchQueryLower = this.searchQuery.toLowerCase();
+        filtered = filtered.filter(
+          (item) =>
+            item.suratDari.toLowerCase().includes(searchQueryLower) ||
+            item.tanggalSurat.toLowerCase().includes(searchQueryLower) ||
+            item.noSurat.toLowerCase().includes(searchQueryLower) ||
+            item.perihal.toLowerCase().includes(searchQueryLower) ||
+            item.diterimaTanggal.toLowerCase().includes(searchQueryLower) ||
+            item.noAgenda.toLowerCase().includes(searchQueryLower) ||
+            item.sifat.toLowerCase().includes(searchQueryLower) ||
+            item.disposisiSekretaris.toLowerCase().includes(searchQueryLower) ||
+            item.disposisiKasumpeg.toLowerCase().includes(searchQueryLower) ||
+            item.tanggalDisposisi.toLowerCase().includes(searchQueryLower)
+        );
+      }
+
+      // Sort filtered data
+      if (this.sortKey) {
+        filtered = filtered.slice().sort((a, b) => {
+          const keys = this.sortKey.split('_');
+          const key = keys[0];
+          const order = keys[1];
+          let modifier = 1;
+
+          if (order === "desc") {
+            modifier = -1;
           }
+
+          if (a[key] < b[key]) {
+            return -1 * modifier;
+          }
+          if (a[key] > b[key]) {
+            return 1 * modifier;
+          }
+          return 0;
         });
       }
 
-      return sortedData;
+      return filtered;
     },
+    sortedSuratKeluar() {
+  let sortedArray = this.filteredSuratKeluar.slice();
+
+  if (this.sortKey) {
+    sortedArray.sort((a, b) => {
+      switch (this.sortKey) {
+        case 'tanggalSurat_asc':
+        case 'tanggalSurat_desc':
+        case 'diterimaTanggal_asc':
+        case 'diterimaTanggal_desc':
+        case 'tanggalDisposisi_asc':
+        case 'tanggalDisposisi_desc': {
+          const dateA = new Date(a[this.sortKey.split('_')[0]]);
+          const dateB = new Date(b[this.sortKey.split('_')[0]]);
+          return this.sortKey.includes('asc') ? dateA - dateB : dateB - dateA;
+        }
+        case 'sifat_biasa':
+        case 'sifat_penting': {
+          return this.sortKey === 'sifat_biasa' ? (a.sifat === 'Biasa' ? -1 : 1) : (a.sifat === 'Penting' ? -1 : 1);
+        }
+        case 'suratDari_asc':
+        case 'suratDari_desc':
+        case 'perihal_asc':
+        case 'perihal_desc':
+        case 'disposisiSekretaris_asc':
+        case 'disposisiSekretaris_desc':
+        case 'disposisiKasumpeg_asc':
+        case 'disposisiKasumpeg_desc':
+        case 'noAgenda_asc':
+        case 'noAgenda_desc':
+        case 'noSurat_asc':
+        case 'noSurat_desc': {
+          // Natural sorting for specified columns
+          return this.sortKey.includes('asc')
+            ? naturalSort(a[this.sortKey.split('_')[0]], b[this.sortKey.split('_')[0]])
+            : naturalSort(b[this.sortKey.split('_')[0]], a[this.sortKey.split('_')[0]]);
+        }
+        default:
+          return 0;
+      }
+    });
+  }
+
+  return sortedArray;
+},
   },
   methods: {
-   
-   
-    loadData() {
-      if (this.selectedMonth && this.selectedYear) {
-        const params = {
-          bulan: this.selectedMonth,
-          tahun: this.selectedYear,
-        };
-
-        axios
-          .get("http://localhost:3004/SuratKeluar", { params })
-          .then((response) => {
-            this.SuratKeluar = response.data.filter(
-              (item) =>
-                item.bulan === this.selectedMonth &&
-                item.tahun === this.selectedYear
-            );
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      } else {
-        this.SuratKeluar = [];
-      }
+   loadData() {
+    axios
+        .get("http://localhost:3004/SuratKeluar")
+        .then((response) => {
+          this.SuratKeluar = response.data;
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
     },
     exportToExcel() {
       const data = this.sortedSuratKeluar.map((item, index) => ({
@@ -439,7 +506,16 @@ export default {
         `Buku Agenda Surat Keluar ${this.selectedMonth} ${this.selectedYear}.xlsx`
       );
     },
-    
+    applyFilters() {
+      // This function will be triggered when the dropdowns change.
+      // The filtering logic is already handled in the computed property 'filteredSuratKeluar'.
+    },
+    clearFilters() {
+      this.selectedMonth = "";
+      this.selectedYear = "";
+      this.searchQuery = "";
+      this.applyFilters();
+    },
     toggleSortMenu(column) {
       if (this.sortMenu === column) {
         this.sortMenu = "";
@@ -498,14 +574,14 @@ h1 {
 }
 
 .table-container {
-  max-width: 100%;
+  width: 100%;
   overflow-x: auto;
-  margin: 20px;
-  padding: 10px;
+  margin: 5px;
+  padding: 5px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  width: 100%;
+  height: 75%;
 }
 
 .table-container table {
@@ -537,8 +613,6 @@ th {
 }
 .sort-menu ul {
   list-style: none;
-  margin: 0;
-  padding: 0;
 }
 .sort-menu ul li {
   padding: 10px;
@@ -565,5 +639,20 @@ button:hover {
   width: 66%;
   padding-right: 10px;
   margin-bottom: 20px;
+}
+
+.search-container {
+  flex: 1;
+  text-align: left;
+}
+
+.search-container input {
+  padding: 10px;
+  margin-bottom: 5px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 </style>

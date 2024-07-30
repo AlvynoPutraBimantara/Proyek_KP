@@ -3,6 +3,7 @@
     <div class="header-container">
       <h1>BUKU AGENDA SURAT MASUK DI TATA USAHA</h1>
       <div class="dropdown-container">
+        <button @click="clearFilters" class="clear-button">Reset filter</button>
         <select v-model="selectedMonth" class="month-dropdown" @change="applyFilters">
           <option disabled value="">Pilih Bulan</option>
           <option v-for="month in months" :key="month" :value="month">
@@ -30,7 +31,8 @@
           <thead>
             <tr>
               <th>No.</th>
-              <th>Preview PDF</th>
+              <th>Untuk Buku Agenda</th>
+              <th>Lampiran PDF</th>
               <th>
                 Surat Dari
                 <span @click="toggleSortMenu('suratDari')">
@@ -160,6 +162,7 @@
           <tbody>
             <tr v-for="(item, index) in sortedSuratMasuk" :key="item.id">
               <td>{{ index + 1 }}</td>
+              <td>{{ item.bulan +" "+ item.tahun }}</td>
               <td>
                 <font-awesome-icon
                   :icon="['fas', 'file-pdf']"
@@ -219,7 +222,7 @@ export default {
         "DESEMBER",
       ],
       years: [
-        2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035,
+         2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035,
         2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044,
       ],
     };
@@ -506,6 +509,12 @@ export default {
     applyFilters() {
       // This function will be triggered when the dropdowns change.
       // The filtering logic is already handled in the computed property 'filteredSuratMasuk'.
+    },
+    clearFilters() {
+      this.selectedMonth = "";
+      this.selectedYear = "";
+      this.searchQuery = "";
+      this.applyFilters();
     },
     toggleSortMenu(column) {
       if (this.sortMenu === column) {
