@@ -190,6 +190,7 @@
 <script>
 import axios from "axios";
 import * as SheetJSStyle from "sheetjs-style";
+import naturalSort from 'javascript-natural-sort'
 
 export default {
   name: "BukuAgendaMasuk",
@@ -283,41 +284,51 @@ export default {
       return filtered;
     },
     sortedSuratMasuk() {
-      let sortedArray = this.filteredSuratMasuk.slice();
-      const sortFunction = (a, b, key) => {
-        if (key.includes("asc")) {
-          return a[key.split("_")[0]] > b[key.split("_")[0]] ? 1 : -1;
+  let sortedArray = this.filteredSuratMasuk.slice();
+
+  if (this.sortKey) {
+    sortedArray.sort((a, b) => {
+      switch (this.sortKey) {
+        case 'tanggalSurat_asc':
+        case 'tanggalSurat_desc':
+        case 'diterimaTanggal_asc':
+        case 'diterimaTanggal_desc':
+        case 'tanggalDisposisi_asc':
+        case 'tanggalDisposisi_desc': {
+          const dateA = new Date(a[this.sortKey.split('_')[0]]);
+          const dateB = new Date(b[this.sortKey.split('_')[0]]);
+          return this.sortKey.includes('asc') ? dateA - dateB : dateB - dateA;
         }
-        return a[key.split("_")[0]] < b[key.split("_")[0]] ? 1 : -1;
-      };
-
-      if (this.sortKey) {
-        sortedArray.sort((a, b) => {
-          switch (this.sortKey) {
-            case "tanggalSurat_asc":
-            case "tanggalSurat_desc":
-            case "diterimaTanggal_asc":
-            case "diterimaTanggal_desc":
-            case "tanggalDisposisi_asc":
-            case "tanggalDisposisi_desc":
-              return sortFunction(new Date(a[this.sortKey.split("_")[0]]), new Date(b[this.sortKey.split("_")[0]]), this.sortKey);
-            case "sifat_biasa":
-            case "sifat_penting":
-              if (this.sortKey === "sifat_biasa") {
-                return a.sifat === "Biasa" ? -1 : 1;
-              } else {
-                return a.sifat === "Penting" ? -1 : 1;
-              }
-            default:
-              return sortFunction(a, b, this.sortKey);
-          }
-        });
+        case 'sifat_biasa':
+        case 'sifat_penting': {
+          return this.sortKey === 'sifat_biasa' ? (a.sifat === 'Biasa' ? -1 : 1) : (a.sifat === 'Penting' ? -1 : 1);
+        }
+        case 'suratDari_asc':
+        case 'suratDari_desc':
+        case 'perihal_asc':
+        case 'perihal_desc':
+        case 'disposisiSekretaris_asc':
+        case 'disposisiSekretaris_desc':
+        case 'disposisiKasumpeg_asc':
+        case 'disposisiKasumpeg_desc':
+        case 'noAgenda_asc':
+        case 'noAgenda_desc':
+        case 'noSurat_asc':
+        case 'noSurat_desc': {
+          // Natural sorting for specified columns
+          return this.sortKey.includes('asc')
+            ? naturalSort(a[this.sortKey.split('_')[0]], b[this.sortKey.split('_')[0]])
+            : naturalSort(b[this.sortKey.split('_')[0]], a[this.sortKey.split('_')[0]]);
+        }
+        default:
+          return 0;
       }
+    });
+  }
 
-      return sortedArray;
-    },
+  return sortedArray;
+},
   },
-
   methods: {
    loadData() {
     axios
