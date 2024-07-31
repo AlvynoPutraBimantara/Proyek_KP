@@ -61,6 +61,19 @@ app.put("/SuratMasuk/:id", (req, res) => {
   }
 });
 
+app.delete("/SuratMasuk/:id", (req, res) => {
+  const data = getData();
+  const productId = req.params.id; // Use string ID
+  const newSuratMasuk = data.SuratMasuk.filter((p) => p.id !== productId);
+  if (newSuratMasuk.length !== data.SuratMasuk.length) {
+    data.SuratMasuk = newSuratMasuk;
+    saveData(data);
+    res.status(200).send("Product deleted");
+  } else {
+    res.status(404).send("Product not found");
+  }
+});
+
 app.listen(port, () => {
   console.log(`Surat Masuk service running on port ${port}`);
 });

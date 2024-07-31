@@ -17,6 +17,8 @@
           </option>
         </select>
         <button @click="exportToExcel" class="export-button">Export ke Excel</button>
+        <!-- Add Print Button -->
+        <button @click="printData" class="print-button"><font-awesome-icon :icon="['fas', 'print']" /> Cetak</button>
       </div>
       <div class="search-container">
         <input type="text" v-model="searchQuery" placeholder="Cari Surat..." />
@@ -122,10 +124,7 @@
                 <span @click="toggleSortMenu('disposisiSekretaris')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
                 </span>
-                <div
-                  v-if="sortMenu === 'disposisiSekretaris'"
-                  class="sort-menu"
-                >
+                <div v-if="sortMenu === 'disposisiSekretaris'" class="sort-menu">
                   <ul>
                     <li @click="sortTable('disposisiSekretaris_asc')">A-Z</li>
                     <li @click="sortTable('disposisiSekretaris_desc')">Z-A</li>
@@ -181,6 +180,9 @@
               <td>{{ item.tanggalDisposisi }}</td>
               <td>
                 <button @click="editItem(item.id)">Edit</button>
+                <button @click="confirmDelete(item.id)" class="btn-delete">
+                Hapus
+              </button>
               </td>
             </tr>
           </tbody>
@@ -189,6 +191,7 @@
     </div>
   </div>
 </template>
+
 
 <script>
 import axios from "axios";
@@ -333,8 +336,8 @@ export default {
 },
   },
   methods: {
-   loadData() {
-    axios
+    loadData() {
+      axios
         .get("http://localhost:3003/SuratMasuk")
         .then((response) => {
           this.SuratMasuk = response.data;
@@ -342,6 +345,18 @@ export default {
         .catch((error) => {
           console.error("Error fetching data:", error);
         });
+    },
+    async HapusSurat(id) {
+      let result = await axios.delete("http://localhost:3003/SuratMasuk/" + id);
+      console.warn(result);
+      if (result.status === 200) {
+        this.loadData();
+      }
+    },
+    confirmDelete(id) {
+      if (confirm("Apakah anda yakin akan menghapus?")) {
+        this.HapusSurat(id);
+      }
     },
     exportToExcel() {
       const data = this.sortedSuratMasuk.map((item, index) => ({
@@ -532,11 +547,15 @@ export default {
     },
     editItem(id) {
       this.$router.push({ name: "EditSuratMasuk", params: { id: id } });
-    }
+    },
+    printData() {
+      window.print();
+    },
   },
   mounted() {
     this.loadData();
   },
+ 
 };
 </script>
 <style scoped>
@@ -634,6 +653,9 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+.btn-delete {
+  background-color: red;
+}
 
 .pdf-viewer {
   width: 66%;
@@ -654,5 +676,14 @@ button:hover {
   max-width: 300px;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.print-button {
+  margin-left: 10px;
+  padding: 10px;
+  background-color: darkgray;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
 </style>

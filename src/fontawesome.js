@@ -3,10 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
   faSort,
   faFilePdf,
-  faBars
+  faBars,
+  faPrint
 } from "@fortawesome/free-solid-svg-icons";
 
 
-library.add(faSort,faFilePdf, faBars);
+library.add(faSort,faFilePdf, faBars, faPrint);
 
 export default FontAwesomeIcon;
