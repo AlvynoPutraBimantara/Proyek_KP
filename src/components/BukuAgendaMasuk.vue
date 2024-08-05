@@ -24,13 +24,10 @@
             {{ year }}
           </option>
         </select>
-        <button @click="exportToExcel" class="export-button">
-          Export ke Excel
-        </button>
-        <!-- Add Print Button -->
-        <button @click="printData" class="print-button">
-          <font-awesome-icon :icon="['fas', 'print']" /> Cetak
-        </button>
+        <button @click="exportToExcel(false)" class="export-button">Export ke Excel</button>
+    <button @click="exportToExcel(true)" class="print-button">
+      <font-awesome-icon :icon="['fas', 'print']" /> Cetak
+    </button>
       </div>
       <div class="search-container">
         <input type="text" v-model="searchQuery" placeholder="Cari Surat..." />
@@ -572,23 +569,22 @@ export default {
 
         try {
           const response = await axios.post(
-  "http://localhost:3006/print-service",
-  formData,
-  {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  }
-);
+            "http://localhost:3006/print-service",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
 
-const xlsxUrl = response.data.xlsxUrl;
+          const xlsxUrl = response.data.xlsxUrl;
 
-// Store the file URL in the "Print" database
-await axios.post("http://localhost:3006/print-service/Print", {
-  table: "Print",
-  data: { fileUrl: xlsxUrl },
-});
-
+          // Store the file URL in the "Print" database
+          await axios.post("http://localhost:3006/print-service/Print", {
+            table: "Print",
+            data: { fileUrl: xlsxUrl },
+          });
 
           this.$router.push({
             name: "PreviewBukuAgendaMasuk",
@@ -599,6 +595,7 @@ await axios.post("http://localhost:3006/print-service/Print", {
         }
       }
     },
+  
     applyFilters() {
       // This function will be triggered when the dropdowns change.
       // The filtering logic is already handled in the computed property 'filteredSuratMasuk'.
