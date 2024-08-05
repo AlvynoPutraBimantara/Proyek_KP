@@ -39,7 +39,7 @@
       to="/PreviewBukuAgendaMasuk"
       :class="{ active: isActive('/PreviewBukuAgendaMasuk') }"
     >
-      BUKU AGENDA SURAT MASUK
+      CETAK BUKU AGENDA SURAT MASUK
     </router-link>
 
     <a @click.prevent="logout" class="logout-btn" href="#">Logout</a>

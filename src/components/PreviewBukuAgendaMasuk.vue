@@ -1,27 +1,10 @@
 <template>
   <div class="preview-buku-agenda-masuk-container">
     <div class="header">
-      <h1>Preview Buku Agenda Surat Masuk</h1>
+      <h1>Preview Cetak Buku Agenda Surat Masuk</h1>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>File Name</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>{{ fileUrl.split("/").pop() }}</td>
-          <td>
-            <button @click="viewFileAsPDF" class="print-button">
-              <font-awesome-icon :icon="['fas', 'file-pdf']" /> View as PDF
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <iframe v-if="pdfUrl" :src="pdfUrl" width="100%" height="800px"></iframe>
+    
+    <iframe v-if="pdfUrl" :src="pdfUrl" width="100%" height="1080px"></iframe>
   </div>
 </template>
 
@@ -36,8 +19,12 @@ export default {
       pdfUrl: "",
     };
   },
-  created() {
+  async created() {
     this.loadFile();
+    await this.viewFileAsPDF();
+  },
+  beforeUnmount() {
+    this.cleanupFiles();
   },
   methods: {
     loadFile() {
@@ -55,7 +42,13 @@ export default {
         this.pdfUrl = `http://localhost:3006${response.data.pdfUrl}`;
       } catch (error) {
         console.error("Error converting file to PDF:", error);
-        alert("Failed to convert the file to PDF.");
+      }
+    },
+    async cleanupFiles() {
+      try {
+        await axios.post("http://localhost:3006/print-service/cleanup");
+      } catch (error) {
+        console.error("Error cleaning up files:", error);
       }
     },
   },
@@ -64,25 +57,13 @@ export default {
 
 <style scoped>
 .preview-buku-agenda-masuk-container {
-  padding: 20px;
-}
-
-.header {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+.header {
   margin-bottom: 20px;
-}
-
-.print-button {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
-.print-button:hover {
-  background-color: #45a049;
 }
 </style>

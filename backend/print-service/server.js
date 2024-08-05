@@ -1,4 +1,3 @@
-// Import necessary modules
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
@@ -111,7 +110,7 @@ printServiceRouter.post("/ConvertToPDF/:filename", async (req, res) => {
             margin-bottom: 20px;
           }
           .sub-header {
-            background-color: #FFFF00; /* Yellow background for sub-header */
+            background-color: #FFFF00; 
             font-weight: bold;
             font-size: 12pt;
             text-align: center;
@@ -168,7 +167,7 @@ printServiceRouter.post("/ConvertToPDF/:filename", async (req, res) => {
       db.PDF = [];
     }
 
-    db.PDF.push({ fileUrl: `/pdf/${pdfFilename}` });
+    db.PDF.push({ fileUrl: `/pdf/${pdfFilename}`, originalFile: filename });
 
     fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
 
@@ -201,6 +200,33 @@ printServiceRouter.post("/Print", (req, res) => {
     console.error("Error saving data:", error);
     res.status(500).send("Failed to save data.");
   }
+});
+
+printServiceRouter.post("/cleanup", async (req, res) => {
+  const dbPath = path.join(__dirname, "db2.json");
+  let db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
+
+  if (!db.PDF) {
+    return res.status(200).send("No files to clean up.");
+  }
+
+  db.PDF.forEach((record) => {
+    const pdfFilePath = path.join(__dirname, record.fileUrl);
+    const excelFilePath = path.join(excelDir, record.originalFile);
+
+    if (fs.existsSync(pdfFilePath)) {
+      fs.unlinkSync(pdfFilePath);
+    }
+
+    if (fs.existsSync(excelFilePath)) {
+      fs.unlinkSync(excelFilePath);
+    }
+  });
+
+  db.PDF = [];
+  fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
+
+  res.status(200).send("Cleanup completed.");
 });
 
 app.use('/excel', express.static(path.join(__dirname, 'excel')));
