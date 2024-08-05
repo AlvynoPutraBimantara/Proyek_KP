@@ -1,3 +1,4 @@
+// Import necessary modules
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
@@ -178,7 +179,29 @@ printServiceRouter.post("/ConvertToPDF/:filename", async (req, res) => {
   }
 });
 
+printServiceRouter.post("/Print", (req, res) => {
+  const { table, data } = req.body;
+  if (!table || !data) {
+    return res.status(400).send("Table and data are required.");
+  }
 
+  try {
+    const dbPath = path.join(__dirname, "db2.json");
+    let db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
+
+    if (!db[table]) {
+      db[table] = [];
+    }
+
+    db[table].push(data);
+    fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
+
+    res.status(201).send("Data saved successfully.");
+  } catch (error) {
+    console.error("Error saving data:", error);
+    res.status(500).send("Failed to save data.");
+  }
+});
 
 app.use('/excel', express.static(path.join(__dirname, 'excel')));
 app.use('/pdf', express.static(path.join(__dirname, 'pdf')));

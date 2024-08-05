@@ -1,154 +1,79 @@
 const express = require("express");
 const cors = require("cors");
-const multer = require("multer");
-const path = require("path");
+const bodyParser = require("body-parser");
 const fs = require("fs");
-const { exec } = require("child_process");
+const path = require("path");
 
 const app = express();
-const port = 3006;
+const port = 3003;
 
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 
-const excelDir = path.join(__dirname, "excel");
+const dbFilePath = path.join(__dirname, "db.json");
 
-if (!fs.existsSync(excelDir)) {
-  fs.mkdirSync(excelDir);
-}
-
-const { spawn } = require("child_process"); // Assuming you use a child process for conversion
-
-printServiceRouter.post("/ConvertToPDF/:filename", (req, res) => {
-  const filename = req.params.filename;
-  const filePath = path.join(excelDir, filename);
-
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).send("File not found.");
+const getData = () => {
+  if (!fs.existsSync(dbFilePath)) {
+    const initialData = { SuratMasuk: [] };
+    fs.writeFileSync(dbFilePath, JSON.stringify(initialData, null, 2));
   }
+  return JSON.parse(fs.readFileSync(dbFilePath, "utf-8"));
+};
 
-  // Placeholder for your conversion logic
-  const pdfFilename = filename.replace(/\.xlsx$/, ".pdf");
-  const pdfPath = path.join(excelDir, pdfFilename);
+const saveData = (data) => fs.writeFileSync(dbFilePath, JSON.stringify(data, null, 2));
 
-  // Assuming a hypothetical convertToPDF function that handles the conversion
-  convertToPDF(filePath, pdfPath, (err) => {
-    if (err) {
-      console.error(`Error converting file to PDF: ${err}`);
-      return res.status(500).send("Error converting file to PDF.");
-    }
-
-    res.status(200).json({ pdfUrl: `/excel/${pdfFilename}` });
-  });
+app.get("/SuratMasuk", (req, res) => {
+  const data = getData();
+  res.json(data.SuratMasuk);
 });
 
-function convertToPDF(inputPath, outputPath, callback) {
-  // Example conversion using a command line tool (e.g., libreoffice)
-  const convertProcess = spawn("libreoffice", [
-    "--headless",
-    "--convert-to",
-    "pdf",
-    "--outdir",
-    path.dirname(outputPath),
-    inputPath,
-  ]);
-
-  convertProcess.on("close", (code) => {
-    if (code === 0) {
-      callback(null);
-    } else {
-      callback(new Error(`Conversion process exited with code ${code}`));
-    }
-  });
-}
-
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, excelDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
-const upload = multer({ storage });
-
-const printServiceRouter = express.Router();
-
-printServiceRouter.post("/", upload.single("xlsx"), (req, res) => {
-  if (!req.file) {
-    return res.status(400).send("No file uploaded.");
-  }
-  const xlsxUrl = `/excel/${req.file.filename}`;
-  res.status(201).json({ xlsxUrl });
-});
-
-printServiceRouter.get("/:filename", (req, res) => {
-  const filePath = path.join(excelDir, req.params.filename);
-  if (fs.existsSync(filePath)) {
-    res.sendFile(filePath);
+app.get("/SuratMasuk/:id", (req, res) => {
+  const data = getData();
+  const productId = req.params.id; // Use string ID
+  const product = data.SuratMasuk.find((p) => p.id === productId);
+  if (product) {
+    res.json(product);
   } else {
-    res.status(404).send("File not found.");
+    res.status(404).send("Product not found");
   }
 });
 
-printServiceRouter.delete("/:filename", (req, res) => {
-  const filePath = path.join(excelDir, req.params.filename);
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-    res.status(204).send();
+app.post("/SuratMasuk", (req, res) => {
+  const data = getData();
+  const newProduct = req.body;
+  newProduct.id = data.SuratMasuk.length ? data.SuratMasuk[data.SuratMasuk.length - 1].id + 1 : 1;
+  data.SuratMasuk.push(newProduct);
+  saveData(data);
+  res.status(201).json(newProduct);
+});
+
+app.put("/SuratMasuk/:id", (req, res) => {
+  const data = getData();
+  const productId = req.params.id; // Use string ID
+  const updatedProduct = req.body;
+  const productIndex = data.SuratMasuk.findIndex((p) => p.id === productId);
+  if (productIndex !== -1) {
+    data.SuratMasuk[productIndex] = updatedProduct;
+    saveData(data);
+    res.status(200).json(updatedProduct);
   } else {
-    res.status(404).send("File not found.");
+    res.status(404).send("Product not found");
   }
 });
 
-printServiceRouter.post("/Print/:filename", (req, res) => {
-  const filePath = path.join(excelDir, req.params.filename);
-  if (!fs.existsSync(filePath)) {
-    console.error(`File not found: ${filePath}`);
-    return res.status(404).send("File not found.");
+app.delete("/SuratMasuk/:id", (req, res) => {
+  const data = getData();
+  const productId = req.params.id; // Use string ID
+  const newSuratMasuk = data.SuratMasuk.filter((p) => p.id !== productId);
+  if (newSuratMasuk.length !== data.SuratMasuk.length) {
+    data.SuratMasuk = newSuratMasuk;
+    saveData(data);
+    res.status(200).send("Product deleted");
+  } else {
+    res.status(404).send("Product not found");
   }
-
-  exec(`lp "${filePath}"`, (err) => {
-    if (err) {
-      console.error(`Error printing file: ${err}`);
-      return res.status(500).send("Error printing file.");
-    }
-    res.status(200).send("File sent to printer.");
-  });
 });
-
-printServiceRouter.post("/Print", (req, res) => {
-  const { table, data } = req.body;
-  const dbPath = path.join(__dirname, "db.json");
-
-  fs.readFile(dbPath, "utf8", (err, fileData) => {
-    if (err) {
-      console.error(`Error reading database file: ${err}`);
-      return res.status(500).send("Error reading database file.");
-    }
-
-    const db = JSON.parse(fileData);
-
-    if (!db[table]) {
-      db[table] = [];
-    }
-
-    db[table].push(data);
-
-    fs.writeFile(dbPath, JSON.stringify(db, null, 2), "utf8", (err) => {
-      if (err) {
-        console.error(`Error writing to database file: ${err}`);
-        return res.status(500).send("Error writing to database file.");
-      }
-      res.status(201).send("Data stored in database.");
-    });
-  });
-});
-
-app.use("/excel", express.static(path.join(__dirname, "excel")));
-app.use("/print-service", printServiceRouter);
 
 app.listen(port, () => {
-  console.log(`Print service running on port ${port}`);
+  console.log(`Surat Masuk service running on port ${port}`);
 });

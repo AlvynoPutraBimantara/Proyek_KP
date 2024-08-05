@@ -572,22 +572,23 @@ export default {
 
         try {
           const response = await axios.post(
-            "http://localhost:3006/print-service",
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
+  "http://localhost:3006/print-service",
+  formData,
+  {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  }
+);
 
-          const xlsxUrl = response.data.xlsxUrl;
+const xlsxUrl = response.data.xlsxUrl;
 
-          // Store the file URL in the "Print" database
-          await axios.post("http://localhost:3006/print-service/Print", {
-            table: "Print",
-            data: { fileUrl: xlsxUrl },
-          });
+// Store the file URL in the "Print" database
+await axios.post("http://localhost:3006/print-service/Print", {
+  table: "Print",
+  data: { fileUrl: xlsxUrl },
+});
+
 
           this.$router.push({
             name: "PreviewBukuAgendaMasuk",
