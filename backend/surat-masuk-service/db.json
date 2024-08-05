@@ -177,22 +177,6 @@
       "pdfUrl": "http://localhost:3005/uploads/1721720527106-5. Sekda Prov. Jatim (Pelakasanaan Audit Kearsipan Internal).pdf"
     },
     {
-      "suratDari": "Test14",
-      "tanggalSurat": "24/07/2024",
-      "noSurat": "Test14",
-      "perihal": "Test14",
-      "diterimaTanggal": "24/07/2024",
-      "noAgenda": "Test14",
-      "sifat": "Biasa",
-      "disposisiSekretaris": "Test14",
-      "disposisiKasumpeg": "Test14",
-      "tanggalDisposisi": "24/07/2024",
-      "bulan": "JULI",
-      "tahun": 2025,
-      "pdfUrl": "http://localhost:3005/uploads/1721805703843-16. CV. BAROKAH PAMEKASAN (Sosialiasi dan Penawaran Seragam Dinas ASN).pdf",
-      "id": "09561"
-    },
-    {
       "suratDari": "Test15",
       "tanggalSurat": "24/07/2024",
       "noSurat": "Test15",

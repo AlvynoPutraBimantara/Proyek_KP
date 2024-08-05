@@ -34,6 +34,13 @@
     >
       INPUT SURAT KELUAR
     </router-link>
+    <router-link
+      v-if="isAdmin || isUser"
+      to="/PreviewBukuAgendaMasuk"
+      :class="{ active: isActive('/PreviewBukuAgendaMasuk') }"
+    >
+      BUKU AGENDA SURAT MASUK
+    </router-link>
 
     <a @click.prevent="logout" class="logout-btn" href="#">Logout</a>
   </nav>

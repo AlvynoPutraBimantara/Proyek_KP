@@ -4,21 +4,33 @@
       <h1>BUKU AGENDA SURAT MASUK DI TATA USAHA</h1>
       <div class="dropdown-container">
         <button @click="clearFilters" class="clear-button">Reset filter</button>
-        <select v-model="selectedMonth" class="month-dropdown" @change="applyFilters">
+        <select
+          v-model="selectedMonth"
+          class="month-dropdown"
+          @change="applyFilters"
+        >
           <option disabled value="">Pilih Bulan</option>
           <option v-for="month in months" :key="month" :value="month">
             {{ month }}
           </option>
         </select>
-        <select v-model="selectedYear" class="year-dropdown" @change="applyFilters">
+        <select
+          v-model="selectedYear"
+          class="year-dropdown"
+          @change="applyFilters"
+        >
           <option disabled value="">Pilih Tahun</option>
           <option v-for="year in years" :key="year" :value="year">
             {{ year }}
           </option>
         </select>
-        <button @click="exportToExcel" class="export-button">Export ke Excel</button>
+        <button @click="exportToExcel" class="export-button">
+          Export ke Excel
+        </button>
         <!-- Add Print Button -->
-        <button @click="printData" class="print-button"><font-awesome-icon :icon="['fas', 'print']" /> Cetak</button>
+        <button @click="printData" class="print-button">
+          <font-awesome-icon :icon="['fas', 'print']" /> Cetak
+        </button>
       </div>
       <div class="search-container">
         <input type="text" v-model="searchQuery" placeholder="Cari Surat..." />
@@ -124,7 +136,10 @@
                 <span @click="toggleSortMenu('disposisiSekretaris')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
                 </span>
-                <div v-if="sortMenu === 'disposisiSekretaris'" class="sort-menu">
+                <div
+                  v-if="sortMenu === 'disposisiSekretaris'"
+                  class="sort-menu"
+                >
                   <ul>
                     <li @click="sortTable('disposisiSekretaris_asc')">A-Z</li>
                     <li @click="sortTable('disposisiSekretaris_desc')">Z-A</li>
@@ -161,7 +176,7 @@
           <tbody>
             <tr v-for="(item, index) in sortedSuratMasuk" :key="item.id">
               <td>{{ index + 1 }}</td>
-              <td>{{ item.bulan +" "+ item.tahun }}</td>
+              <td>{{ item.bulan + " " + item.tahun }}</td>
               <td>
                 <font-awesome-icon
                   :icon="['fas', 'file-pdf']"
@@ -181,8 +196,8 @@
               <td>
                 <button @click="editItem(item.id)">Edit</button>
                 <button @click="confirmDelete(item.id)" class="btn-delete">
-                Hapus
-              </button>
+                  Hapus
+                </button>
               </td>
             </tr>
           </tbody>
@@ -192,11 +207,10 @@
   </div>
 </template>
 
-
 <script>
 import axios from "axios";
 import * as SheetJSStyle from "sheetjs-style";
-import naturalSort from 'javascript-natural-sort'
+import naturalSort from "javascript-natural-sort";
 
 export default {
   name: "BukuAgendaMasuk",
@@ -225,7 +239,7 @@ export default {
         "DESEMBER",
       ],
       years: [
-         2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035,
+        2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035,
         2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044,
       ],
     };
@@ -233,7 +247,7 @@ export default {
   computed: {
     searchSurat() {
       return this.loadData.filter((loadData) =>
-      loadData.toLowerCase().includes(this.searchQuery.toLowerCase())
+        loadData.toLowerCase().includes(this.searchQuery.toLowerCase())
       );
     },
     filteredSuratMasuk() {
@@ -268,7 +282,7 @@ export default {
       // Sort filtered data
       if (this.sortKey) {
         filtered = filtered.slice().sort((a, b) => {
-          const keys = this.sortKey.split('_');
+          const keys = this.sortKey.split("_");
           const key = keys[0];
           const order = keys[1];
           let modifier = 1;
@@ -290,50 +304,64 @@ export default {
       return filtered;
     },
     sortedSuratMasuk() {
-  let sortedArray = this.filteredSuratMasuk.slice();
+      let sortedArray = this.filteredSuratMasuk.slice();
 
-  if (this.sortKey) {
-    sortedArray.sort((a, b) => {
-      switch (this.sortKey) {
-        case 'tanggalSurat_asc':
-        case 'tanggalSurat_desc':
-        case 'diterimaTanggal_asc':
-        case 'diterimaTanggal_desc':
-        case 'tanggalDisposisi_asc':
-        case 'tanggalDisposisi_desc': {
-          const dateA = new Date(a[this.sortKey.split('_')[0]]);
-          const dateB = new Date(b[this.sortKey.split('_')[0]]);
-          return this.sortKey.includes('asc') ? dateA - dateB : dateB - dateA;
-        }
-        case 'sifat_biasa':
-        case 'sifat_penting': {
-          return this.sortKey === 'sifat_biasa' ? (a.sifat === 'Biasa' ? -1 : 1) : (a.sifat === 'Penting' ? -1 : 1);
-        }
-        case 'suratDari_asc':
-        case 'suratDari_desc':
-        case 'perihal_asc':
-        case 'perihal_desc':
-        case 'disposisiSekretaris_asc':
-        case 'disposisiSekretaris_desc':
-        case 'disposisiKasumpeg_asc':
-        case 'disposisiKasumpeg_desc':
-        case 'noAgenda_asc':
-        case 'noAgenda_desc':
-        case 'noSurat_asc':
-        case 'noSurat_desc': {
-          // Natural sorting for specified columns
-          return this.sortKey.includes('asc')
-            ? naturalSort(a[this.sortKey.split('_')[0]], b[this.sortKey.split('_')[0]])
-            : naturalSort(b[this.sortKey.split('_')[0]], a[this.sortKey.split('_')[0]]);
-        }
-        default:
-          return 0;
+      if (this.sortKey) {
+        sortedArray.sort((a, b) => {
+          switch (this.sortKey) {
+            case "tanggalSurat_asc":
+            case "tanggalSurat_desc":
+            case "diterimaTanggal_asc":
+            case "diterimaTanggal_desc":
+            case "tanggalDisposisi_asc":
+            case "tanggalDisposisi_desc": {
+              const dateA = new Date(a[this.sortKey.split("_")[0]]);
+              const dateB = new Date(b[this.sortKey.split("_")[0]]);
+              return this.sortKey.includes("asc")
+                ? dateA - dateB
+                : dateB - dateA;
+            }
+            case "sifat_biasa":
+            case "sifat_penting": {
+              return this.sortKey === "sifat_biasa"
+                ? a.sifat === "Biasa"
+                  ? -1
+                  : 1
+                : a.sifat === "Penting"
+                ? -1
+                : 1;
+            }
+            case "suratDari_asc":
+            case "suratDari_desc":
+            case "perihal_asc":
+            case "perihal_desc":
+            case "disposisiSekretaris_asc":
+            case "disposisiSekretaris_desc":
+            case "disposisiKasumpeg_asc":
+            case "disposisiKasumpeg_desc":
+            case "noAgenda_asc":
+            case "noAgenda_desc":
+            case "noSurat_asc":
+            case "noSurat_desc": {
+              // Natural sorting for specified columns
+              return this.sortKey.includes("asc")
+                ? naturalSort(
+                    a[this.sortKey.split("_")[0]],
+                    b[this.sortKey.split("_")[0]]
+                  )
+                : naturalSort(
+                    b[this.sortKey.split("_")[0]],
+                    a[this.sortKey.split("_")[0]]
+                  );
+            }
+            default:
+              return 0;
+          }
+        });
       }
-    });
-  }
 
-  return sortedArray;
-},
+      return sortedArray;
+    },
   },
   methods: {
     loadData() {
@@ -358,7 +386,7 @@ export default {
         this.HapusSurat(id);
       }
     },
-    exportToExcel() {
+    async exportToExcel(storeInBackend = false) {
       const data = this.sortedSuratMasuk.map((item, index) => ({
         "No.": index + 1,
         "Surat Dari": item.suratDari,
@@ -515,11 +543,60 @@ export default {
         "BukuAgendaMasuk"
       );
 
-      // Export the workbook to an Excel file
-      SheetJSStyle.writeFile(
-        workbook,
-        `Buku Agenda Surat Masuk ${this.selectedMonth} ${this.selectedYear}.xlsx`
-      );
+      const excelBuffer = SheetJSStyle.write(workbook, {
+        bookType: "xlsx",
+        type: "array",
+      });
+
+      const blob = new Blob([excelBuffer], {
+        type: "application/octet-stream",
+      });
+
+      if (!storeInBackend) {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute(
+          "download",
+          `Buku Agenda Surat Masuk ${this.selectedMonth} ${this.selectedYear}.xlsx`
+        );
+        document.body.appendChild(link);
+        link.click();
+      } else {
+        const formData = new FormData();
+        formData.append(
+          "xlsx",
+          blob,
+          `Buku Agenda Surat Masuk ${this.selectedMonth} ${this.selectedYear}.xlsx`
+        );
+
+        try {
+          const response = await axios.post(
+            "http://localhost:3006/print-service",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          const xlsxUrl = response.data.xlsxUrl;
+
+          // Store the file URL in the "Print" database
+          await axios.post("http://localhost:3006/print-service/Print", {
+            table: "Print",
+            data: { fileUrl: xlsxUrl },
+          });
+
+          this.$router.push({
+            name: "PreviewBukuAgendaMasuk",
+            query: { fileUrl: xlsxUrl },
+          });
+        } catch (error) {
+          console.error("Error storing file in backend:", error);
+        }
+      }
     },
     applyFilters() {
       // This function will be triggered when the dropdowns change.
@@ -555,11 +632,9 @@ export default {
   mounted() {
     this.loadData();
   },
- 
 };
 </script>
 <style scoped>
-
 h1 {
   margin-bottom: 20px;
 }
@@ -634,7 +709,7 @@ th {
   list-style: none;
 }
 .sort-menu ul li {
-  padding: 10px;
+  padding: 1px;
   cursor: pointer;
 }
 .sort-menu ul li:hover {
@@ -642,7 +717,7 @@ th {
 }
 
 button {
-  padding: 0.05vw 0.10vw;
+  padding: 0.05vw 0.1vw;
   background-color: #007bff;
   color: white;
   border: none;

@@ -10,7 +10,9 @@ import DataPengguna from "./components/DataPengguna.vue";
 import SuratKeluar from "./components/SuratKeluar.vue";
 import BukuAgendaKeluar from "./components/BukuAgendaKeluar.vue";
 import EditSuratKeluar from "./components/EditSuratKeluar.vue";
+import PreviewBukuAgendaMasuk from "./components/PreviewBukuAgendaMasuk";
 
+PreviewBukuAgendaMasuk;
 const routes = [
   {
     path: "/",
@@ -66,6 +68,11 @@ const routes = [
     name: "EditSuratKeluar",
     component: EditSuratKeluar,
     path: "/EditSuratKeluar/:id",
+  },
+  {
+    name: "PreviewBukuAgendaMasuk",
+    component: PreviewBukuAgendaMasuk,
+    path: "/PreviewBukuAgendaMasuk",
   },
 ];
 
