@@ -3,7 +3,6 @@ const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const { exec } = require("child_process");
 const ExcelJS = require("exceljs");
 const puppeteer = require("puppeteer");
 
@@ -63,51 +62,6 @@ printServiceRouter.delete("/:filename", (req, res) => {
   }
 });
 
-printServiceRouter.post("/Print/:filename", (req, res) => {
-  const filePath = path.join(excelDir, req.params.filename);
-  console.log(`Attempting to print file: ${filePath}`);
-  if (fs.existsSync(filePath)) {
-    exec(`lp ${filePath}`, (err) => {
-      if (err) {
-        console.error(`Error printing file: ${err}`);
-        return res.status(500).send("Error printing file.");
-      }
-      res.status(200).send("File sent to printer.");
-    });
-  } else {
-    console.error(`File not found: ${filePath}`);
-    res.status(404).send("File not found.");
-  }
-});
-
-printServiceRouter.post("/Print", (req, res) => {
-  const { table, data } = req.body;
-  const dbPath = path.join(__dirname, "db.json");
-
-  fs.readFile(dbPath, "utf8", (err, fileData) => {
-    if (err) {
-      console.error(`Error reading database file: ${err}`);
-      return res.status(500).send("Error reading database file.");
-    }
-
-    const db = JSON.parse(fileData);
-
-    if (!db[table]) {
-      db[table] = [];
-    }
-
-    db[table].push(data);
-
-    fs.writeFile(dbPath, JSON.stringify(db, null, 2), "utf8", (err) => {
-      if (err) {
-        console.error(`Error writing to database file: ${err}`);
-        return res.status(500).send("Error writing to database file.");
-      }
-      res.status(201).send("Data stored in database.");
-    });
-  });
-});
-
 printServiceRouter.post("/ConvertToPDF/:filename", async (req, res) => {
   const { filename } = req.params;
   const excelPath = path.join(excelDir, filename);
@@ -121,30 +75,91 @@ printServiceRouter.post("/ConvertToPDF/:filename", async (req, res) => {
   try {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(excelPath);
+    const worksheet = workbook.getWorksheet(1);
 
-    const htmlContent = workbook.worksheets
-      .map((worksheet) => {
-        let html = "<table>";
-        worksheet.eachRow((row) => {
-          html += "<tr>";
-          row.eachCell((cell) => {
-            html += `<td>${cell.value}</td>`;
-          });
-          html += "</tr>";
+    let htmlContent = `
+      <html>
+      <head>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            font-size: 10pt;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+          }
+          th, td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: center;
+            word-wrap: break-word;
+            white-space: normal;
+            overflow: hidden;
+          }
+          th {
+            background-color: #9DC3E6;
+            font-weight: bold;
+            font-size: 12pt;
+          }
+          .header {
+            font-size: 22pt;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          .sub-header {
+            background-color: #FFFF00; /* Yellow background for sub-header */
+            font-weight: bold;
+            font-size: 12pt;
+            text-align: center;
+          }
+        </style>
+      </head>
+      <body>
+    `;
+
+    worksheet.eachRow((row, rowNumber) => {
+      if (rowNumber === 1 || rowNumber === 2) {
+        htmlContent += `<div class="header">${row.getCell(2).value}</div>`;
+      } else if (rowNumber === 4) {
+        htmlContent += "<table><tr>";
+        row.eachCell((cell) => {
+          htmlContent += `<th>${cell.value}</th>`;
         });
-        html += "</table>";
-        return html;
-      })
-      .join("");
+        htmlContent += "</tr>";
+      } else if (rowNumber === 5) {
+        htmlContent += "<tr class='sub-header'>";
+        row.eachCell((cell) => {
+          htmlContent += `<td>${cell.value}</td>`;
+        });
+        htmlContent += "</tr>";
+      } else {
+        htmlContent += "<tr>";
+        row.eachCell((cell) => {
+          htmlContent += `<td>${cell.value}</td>`;
+        });
+        htmlContent += "</tr>";
+      }
+    });
+
+    htmlContent += "</table></body></html>";
 
     const browser = await puppeteer.launch({
-      executablePath: puppeteer.executablePath(), // Ensure puppeteer uses the correct Chrome executable
+      executablePath: puppeteer.executablePath(),
     });
     const page = await browser.newPage();
     await page.setContent(htmlContent);
-    await page.pdf({ path: pdfPath });
+    await page.pdf({
+      path: pdfPath,
+      format: "legal", // Set to legal paper size
+      printBackground: true,
+      landscape: true, // Set to landscape orientation
+    });
     await browser.close();
 
+    // Save the PDF URL to the database
     const dbPath = path.join(__dirname, "db2.json");
     let db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
 
@@ -162,6 +177,7 @@ printServiceRouter.post("/ConvertToPDF/:filename", async (req, res) => {
     res.status(500).send("Failed to convert the file to PDF.");
   }
 });
+
 
 
 app.use('/excel', express.static(path.join(__dirname, 'excel')));

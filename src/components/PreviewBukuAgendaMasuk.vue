@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import axios from "axios"; // Importing axios
+import axios from "axios";
 
 export default {
   name: "PreviewBukuAgendaMasuk",
