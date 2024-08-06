@@ -13,26 +13,10 @@
     
     <router-link
       v-if="isAdmin || isUser"
-      to="/BukuAgendaKeluar"
-      :class="{ active: isActive('/BukuAgendaKeluar') }"
-    >
-      BUKU AGENDA SURAT KELUAR
-    </router-link>
-    
-    <router-link
-      v-if="isAdmin || isUser"
       to="/SuratMasuk"
       :class="{ active: isActive('/SuratMasuk') }"
     >
       INPUT SURAT MASUK
-    </router-link>
-   
-    <router-link
-      v-if="isAdmin || isUser"
-      to="/SuratKeluar"
-      :class="{ active: isActive('/SuratKeluar') }"
-    >
-      INPUT SURAT KELUAR
     </router-link>
     <router-link
       v-if="isAdmin || isUser"

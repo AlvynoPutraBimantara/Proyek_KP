@@ -408,13 +408,13 @@ export default {
           "NO.",
           "   SURAT DARI   ",
           "TGL. SURAT",
-          "   NO. SURAT   ",
-          "   PERIHAL   ",
+          "    NO. SURAT   ",
+          "   PERIHAL                           ",
           "DITERIMA TGL",
-          "   NO. AGENDA   ",
+          "NO. AGENDA",
           "SIFAT",
-          "   DISPOSISI SEKRETARIS   ",
-          "   DISPOSISI KASUMPEG   ",
+          "DISPOSISI SEKRETARIS",
+          "DISPOSISI KASUMPEG",
           "TGL DISPOSISI",
         ],
         ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
@@ -427,50 +427,52 @@ export default {
       };
 
       const styles = {
-        header: {
-          font: { bold: true, sz: 22 },
-          alignment: { horizontal: "center", vertical: "middle" },
-          wrapText: true,
-        },
-        subHeader: {
-          fill: { fgColor: { rgb: "9DC3E6" } },
-          font: { bold: true, sz: 11 },
-          alignment: commonAlignment,
-          border: {
-            top: { style: "thin" },
-            bottom: { style: "thin" },
-            left: { style: "thin" },
-            right: { style: "thin" },
-          },
-        },
-        columnNumbers: {
-          fill: { fgColor: { rgb: "FFFF00" } },
-          font: { bold: true, sz: 10 },
-          alignment: commonAlignment,
-          border: {
-            top: { style: "thin" },
-            bottom: { style: "thin" },
-            left: { style: "thin" },
-            right: { style: "thin" },
-          },
-        },
-        thickBorder: {
-          border: {
-            top: { style: "thick" },
-            bottom: { style: "thick" },
-            left: { style: "thick" },
-            right: { style: "thick" },
-          },
-        },
-        thinBorder: {
-          border: {
-            top: { style: "thin" },
-            bottom: { style: "thin" },
-            left: { style: "thin" },
-            right: { style: "thin" },
-          },
-        },
-      };
+  header: {
+    font: { bold: true, sz: 22 },
+    alignment: { horizontal: "center", vertical: "middle" },
+    wrapText: true,
+  },
+  subHeader: {
+    fill: { fgColor: { rgb: "9DC3E6" } },
+    font: { bold: true, sz: 12 },
+    alignment: commonAlignment,
+    border: {
+      top: { style: "thin" },
+      bottom: { style: "thin" },
+      left: { style: "thin" },
+      right: { style: "thin" },
+    },
+  },
+  columnNumbers: {
+    fill: { fgColor: { rgb: "FFFF00" } },
+    font: { bold: true, sz: 12 },
+    alignment: commonAlignment,
+    border: {
+      top: { style: "thin" },
+      bottom: { style: "thin" },
+      left: { style: "thin" },
+      right: { style: "thin" },
+    },
+  },
+  thickBorder: {
+    border: {
+      top: { style: "thick" },
+      bottom: { style: "thick" },
+      left: { style: "thick" },
+      right: { style: "thick" },
+    },
+  },
+  thinBorder: {
+    font: { sz: 10 }, // Set font size to 10
+    border: {
+      top: { style: "thin" },
+      bottom: { style: "thin" },
+      left: { style: "thin" },
+      right: { style: "thin" },
+    },
+  },
+};
+
 
       // Add headers to the worksheet
       headers.forEach((row, rowIndex) => {
@@ -719,6 +721,7 @@ button {
   background-color: #007bff;
   color: white;
   border: none;
+  font-size: 15px;
   border-radius: 3px;
   cursor: pointer;
 }
@@ -728,6 +731,7 @@ button:hover {
 }
 .btn-delete {
   background-color: red;
+  font-size: 15px;
 }
 
 .pdf-viewer {

@@ -79,7 +79,7 @@
                 </option>
               </select>
             </div>
-            <button type="button" @click="triggerFileUpload">Import</button>
+            <button type="button" @click="triggerFileUpload">Lampiran</button>
             <button type="submit">Masukan</button>
             <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
             

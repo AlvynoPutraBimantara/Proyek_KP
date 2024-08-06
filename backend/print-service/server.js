@@ -83,7 +83,6 @@ printServiceRouter.post("/ConvertToPDF/:filename", async (req, res) => {
         <style>
           body {
             font-family: Arial, sans-serif;
-            font-size: 10px;
           }
           table {
             width: 100%;
@@ -96,11 +95,12 @@ printServiceRouter.post("/ConvertToPDF/:filename", async (req, res) => {
             word-wrap: break-word; /* Ensures text wraps within the cell */
             white-space: normal;   /* Ensures text wraps within the cell */
             overflow: hidden;
+            font-size: 10px; 
           }
           th {
             background-color: #9DC3E6;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 12px;
           }
           .header {
             font-size: 22px;
