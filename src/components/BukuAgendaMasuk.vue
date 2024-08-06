@@ -407,7 +407,7 @@ export default {
         [
           "NO.",
           "   SURAT DARI   ",
-          "TGL SURAT",
+          "TGL. SURAT",
           "   NO. SURAT   ",
           "   PERIHAL   ",
           "DITERIMA TGL",
@@ -434,7 +434,7 @@ export default {
         },
         subHeader: {
           fill: { fgColor: { rgb: "9DC3E6" } },
-          font: { bold: true, sz: 12 },
+          font: { bold: true, sz: 11 },
           alignment: commonAlignment,
           border: {
             top: { style: "thin" },
@@ -445,7 +445,7 @@ export default {
         },
         columnNumbers: {
           fill: { fgColor: { rgb: "FFFF00" } },
-          font: { bold: true, sz: 12 },
+          font: { bold: true, sz: 10 },
           alignment: commonAlignment,
           border: {
             top: { style: "thin" },
