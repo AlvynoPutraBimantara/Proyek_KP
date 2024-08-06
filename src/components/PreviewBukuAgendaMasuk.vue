@@ -3,8 +3,12 @@
     <div class="header">
       <h1>Preview Cetak Buku Agenda Surat Masuk</h1>
     </div>
-    
-    <iframe v-if="pdfUrl" :src="pdfUrl" width="100%" height="1080px"></iframe>
+
+    <div v-if="loading" class="loading-indicator">
+      Loading...
+    </div>
+
+    <iframe v-if="pdfUrl && !loading" :src="pdfUrl" width="100%" height="1080px"></iframe>
   </div>
 </template>
 
@@ -17,6 +21,7 @@ export default {
     return {
       fileUrl: "",
       pdfUrl: "",
+      loading: true,
     };
   },
   async created() {
@@ -42,6 +47,8 @@ export default {
         this.pdfUrl = `http://localhost:3006${response.data.pdfUrl}`;
       } catch (error) {
         console.error("Error converting file to PDF:", error);
+      } finally {
+        this.loading = false;
       }
     },
     async cleanupFiles() {
@@ -65,5 +72,9 @@ export default {
 }
 .header {
   margin-bottom: 20px;
+}
+.loading-indicator {
+  font-size: 1.5em;
+  color: #555;
 }
 </style>

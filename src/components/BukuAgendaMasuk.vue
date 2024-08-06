@@ -463,7 +463,7 @@ export default {
     },
   },
   thinBorder: {
-    font: { sz: 10 }, // Set font size to 10
+    font: { sz: 10 }, 
     border: {
       top: { style: "thin" },
       bottom: { style: "thin" },
