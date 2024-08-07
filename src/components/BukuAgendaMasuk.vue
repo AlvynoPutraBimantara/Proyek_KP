@@ -1,7 +1,7 @@
 <template>
   <div class="data-produk-container">
     <div class="header-container">
-      <h1>BUKU AGENDA SURAT MASUK DI TATA USAHA</h1>
+      <h1 font-size >BUKU AGENDA SURAT MASUK DI TATA USAHA</h1>
       <div class="dropdown-container">
         <button @click="clearFilters" class="clear-button">Reset filter</button>
         <select v-model="selectedMonth" class="month-dropdown" @change="applyFilters">
@@ -29,10 +29,10 @@
         <table>
           <thead>
             <tr>
-              <th class="narrow-column" style="width: 2%;">No.</th>
-              <th class="narrow-column">Untuk Buku Agenda</th>
-              <th class="narrow-column">Lampiran PDF</th>
-              <th class="narrow-column" style="width: 7%;">
+              <th class="narrow-column header" style="width: 2%;">No.</th>
+              <th class="narrow-column header">Untuk Buku Agenda</th>
+              <th class="narrow-column header">Lampiran PDF</th>
+              <th class="narrow-column header" style="width: 7%;">
                 Surat Dari
                 <span @click="toggleSortMenu('suratDari')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -44,7 +44,7 @@
                   </ul>
                 </div>
               </th>
-              <th class="narrow-column" style="width: 5%;">
+              <th class="narrow-column header" style="width: 5%;">
                 Tgl. Surat
                 <span @click="toggleSortMenu('tanggalSurat')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -56,7 +56,7 @@
                   </ul>
                 </div>
               </th>
-              <th class="narrow-column" style="width: 7%;">
+              <th class="narrow-column header" style="width: 7%;">
                 No. Surat
                 <span @click="toggleSortMenu('noSurat')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -68,7 +68,7 @@
                   </ul>
                 </div>
               </th>
-              <th class="wide-column">
+              <th class="wide-column header">
                 Perihal
                 <span @click="toggleSortMenu('perihal')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -80,7 +80,7 @@
                   </ul>
                 </div>
               </th>
-              <th class="narrow-column" style="width: 5%;">
+              <th class="narrow-column header" style="width: 5%;">
                 Diterima Tgl.
                 <span @click="toggleSortMenu('diterimaTanggal')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -92,7 +92,7 @@
                   </ul>
                 </div>
               </th>
-              <th class="narrow-column" style="width: 7%;">
+              <th class="narrow-column header" style="width: 7%;">
                 No. Agenda
                 <span @click="toggleSortMenu('noAgenda')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -104,7 +104,7 @@
                   </ul>
                 </div>
               </th>
-              <th class="narrow-column" style="width: 3%;">
+              <th class="narrow-column header" style="width: 3%;">
                 Sifat
                 <span @click="toggleSortMenu('sifat')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -116,7 +116,7 @@
                   </ul>
                 </div>
               </th>
-              <th>
+              <th class="header">
                 Disposisi Sekretaris
                 <span @click="toggleSortMenu('disposisiSekretaris')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -128,7 +128,7 @@
                   </ul>
                 </div>
               </th>
-              <th>
+              <th class=" header">
                 Disposisi Kasumpeg
                 <span @click="toggleSortMenu('disposisiKasumpeg')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -140,7 +140,7 @@
                   </ul>
                 </div>
               </th>
-              <th>
+              <th class="header">
                 Tgl Disposisi
                 <span @click="toggleSortMenu('tanggalDisposisi')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -152,7 +152,7 @@
                   </ul>
                 </div>
               </th>
-              <th>Aksi</th>
+              <th class="header">Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -633,6 +633,9 @@ h1 {
   padding: 5px;
 }
 
+.header {
+  font-size: 15px;
+}
 .export-button {
   padding: 5px 10px;
   background-color: #28a745;
@@ -679,6 +682,7 @@ h1 {
   white-space: normal;
   word-break: break-word;
   overflow-wrap: break-word;
+ 
 }
 
 .table-container .wide-column {
