@@ -192,8 +192,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 20px;
-  padding: 20px;
+  gap: 10px;
+  padding: 10px;
 }
 
 .update-container {
@@ -212,7 +212,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
 }
 
 .form-group {

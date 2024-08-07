@@ -212,7 +212,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
 }
 
 .form-group {
@@ -244,7 +244,7 @@ export default {
   color: white;
   border: none;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .update button:hover {

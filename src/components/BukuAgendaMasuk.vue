@@ -4,30 +4,18 @@
       <h1>BUKU AGENDA SURAT MASUK DI TATA USAHA</h1>
       <div class="dropdown-container">
         <button @click="clearFilters" class="clear-button">Reset filter</button>
-        <select
-          v-model="selectedMonth"
-          class="month-dropdown"
-          @change="applyFilters"
-        >
+        <select v-model="selectedMonth" class="month-dropdown" @change="applyFilters">
           <option disabled value="">Pilih Bulan</option>
-          <option v-for="month in months" :key="month" :value="month">
-            {{ month }}
-          </option>
+          <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
         </select>
-        <select
-          v-model="selectedYear"
-          class="year-dropdown"
-          @change="applyFilters"
-        >
+        <select v-model="selectedYear" class="year-dropdown" @change="applyFilters">
           <option disabled value="">Pilih Tahun</option>
-          <option v-for="year in years" :key="year" :value="year">
-            {{ year }}
-          </option>
+          <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
         </select>
         <button @click="exportToExcel(false)" class="export-button">Export ke Excel</button>
-    <button @click="exportToExcel(true)" class="print-button">
-      <font-awesome-icon :icon="['fas', 'print']" /> Cetak
-    </button>
+        <button @click="exportToExcel(true)" class="print-button">
+          <font-awesome-icon :icon="['fas', 'print']" /> Cetak
+        </button>
       </div>
       <div class="search-container">
         <input type="text" v-model="searchQuery" placeholder="Cari Surat..." />
@@ -35,16 +23,16 @@
     </div>
     <div class="main-container">
       <div v-if="selectedPdfUrl" class="pdf-viewer">
-        <iframe :src="selectedPdfUrl" width="100%" height="1080px"></iframe>
+        <iframe :src="selectedPdfUrl" width="100%" height="100%"></iframe>
       </div>
       <div class="table-container">
         <table>
           <thead>
             <tr>
-              <th>No.</th>
-              <th>Untuk Buku Agenda</th>
-              <th>Lampiran PDF</th>
-              <th>
+              <th class="narrow-column" style="width: 2%;">No.</th>
+              <th class="narrow-column">Untuk Buku Agenda</th>
+              <th class="narrow-column">Lampiran PDF</th>
+              <th class="narrow-column" style="width: 7%;">
                 Surat Dari
                 <span @click="toggleSortMenu('suratDari')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -56,7 +44,7 @@
                   </ul>
                 </div>
               </th>
-              <th>
+              <th class="narrow-column" style="width: 5%;">
                 Tgl. Surat
                 <span @click="toggleSortMenu('tanggalSurat')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -68,7 +56,7 @@
                   </ul>
                 </div>
               </th>
-              <th>
+              <th class="narrow-column" style="width: 7%;">
                 No. Surat
                 <span @click="toggleSortMenu('noSurat')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -80,7 +68,7 @@
                   </ul>
                 </div>
               </th>
-              <th>
+              <th class="wide-column">
                 Perihal
                 <span @click="toggleSortMenu('perihal')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -92,7 +80,7 @@
                   </ul>
                 </div>
               </th>
-              <th>
+              <th class="narrow-column" style="width: 5%;">
                 Diterima Tgl.
                 <span @click="toggleSortMenu('diterimaTanggal')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -104,7 +92,7 @@
                   </ul>
                 </div>
               </th>
-              <th>
+              <th class="narrow-column" style="width: 7%;">
                 No. Agenda
                 <span @click="toggleSortMenu('noAgenda')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -116,7 +104,7 @@
                   </ul>
                 </div>
               </th>
-              <th>
+              <th class="narrow-column" style="width: 3%;">
                 Sifat
                 <span @click="toggleSortMenu('sifat')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -133,10 +121,7 @@
                 <span @click="toggleSortMenu('disposisiSekretaris')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
                 </span>
-                <div
-                  v-if="sortMenu === 'disposisiSekretaris'"
-                  class="sort-menu"
-                >
+                <div v-if="sortMenu === 'disposisiSekretaris'" class="sort-menu">
                   <ul>
                     <li @click="sortTable('disposisiSekretaris_asc')">A-Z</li>
                     <li @click="sortTable('disposisiSekretaris_desc')">Z-A</li>
@@ -173,28 +158,24 @@
           <tbody>
             <tr v-for="(item, index) in sortedSuratMasuk" :key="item.id">
               <td>{{ index + 1 }}</td>
-              <td>{{ item.bulan + " " + item.tahun }}</td>
-              <td>
-                <font-awesome-icon
-                  :icon="['fas', 'file-pdf']"
-                  @click="viewPdf(item.pdfUrl)"
-                />
+              <td class="narrow-column">{{ item.bulan + " " + item.tahun }}</td>
+              <!-- Updated icon with toggle functionality -->
+              <td class="narrow-column">
+                <font-awesome-icon :icon="['fas', 'file-pdf']" @click="togglePdfView(item.pdfUrl)" class="large-icon" />
               </td>
-              <td>{{ item.suratDari }}</td>
+              <td class="narrow-column">{{ item.suratDari }}</td>
               <td>{{ item.tanggalSurat }}</td>
-              <td>{{ item.noSurat }}</td>
-              <td>{{ item.perihal }}</td>
+              <td class="narrow-column">{{ item.noSurat }}</td>
+              <td class="wide-column">{{ item.perihal }}</td>
               <td>{{ item.diterimaTanggal }}</td>
-              <td>{{ item.noAgenda }}</td>
+              <td class="narrow-column">{{ item.noAgenda }}</td>
               <td>{{ item.sifat }}</td>
               <td>{{ item.disposisiSekretaris }}</td>
               <td>{{ item.disposisiKasumpeg }}</td>
               <td>{{ item.tanggalDisposisi }}</td>
               <td>
                 <button @click="editItem(item.id)">Edit</button>
-                <button @click="confirmDelete(item.id)" class="btn-delete">
-                  Hapus
-                </button>
+                <button @click="confirmDelete(item.id)" class="btn-delete">Hapus</button>
               </td>
             </tr>
           </tbody>
@@ -301,64 +282,63 @@ export default {
       return filtered;
     },
     sortedSuratMasuk() {
-      let sortedArray = this.filteredSuratMasuk.slice();
+    let sortedArray = this.filteredSuratMasuk.slice();
 
-      if (this.sortKey) {
-        sortedArray.sort((a, b) => {
-          switch (this.sortKey) {
-            case "tanggalSurat_asc":
-            case "tanggalSurat_desc":
-            case "diterimaTanggal_asc":
-            case "diterimaTanggal_desc":
-            case "tanggalDisposisi_asc":
-            case "tanggalDisposisi_desc": {
-              const dateA = new Date(a[this.sortKey.split("_")[0]]);
-              const dateB = new Date(b[this.sortKey.split("_")[0]]);
-              return this.sortKey.includes("asc")
-                ? dateA - dateB
-                : dateB - dateA;
-            }
-            case "sifat_biasa":
-            case "sifat_penting": {
-              return this.sortKey === "sifat_biasa"
-                ? a.sifat === "Biasa"
-                  ? -1
-                  : 1
-                : a.sifat === "Penting"
-                ? -1
-                : 1;
-            }
-            case "suratDari_asc":
-            case "suratDari_desc":
-            case "perihal_asc":
-            case "perihal_desc":
-            case "disposisiSekretaris_asc":
-            case "disposisiSekretaris_desc":
-            case "disposisiKasumpeg_asc":
-            case "disposisiKasumpeg_desc":
-            case "noAgenda_asc":
-            case "noAgenda_desc":
-            case "noSurat_asc":
-            case "noSurat_desc": {
-              // Natural sorting for specified columns
-              return this.sortKey.includes("asc")
-                ? naturalSort(
-                    a[this.sortKey.split("_")[0]],
-                    b[this.sortKey.split("_")[0]]
-                  )
-                : naturalSort(
-                    b[this.sortKey.split("_")[0]],
-                    a[this.sortKey.split("_")[0]]
-                  );
-            }
-            default:
-              return 0;
+    if (this.sortKey) {
+      sortedArray.sort((a, b) => {
+        const compareDates = (date1, date2) => {
+          const [day1, month1, year1] = date1.split("/").map(Number);
+          const [day2, month2, year2] = date2.split("/").map(Number);
+          if (year1 !== year2) return year1 - year2;
+          if (month1 !== month2) return month1 - month2;
+          return day1 - day2;
+        };
+
+        switch (this.sortKey) {
+          case "tanggalSurat_asc":
+          case "tanggalSurat_desc":
+          case "diterimaTanggal_asc":
+          case "diterimaTanggal_desc":
+          case "tanggalDisposisi_asc":
+          case "tanggalDisposisi_desc": {
+            const dateKey = this.sortKey.split("_")[0];
+            return this.sortKey.includes("asc")
+              ? compareDates(a[dateKey], b[dateKey])
+              : compareDates(b[dateKey], a[dateKey]);
           }
-        });
-      }
+          case "sifat_biasa":
+          case "sifat_penting": {
+            return this.sortKey === "sifat_biasa"
+              ? a.sifat === "Biasa" ? -1 : 1
+              : a.sifat === "Penting" ? -1 : 1;
+          }
+          case "suratDari_asc":
+          case "suratDari_desc":
+          case "perihal_asc":
+          case "perihal_desc":
+          case "disposisiSekretaris_asc":
+          case "disposisiSekretaris_desc":
+          case "disposisiKasumpeg_asc":
+          case "disposisiKasumpeg_desc":
+          case "noAgenda_asc":
+          case "noAgenda_desc":
+          case "noSurat_asc":
+          case "noSurat_desc": {
+            const valueA = a[this.sortKey.split("_")[0]].toLowerCase();
+            const valueB = b[this.sortKey.split("_")[0]].toLowerCase();
+            return this.sortKey.includes("asc")
+              ? naturalSort(valueA, valueB)
+              : naturalSort(valueB, valueA);
+          }
+          default:
+            return 0;
+        }
+      });
+    }
 
-      return sortedArray;
-    },
+    return sortedArray;
+  },
+
   },
   methods: {
     loadData() {
@@ -427,51 +407,51 @@ export default {
       };
 
       const styles = {
-  header: {
-    font: { bold: true, sz: 22 },
-    alignment: { horizontal: "center", vertical: "middle" },
-    wrapText: true,
-  },
-  subHeader: {
-    fill: { fgColor: { rgb: "9DC3E6" } },
-    font: { bold: true, sz: 12 },
-    alignment: commonAlignment,
-    border: {
-      top: { style: "thin" },
-      bottom: { style: "thin" },
-      left: { style: "thin" },
-      right: { style: "thin" },
-    },
-  },
-  columnNumbers: {
-    fill: { fgColor: { rgb: "FFFF00" } },
-    font: { bold: true, sz: 12 },
-    alignment: commonAlignment,
-    border: {
-      top: { style: "thin" },
-      bottom: { style: "thin" },
-      left: { style: "thin" },
-      right: { style: "thin" },
-    },
-  },
-  thickBorder: {
-    border: {
-      top: { style: "thick" },
-      bottom: { style: "thick" },
-      left: { style: "thick" },
-      right: { style: "thick" },
-    },
-  },
-  thinBorder: {
-    font: { sz: 10 }, 
-    border: {
-      top: { style: "thin" },
-      bottom: { style: "thin" },
-      left: { style: "thin" },
-      right: { style: "thin" },
-    },
-  },
-};
+        header: {
+          font: { bold: true, sz: 22 },
+          alignment: { horizontal: "center", vertical: "middle" },
+          wrapText: true,
+        },
+        subHeader: {
+          fill: { fgColor: { rgb: "9DC3E6" } },
+          font: { bold: true, sz: 12 },
+          alignment: commonAlignment,
+          border: {
+            top: { style: "thin" },
+            bottom: { style: "thin" },
+            left: { style: "thin" },
+            right: { style: "thin" },
+          },
+        },
+        columnNumbers: {
+          fill: { fgColor: { rgb: "FFFF00" } },
+          font: { bold: true, sz: 12 },
+          alignment: commonAlignment,
+          border: {
+            top: { style: "thin" },
+            bottom: { style: "thin" },
+            left: { style: "thin" },
+            right: { style: "thin" },
+          },
+        },
+        thickBorder: {
+          border: {
+            top: { style: "thick" },
+            bottom: { style: "thick" },
+            left: { style: "thick" },
+            right: { style: "thick" },
+          },
+        },
+        thinBorder: {
+          font: { sz: 10 },
+          border: {
+            top: { style: "thin" },
+            bottom: { style: "thin" },
+            left: { style: "thin" },
+            right: { style: "thin" },
+          },
+        },
+      };
 
 
       // Add headers to the worksheet
@@ -487,8 +467,8 @@ export default {
               rowIndex === 0 || rowIndex === 1
                 ? styles.header
                 : rowIndex === 3
-                ? styles.subHeader
-                : styles.columnNumbers,
+                  ? styles.subHeader
+                  : styles.columnNumbers,
           };
         });
       });
@@ -597,7 +577,7 @@ export default {
         }
       }
     },
-  
+
     applyFilters() {
       // This function will be triggered when the dropdowns change.
       // The filtering logic is already handled in the computed property 'filteredSuratMasuk'.
@@ -627,6 +607,9 @@ export default {
     },
     printData() {
       window.print();
+    },
+    togglePdfView(pdfUrl) {
+      this.selectedPdfUrl = this.selectedPdfUrl === pdfUrl ? null : pdfUrl;
     },
   },
   mounted() {
@@ -675,13 +658,16 @@ h1 {
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  height: 75%;
+  height: 720px;
+  overflow-y: auto;
 }
 
 .table-container table {
   width: 100%;
   border-collapse: collapse;
   border: 1px solid black;
+  font-size: 13px;
+  font-weight: normal;
 }
 
 .table-container th,
@@ -690,8 +676,17 @@ h1 {
   padding: 4px;
   text-align: left;
   word-wrap: break-word;
-  white-space: pre-wrap;
-  max-width: 10vw;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.table-container .wide-column {
+  width: 20%;
+}
+
+.table-container .narrow-column {
+  width: 5%;
 }
 
 th {
@@ -705,13 +700,16 @@ th {
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
+
 .sort-menu ul {
   list-style: none;
 }
+
 .sort-menu ul li {
   padding: 1px;
   cursor: pointer;
 }
+
 .sort-menu ul li:hover {
   background-color: #f2f2f2;
 }
@@ -729,6 +727,7 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+
 .btn-delete {
   background-color: red;
   font-size: 15px;
@@ -762,5 +761,14 @@ button:hover {
   color: white;
   border: none;
   cursor: pointer;
+}
+
+.large-icon {
+  width: 60%;
+  height: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 19px;
 }
 </style>
