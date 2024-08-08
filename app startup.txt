@@ -1,0 +1,10 @@
+cd api-gateway
+cd backend/user-service
+cd backend/surat-masuk-service
+cd backend/surat-keluar-service
+cd backend/file-upload-service
+cd backend/print-service
+
+node server.js
+
+npm run serve 

@@ -174,8 +174,8 @@
               <td>{{ item.disposisiKasumpeg }}</td>
               <td>{{ item.tanggalDisposisi }}</td>
               <td>
-                <button @click="editItem(item.id)">Edit</button>
-                <button @click="confirmDelete(item.id)" class="btn-delete">Hapus</button>
+                <button @click="editItem(item.id)">EDIT</button>
+                <button @click="confirmDelete(item.id)" class="btn-delete">HAPUS</button>
               </td>
             </tr>
           </tbody>
@@ -723,7 +723,8 @@ button {
   background-color: #007bff;
   color: white;
   border: none;
-  font-size: 15px;
+  font-size: 12px;
+  font-weight: bold;
   border-radius: 3px;
   cursor: pointer;
 }
@@ -734,7 +735,8 @@ button:hover {
 
 .btn-delete {
   background-color: red;
-  font-size: 15px;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .pdf-viewer {
