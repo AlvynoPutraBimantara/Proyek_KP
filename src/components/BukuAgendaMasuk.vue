@@ -282,62 +282,64 @@ export default {
       return filtered;
     },
     sortedSuratMasuk() {
-    let sortedArray = this.filteredSuratMasuk.slice();
+      let sortedArray = this.filteredSuratMasuk.slice();
 
-    if (this.sortKey) {
-      sortedArray.sort((a, b) => {
-        const compareDates = (date1, date2) => {
-          const [day1, month1, year1] = date1.split("/").map(Number);
-          const [day2, month2, year2] = date2.split("/").map(Number);
-          if (year1 !== year2) return year1 - year2;
-          if (month1 !== month2) return month1 - month2;
-          return day1 - day2;
-        };
+      if (this.sortKey) {
+        sortedArray.sort((a, b) => {
+          switch (this.sortKey) {
+            case "tanggalSurat_asc":
+            case "tanggalSurat_desc":
+            case "diterimaTanggal_asc":
+            case "diterimaTanggal_desc":
+            case "tanggalDisposisi_asc":
+            case "tanggalDisposisi_desc": {
+              const dateA = new Date(a[this.sortKey.split("_")[0]]);
+              const dateB = new Date(b[this.sortKey.split("_")[0]]);
+              return this.sortKey.includes("asc")
+                ? dateA - dateB
+                : dateB - dateA;
+            }
+            case "sifat_biasa":
+            case "sifat_penting": {
+              return this.sortKey === "sifat_biasa"
+                ? a.sifat === "Biasa"
+                  ? -1
+                  : 1
+                : a.sifat === "Penting"
+                  ? -1
+                  : 1;
+            }
+            case "suratDari_asc":
+            case "suratDari_desc":
+            case "perihal_asc":
+            case "perihal_desc":
+            case "disposisiSekretaris_asc":
+            case "disposisiSekretaris_desc":
+            case "disposisiKasumpeg_asc":
+            case "disposisiKasumpeg_desc":
+            case "noAgenda_asc":
+            case "noAgenda_desc":
+            case "noSurat_asc":
+            case "noSurat_desc": {
+              // Natural sorting for specified columns
+              return this.sortKey.includes("asc")
+                ? naturalSort(
+                  a[this.sortKey.split("_")[0]],
+                  b[this.sortKey.split("_")[0]]
+                )
+                : naturalSort(
+                  b[this.sortKey.split("_")[0]],
+                  a[this.sortKey.split("_")[0]]
+                );
+            }
+            default:
+              return 0;
+          }
+        });
+      }
 
-        switch (this.sortKey) {
-          case "tanggalSurat_asc":
-          case "tanggalSurat_desc":
-          case "diterimaTanggal_asc":
-          case "diterimaTanggal_desc":
-          case "tanggalDisposisi_asc":
-          case "tanggalDisposisi_desc": {
-            const dateKey = this.sortKey.split("_")[0];
-            return this.sortKey.includes("asc")
-              ? compareDates(a[dateKey], b[dateKey])
-              : compareDates(b[dateKey], a[dateKey]);
-          }
-          case "sifat_biasa":
-          case "sifat_penting": {
-            return this.sortKey === "sifat_biasa"
-              ? a.sifat === "Biasa" ? -1 : 1
-              : a.sifat === "Penting" ? -1 : 1;
-          }
-          case "suratDari_asc":
-          case "suratDari_desc":
-          case "perihal_asc":
-          case "perihal_desc":
-          case "disposisiSekretaris_asc":
-          case "disposisiSekretaris_desc":
-          case "disposisiKasumpeg_asc":
-          case "disposisiKasumpeg_desc":
-          case "noAgenda_asc":
-          case "noAgenda_desc":
-          case "noSurat_asc":
-          case "noSurat_desc": {
-            const valueA = a[this.sortKey.split("_")[0]].toLowerCase();
-            const valueB = b[this.sortKey.split("_")[0]].toLowerCase();
-            return this.sortKey.includes("asc")
-              ? naturalSort(valueA, valueB)
-              : naturalSort(valueB, valueA);
-          }
-          default:
-            return 0;
-        }
-      });
-    }
-
-    return sortedArray;
-  },
+      return sortedArray;
+    },
 
   },
   methods: {
@@ -562,7 +564,7 @@ export default {
 
           const xlsxUrl = response.data.xlsxUrl;
 
-          // Store the file URL in the "Print" database
+          // Simpan file ke database "Print"
           await axios.post("http://localhost:3006/print-service/Print", {
             table: "Print",
             data: { fileUrl: xlsxUrl },

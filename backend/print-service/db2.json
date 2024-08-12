@@ -1,4 +1,13 @@
 {
-  "PDF": [],
-  "Print": []
+  "PDF": [
+    {
+      "fileUrl": "/pdf/1723190396751-Buku Agenda Surat Masuk JUNI 2024.pdf",
+      "originalFile": "1723190396751-Buku Agenda Surat Masuk JUNI 2024.xlsx"
+    }
+  ],
+  "Print": [
+    {
+      "fileUrl": "/excel/1723190396751-Buku Agenda Surat Masuk JUNI 2024.xlsx"
+    }
+  ]
 }
