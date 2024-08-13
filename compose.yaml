@@ -8,16 +8,72 @@
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
 services:
-  server:
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./api-gateway:/usr/src/app
+    command: ["node", "server.js"]
+  
+  file-upload-service:
+    build:
+      context: ./backend/file-upload-service
+    ports:
+      - "3005:3005"
+    volumes:
+      - ./backend/file-upload-service:/usr/src/app
+      - ./backend/file-upload-service/uploads:/usr/src/app/uploads
+    command: ["node", "server.js"]
+
+  print-service:
+    build:
+      context: ./backend/print-service
+    ports:
+      - "3006:3006"
+    volumes:
+      - ./backend/print-service:/usr/src/app
+    command: ["node", "server.js"]
+
+  surat-keluar-service:
+    build:
+      context: ./backend/surat-keluar-service
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./backend/surat-keluar-service:/usr/src/app
+    command: ["node", "server.js"]
+
+  surat-masuk-service:
+    build:
+      context: ./backend/surat-masuk-service
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./backend/surat-masuk-service:/usr/src/app
+    command: ["node", "server.js"]
+
+  user-service:
+    build:
+      context: ./backend/user-service
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./backend/user-service:/usr/src/app
+    command: ["node", "server.js"]
+
+  frontend:
     build:
       context: .
     environment:
       NODE_ENV: production
     ports:
-      - 8080:8080
-    user: root  # Add this line to run as root
+      - "8080:8080"
+    user: root
     command: ["npm", "run", "serve"]
-
+    volumes:
+      - .:/usr/src/app
 
 
 
