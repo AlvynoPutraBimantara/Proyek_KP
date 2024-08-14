@@ -1,11 +1,8 @@
 <template>
   <div class="data-produk-container">
     <div class="header-container">
-      <h1 font-size >BUKU AGENDA SURAT MASUK DI TATA USAHA</h1>
+      <h1 font-size>BUKU AGENDA SURAT MASUK DI TATA USAHA</h1>
       <div class="dropdown-container">
-        <button @click="togglePdfView(true)" class="clear-button">
-          <font-awesome-icon :icon="['fas', 'file-pdf']" />
-        </button>
         <button @click="clearFilters" class="clear-button">Reset filter</button>
         <select v-model="selectedMonth" class="month-dropdown" @change="applyFilters">
           <option disabled value="">Pilih Bulan</option>
@@ -22,6 +19,9 @@
       </div>
       <div class="search-container">
         <input type="text" v-model="searchQuery" placeholder="Cari Surat..." />
+        <button v-if="pdfViewerActive" @click="togglePdfView(false)" class="close-button pdf-button">
+          <font-awesome-icon :icon="['fas', 'circle-xmark']" />
+        </button>
       </div>
     </div>
     <div class="main-container">
@@ -612,8 +612,9 @@ export default {
     printData() {
       window.print();
     },
-    togglePdfView(pdfUrl) {
-      this.selectedPdfUrl = this.selectedPdfUrl === pdfUrl ? null : pdfUrl;
+    togglePdfView(url) {
+      this.pdfViewerActive = !!url; // Set to true if URL is provided, false otherwise
+      this.selectedPdfUrl = url;
     },
   },
   mounted() {
@@ -737,6 +738,18 @@ button:hover {
   background-color: #0056b3;
 }
 
+.clear-button{
+  padding: 0.05vw 0.1vw;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+  cursor: pointer;
+  height: 4vh;
+}
+
 .btn-delete {
   background-color: red;
   font-size: 12px;
@@ -750,8 +763,8 @@ button:hover {
 }
 
 .search-container {
-  flex: 1;
-  text-align: left;
+  display: flex;
+  align-items: center;
 }
 
 .search-container input {
@@ -762,6 +775,7 @@ button:hover {
   max-width: 300px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  margin-right: 21vw;
 }
 
 .print-button {
@@ -781,4 +795,21 @@ button:hover {
   justify-content: center;
   padding-left: 19px;
 }
+
+.header-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.close-button{
+  padding: 10px 10px 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+font-size: 15px;
+width: 2vw;}
+  
+
 </style>

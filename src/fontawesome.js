@@ -4,10 +4,11 @@ import {
   faSort,
   faFilePdf,
   faBars,
-  faPrint
+  faPrint,
+  faCircleXmark
 } from "@fortawesome/free-solid-svg-icons";
 
 
-library.add(faSort,faFilePdf, faBars, faPrint);
+library.add(faSort,faFilePdf, faBars, faPrint, faCircleXmark);
 
 export default FontAwesomeIcon;
