@@ -218,8 +218,11 @@ export default {
 .form-group {
   display: flex;
   flex-direction: row;
-  align-items: center;
+ font-size: 18px;
+ text-align: left;
+ font-weight: bold;
   margin-bottom: 10px;
+  
 }
 
 .form-group label {

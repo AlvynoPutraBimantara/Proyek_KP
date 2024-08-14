@@ -19,9 +19,9 @@
       </div>
       <div class="search-container">
         <input type="text" v-model="searchQuery" placeholder="Cari Surat..." />
-        <button v-if="pdfViewerActive" @click="togglePdfView(false)" class="close-button pdf-button">
-          <font-awesome-icon :icon="['fas', 'circle-xmark']" />
-        </button>
+        <button v-if="pdfViewerActive" @click="togglePdfView(false)" class="close-button pdf-button larger-icon">
+  <font-awesome-icon :icon="['fas', 'circle-xmark']" />
+</button>
       </div>
     </div>
     <div class="main-container">
@@ -776,6 +776,7 @@ button:hover {
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-right: 21vw;
+  height:4vh;
 }
 
 .print-button {
@@ -801,15 +802,20 @@ button:hover {
   flex-direction: column;
 }
 
-.close-button{
-  padding: 10px 10px 10px;
-  background-color: red;
-  color: white;
+.close-button.pdf-button {
+  background-color: rgba(255, 0, 0, 0.5); 
   border: none;
-  border-radius: 4px;
+  padding: 5px;
   cursor: pointer;
-font-size: 15px;
-width: 2vw;}
-  
+}
+
+.close-button.pdf-button:hover {
+  background-color: rgba(0, 0, 0, 0.7); 
+}
+
+.close-button.pdf-button .fa-circle-xmark {
+  font-size: 20px; 
+}
+
 
 </style>

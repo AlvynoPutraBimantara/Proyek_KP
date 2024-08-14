@@ -1,7 +1,7 @@
 <template>
   <div class="data-produk-container">
     <div class="header-container">
-      <h1 font-size >BUKU AGENDA SURAT KELUAR DI TATA USAHA</h1>
+      <h1 font-size>BUKU AGENDA SURAT KELUAR DI TATA USAHA</h1>
       <div class="dropdown-container">
         <button @click="clearFilters" class="clear-button">Reset filter</button>
         <select v-model="selectedMonth" class="month-dropdown" @change="applyFilters">
@@ -19,6 +19,9 @@
       </div>
       <div class="search-container">
         <input type="text" v-model="searchQuery" placeholder="Cari Surat..." />
+        <button v-if="pdfViewerActive" @click="togglePdfView(false)" class="close-button pdf-button larger-icon">
+  <font-awesome-icon :icon="['fas', 'circle-xmark']" />
+</button>
       </div>
     </div>
     <div class="main-container">
@@ -159,7 +162,6 @@
             <tr v-for="(item, index) in sortedSuratKeluar" :key="item.id">
               <td>{{ index + 1 }}</td>
               <td class="narrow-column">{{ item.bulan + " " + item.tahun }}</td>
-              <!-- Updated icon with toggle functionality -->
               <td class="narrow-column">
                 <font-awesome-icon :icon="['fas', 'file-pdf']" @click="togglePdfView(item.pdfUrl)" class="large-icon" />
               </td>
@@ -610,8 +612,9 @@ export default {
     printData() {
       window.print();
     },
-    togglePdfView(pdfUrl) {
-      this.selectedPdfUrl = this.selectedPdfUrl === pdfUrl ? null : pdfUrl;
+    togglePdfView(url) {
+      this.pdfViewerActive = !!url; // Set to true if URL is provided, false otherwise
+      this.selectedPdfUrl = url;
     },
   },
   mounted() {
@@ -735,6 +738,18 @@ button:hover {
   background-color: #0056b3;
 }
 
+.clear-button{
+  padding: 0.05vw 0.1vw;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 3px;
+  cursor: pointer;
+  height: 4vh;
+}
+
 .btn-delete {
   background-color: red;
   font-size: 12px;
@@ -742,14 +757,14 @@ button:hover {
 }
 
 .pdf-viewer {
-  width: 66%;
+  width: 50%;
   padding-right: 10px;
   margin-bottom: 20px;
 }
 
 .search-container {
-  flex: 1;
-  text-align: left;
+  display: flex;
+  align-items: center;
 }
 
 .search-container input {
@@ -760,6 +775,8 @@ button:hover {
   max-width: 300px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  margin-right: 15vw;
+  height:4vh;
 }
 
 .print-button {
@@ -779,4 +796,25 @@ button:hover {
   justify-content: center;
   padding-left: 19px;
 }
+
+.header-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.close-button.pdf-button {
+  background-color: rgba(255, 0, 0, 0.5); 
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.close-button.pdf-button:hover {
+  background-color: rgba(0, 0, 0, 0.7); 
+}
+
+.close-button.pdf-button .fa-circle-xmark {
+  font-size: 20px; 
+}
+
 </style>
