@@ -3,6 +3,9 @@
     <div class="header-container">
       <h1 font-size >BUKU AGENDA SURAT MASUK DI TATA USAHA</h1>
       <div class="dropdown-container">
+        <button @click="togglePdfView(true)" class="clear-button">
+          <font-awesome-icon :icon="['fas', 'file-pdf']" />
+        </button>
         <button @click="clearFilters" class="clear-button">Reset filter</button>
         <select v-model="selectedMonth" class="month-dropdown" @change="applyFilters">
           <option disabled value="">Pilih Bulan</option>
@@ -44,7 +47,7 @@
                   </ul>
                 </div>
               </th>
-              <th class="narrow-column header" style="width: 5%;">
+              <th class="narrow-column header" style="width: 4%;">
                 Tgl. Surat
                 <span @click="toggleSortMenu('tanggalSurat')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -116,7 +119,7 @@
                   </ul>
                 </div>
               </th>
-              <th class="header">
+              <th class="wide-column header" style="width: 10%;">
                 Disposisi Sekretaris
                 <span @click="toggleSortMenu('disposisiSekretaris')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -128,7 +131,7 @@
                   </ul>
                 </div>
               </th>
-              <th class=" header">
+              <th class="wide-column header" style="width: 10%;">
                 Disposisi Kasumpeg
                 <span @click="toggleSortMenu('disposisiKasumpeg')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -140,7 +143,7 @@
                   </ul>
                 </div>
               </th>
-              <th class="header">
+              <th class="narrow-column header" style="width: 4%;">
                 Tgl Disposisi
                 <span @click="toggleSortMenu('tanggalDisposisi')">
                   <font-awesome-icon :icon="['fas', 'sort']" />
@@ -152,14 +155,13 @@
                   </ul>
                 </div>
               </th>
-              <th class="header">Aksi</th>
+              <th class="narrow-column header" style="width: 3%;">Aksi</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(item, index) in sortedSuratMasuk" :key="item.id">
               <td>{{ index + 1 }}</td>
               <td class="narrow-column">{{ item.bulan + " " + item.tahun }}</td>
-              <!-- Updated icon with toggle functionality -->
               <td class="narrow-column">
                 <font-awesome-icon :icon="['fas', 'file-pdf']" @click="togglePdfView(item.pdfUrl)" class="large-icon" />
               </td>

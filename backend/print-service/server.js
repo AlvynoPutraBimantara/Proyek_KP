@@ -35,9 +35,6 @@ const upload = multer({ storage });
 
 const printServiceRouter = express.Router();
 
-
-
-
 (async () => {
   const browser = await puppeteer.launch({
     executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser',

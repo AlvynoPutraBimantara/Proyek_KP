@@ -11,6 +11,7 @@ import SuratKeluar from "./components/SuratKeluar.vue";
 import BukuAgendaKeluar from "./components/BukuAgendaKeluar.vue";
 import EditSuratKeluar from "./components/EditSuratKeluar.vue";
 import PreviewBukuAgendaMasuk from "./components/PreviewBukuAgendaMasuk";
+import PreviewBukuAgendaKeluar from "./components/PreviewBukuAgendaKeluar";
 
 PreviewBukuAgendaMasuk;
 const routes = [
@@ -73,6 +74,11 @@ const routes = [
     name: "PreviewBukuAgendaMasuk",
     component: PreviewBukuAgendaMasuk,
     path: "/PreviewBukuAgendaMasuk",
+  },
+  {
+    name: "PreviewBukuAgendaKeluar",
+    component: PreviewBukuAgendaKeluar,
+    path: "/PreviewBukuAgendaKeluar",
   },
 ];
 

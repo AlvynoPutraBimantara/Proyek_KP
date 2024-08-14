@@ -69,7 +69,7 @@
               </option>
             </select>
           </div>
-          <button type="button" @click="triggerFileUpload">Import</button>
+          <button type="button" @click="triggerFileUpload">LAMPIRAN</button>
           <button type="submit">SIMPAN</button>
           <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
         </form>
@@ -147,7 +147,7 @@ export default {
           formattedData.pdfUrl = `http://localhost:3005${response.data.pdfUrl}`;
         }
 
-        const result = await axios.put(`http://localhost:3003/SuratKeluar/${id}`, formattedData);
+        const result = await axios.put(`http://localhost:3004/SuratKeluar/${id}`, formattedData);
         if (result.status === 200) {
           this.$router.push({ name: "BukuAgendaKeluar" });
         }

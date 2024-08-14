@@ -152,7 +152,7 @@ export default {
           alert("An error occurred while adding the product. Please try again later.");
         }
       } else {
-        alert("Please fill out all required fields.");
+        alert("Lengkapi semua kolom.");
       }
     },
     validateForm() {
