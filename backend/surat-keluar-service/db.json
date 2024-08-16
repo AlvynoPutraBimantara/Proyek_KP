@@ -1,4 +1,5 @@
- [
+{
+  "SuratKeluar": [
     {
       "id": "f1d7",
       "suratDari": "Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1Test1",
@@ -112,3 +113,4 @@
       "id": "def611"
     }
   ]
+}

@@ -1,4 +1,5 @@
- [
+{
+  "SuratMasuk": [
     {
       "id": "a303",
       "suratDari": "PT. TAHARICA",
@@ -240,3 +241,4 @@
       "id": "0956111111"
     }
   ]
+}
