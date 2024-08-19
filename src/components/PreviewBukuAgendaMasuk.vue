@@ -25,6 +25,7 @@ export default {
     };
   },
   async created() {
+    await this.deleteDbJsonData();
     this.loadFile();
     await this.viewFileAsPDF();
   },
@@ -32,6 +33,13 @@ export default {
     this.cleanupFiles();
   },
   methods: {
+    async deleteDbJsonData() {
+      try {
+        await axios.post("http://localhost:3006/cleanup-dbjson");
+      } catch (error) {
+        console.error("Error deleting data from db.json:", error);
+      }
+    },
     loadFile() {
       const fileUrl = this.$route.query.fileUrl;
       if (fileUrl) {
@@ -61,6 +69,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 .preview-buku-agenda-masuk-container {

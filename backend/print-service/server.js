@@ -35,10 +35,21 @@ const upload = multer({ storage });
 
 const printServiceRouter = express.Router();
 
+// Docker compatibility
 (async () => {
+  // eslint-disable-next-line no-unused-vars
   const browser = await puppeteer.launch({
     executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || '/usr/bin/chromium-browser',
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
+
+  app.get("/", (req, res) => {
+    const dbPath = path.join(__dirname, "db.json");
+    if (fs.existsSync(dbPath)) {
+      fs.writeFileSync(dbPath, JSON.stringify({}, null, 2));
+      console.log("Data in db.json has been deleted.");
+    }
+    res.send("Page refreshed. Data in db.json has been deleted.");
   });
 
   printServiceRouter.post("/", upload.single("xlsx"), (req, res) => {
@@ -73,16 +84,16 @@ const printServiceRouter = express.Router();
     const excelPath = path.join(excelDir, filename);
     const pdfFilename = filename.replace(".xlsx", ".pdf");
     const pdfPath = path.join(pdfDir, pdfFilename);
-
+  
     if (!fs.existsSync(excelPath)) {
       return res.status(404).send("Excel file not found.");
     }
-
+  
     try {
       const workbook = new ExcelJS.Workbook();
       await workbook.xlsx.readFile(excelPath);
       const worksheet = workbook.getWorksheet(1);
-
+  
       let htmlContent = `
         <html>
         <head>
@@ -98,10 +109,10 @@ const printServiceRouter = express.Router();
               border: 1px solid black;
               padding: 5px;
               text-align: center;
-              word-wrap: break-word; /* Ensures text wraps within the cell */
-              white-space: normal;   /* Ensures text wraps within the cell */
+              word-wrap: break-word;
+              white-space: normal;
               overflow: hidden;
-              font-size: 10px; 
+              font-size: 10px;
             }
             th {
               background-color: #9DC3E6;
@@ -124,7 +135,7 @@ const printServiceRouter = express.Router();
         </head>
         <body>
       `;
-
+  
       worksheet.eachRow((row, rowNumber) => {
         if (rowNumber === 1 || rowNumber === 2) {
           htmlContent += `<div class="header">${row.getCell(2).value}</div>`;
@@ -148,9 +159,15 @@ const printServiceRouter = express.Router();
           htmlContent += "</tr>";
         }
       });
-
+  
       htmlContent += "</table></body></html>";
-
+  
+      console.log("Generated HTML content:", htmlContent); // Log the HTML content
+  
+      const browser = await puppeteer.launch({
+        executablePath: puppeteer.executablePath(),
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+      });
       const page = await browser.newPage();
       await page.setContent(htmlContent);
       await page.pdf({
@@ -159,26 +176,26 @@ const printServiceRouter = express.Router();
         printBackground: true,
         landscape: true,
       });
-      await page.close();
-
-      // Save the PDF URL to the database
-      const dbPath = path.join(__dirname, "db2.json");
+      await browser.close();
+  
+      const dbPath = path.join(__dirname, "db.json");
       let db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
-
+  
       if (!db.PDF) {
         db.PDF = [];
       }
-
+  
       db.PDF.push({ fileUrl: `/pdf/${pdfFilename}`, originalFile: filename });
-
+  
       fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
-
+  
       res.json({ pdfUrl: `/pdf/${pdfFilename}` });
     } catch (error) {
       console.error("Error converting Excel to PDF:", error);
       res.status(500).send("Failed to convert the file to PDF.");
     }
   });
+  
 
   printServiceRouter.post("/Print", (req, res) => {
     const { table, data } = req.body;
@@ -187,7 +204,7 @@ const printServiceRouter = express.Router();
     }
 
     try {
-      const dbPath = path.join(__dirname, "db2.json");
+      const dbPath = path.join(__dirname, "db.json");
       let db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
 
       if (!db[table]) {
@@ -205,7 +222,7 @@ const printServiceRouter = express.Router();
   });
 
   printServiceRouter.post("/cleanup", async (req, res) => {
-    const dbPath = path.join(__dirname, "db2.json");
+    const dbPath = path.join(__dirname, "db.json");
     let db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
 
     if (db.PDF && db.PDF.length > 0) {
@@ -242,6 +259,16 @@ const printServiceRouter = express.Router();
     res.status(200).send("Cleanup completed.");
   });
 
+  // Additional cleanup function for db.json
+  app.post("/cleanup-dbjson", (req, res) => {
+    const dbPath = path.join(__dirname, "db.json");
+    if (fs.existsSync(dbPath)) {
+      fs.writeFileSync(dbPath, JSON.stringify({}, null, 2));
+      console.log("Data in db.json has been deleted.");
+    }
+    res.status(200).send("db.json cleanup completed.");
+  });
+
   app.use("/excel", express.static(path.join(__dirname, "excel")));
   app.use("/pdf", express.static(path.join(__dirname, "pdf")));
   app.use("/print-service", printServiceRouter);
@@ -249,6 +276,4 @@ const printServiceRouter = express.Router();
   app.listen(port, () => {
     console.log(`Print service running on port ${port}`);
   });
-})().catch(error => {
-  console.error('Failed to start service:', error);
-});
+})();
