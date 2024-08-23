@@ -25,7 +25,9 @@
     >
       CETAK BUKU AGENDA SURAT MASUK
     </router-link>
-
+    <router-link to="/Informasi" class="large-icon">
+      <font-awesome-icon :icon="['fas', 'circle-info']" class="icon-large" />
+    </router-link>
     <a @click.prevent="logout" class="logout-btn" href="#">Logout</a>
   </nav>
 </template>
@@ -64,18 +66,28 @@ export default {
 .nav {
   background-color: darkblue;
   display: flex;
-  align-items: left;
+  align-items: center;
   padding: 1vh 10px;
   width: 100%;
   gap: 1vh;
   box-sizing: border-box;
 }
 
+.large-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 19px;
+}
+
+.icon-large {
+  font-size: 30px; /* Adjust the size as needed */
+}
+
 .nav a,
 .nav button {
   color: aliceblue;
   padding: 10px;
-  padding-left: 10px;
   text-align: center;
   font-size: 15px;
   border-radius: 5px;
