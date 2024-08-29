@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import SignUp from "./components/SignUp.vue";
 import Login from "./components/Login.vue";
 import BukuAgendaMasuk from "./components/BukuAgendaMasuk.vue";
 import SuratMasuk from "./components/SuratMasuk.vue";
@@ -20,11 +19,6 @@ const routes = [
     path: "/",
     name: "LandingPage",
     component: LandingPage,
-  },
-  {
-    name: "SignUp",
-    component: SignUp,
-    path: "/sign-up",
   },
   {
     name: "Login",

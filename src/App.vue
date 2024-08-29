@@ -1,5 +1,5 @@
 <template>
-  <div id="wrapper" class="d-flex">
+  <div id="wrapper" class="d-flex toggled">
     <!-- Sidebar -->
     <Sidebar v-if="isAdmin" @logout="logout" />
     <UserSidebar v-if="isUser" @logout="logout" />
@@ -7,7 +7,7 @@
 
     <!-- Page Content -->
     <div id="page-content-wrapper" class="flex-column">
-      <Header />
+      <Header @toggle-sidebar="toggleSidebar" />
       <div class="container-fluid">
         <!-- Router view for dynamic content -->
         <router-view></router-view>
@@ -32,7 +32,7 @@ export default {
   components: {
     Sidebar,
     Header,
-    UserSidebar
+    UserSidebar,
   },
   computed: {
     isLoggedIn() {
@@ -54,6 +54,9 @@ export default {
         window.location.reload();
       });
     },
+    toggleSidebar() {
+      document.getElementById("wrapper").classList.toggle("toggled");
+    },
   },
   mounted() {
     if (!this.isLoggedIn) {
@@ -62,6 +65,8 @@ export default {
   },
 };
 </script>
+
+
 
 <style>
 #app {

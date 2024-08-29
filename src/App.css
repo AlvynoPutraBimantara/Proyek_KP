@@ -15,12 +15,21 @@ body {
 
 #sidebar-wrapper {
   min-height: 100vh;
-  margin-left: -5rem;
+  margin-left: -300px; /* Hide the sidebar by default */
   -webkit-transition: margin 0.25s ease-out;
   -moz-transition: margin 0.25s ease-out;
   -o-transition: margin 0.25s ease-out;
   transition: margin 0.25s ease-out;
 }
+
+#wrapper.toggled #sidebar-wrapper {
+  margin-left: 0;
+}
+
+#page-content-wrapper {
+  width: 100%;
+}
+
 
 #sidebar-wrapper .sidebar-heading {
   padding: 2rem 2rem;

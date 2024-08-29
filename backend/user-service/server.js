@@ -1,98 +1,113 @@
+// E:\KP\Proyek-KP-master\backend\user-service\server.js
+
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const fs = require("fs");
-const path = require("path");
+const pool = require("./db");
 
 const app = express();
-const port = 3002;
+const port = process.env.PORT || 3002;
 
 app.use(cors());
 app.use(bodyParser.json());
 
-const dbFilePath = path.join(__dirname, "db.json");
-
-const getData = () => {
-  if (!fs.existsSync(dbFilePath)) {
-    const initialData = { User: [] };
-    fs.writeFileSync(dbFilePath, JSON.stringify(initialData, null, 2));
+app.get("/test-db-connection", async (req, res) => {
+  try {
+    // eslint-disable-next-line no-unused-vars
+    const [rows] = await pool.query("SELECT 1");
+    res.status(200).send("Database connection successful");
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-  return JSON.parse(fs.readFileSync(dbFilePath, "utf-8"));
-};
+});
 
-const saveData = (data) => fs.writeFileSync(dbFilePath, JSON.stringify(data, null, 2));
-
-// Function to generate a random 4-digit ID
-const generateRandomId = () => {
-  return Math.floor(1000 + Math.random() * 9000).toString();
-};
-
-app.get("/User", (req, res) => {
-  const data = getData();
+// Fetch all users or a specific user by Nama and Password
+app.get("/User", async (req, res) => {
   const { Nama, Password } = req.query;
+  try {
+    let query = "SELECT * FROM `user`";
+    const params = [];
 
-  if (Nama && Password) {
-    const user = data.User.find((u) => u.Nama === Nama && u.Password === Password);
-    if (user) {
-      res.json([user]);
-    } else {
-      res.status(401).send("Invalid credentials");
+    if (Nama && Password) {
+      query += " WHERE Nama = ? AND Password = ?";
+      params.push(Nama, Password);
     }
-  } else {
-    res.json(data.User);
+
+    const [rows] = await pool.query(query, params);
+
+    if (Nama && Password) {
+      if (rows.length > 0) {
+        res.json(rows);
+      } else {
+        res.status(401).send("Invalid credentials");
+      }
+    } else {
+      res.json(rows);
+    }
+  } catch (error) {
+    console.error("Error during /User query:", error.message);
+    res.status(500).json({ error: error.message });
   }
 });
 
-app.get("/User/:id", (req, res) => {
-  const data = getData();
-  const userId = req.params.id; // userId is a string
-  const user = data.User.find((u) => u.id === userId);
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404).send("User not found");
+// Fetch a user by ID
+app.get("/User/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [rows] = await pool.query("SELECT * FROM `user` WHERE id = ?", [id]);
+
+    if (rows.length > 0) {
+      res.json(rows[0]);
+    } else {
+      res.status(404).send("User not found");
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
-app.post("/User", (req, res) => {
-  const data = getData();
-  const newUser = req.body;
-
-  // Generate a random 4-digit ID and ensure it's unique
-  let id;
-  do {
-    id = generateRandomId();
-  } while (data.User.some(user => user.id === id));
-
-  newUser.id = id;
-  data.User.push(newUser);
-  saveData(data);
-  res.status(201).json(newUser);
-});
-
-app.put("/User/:id", (req, res) => {
-  const data = getData();
-  const userId = req.params.id; // userId is a string
-  const userIndex = data.User.findIndex((u) => u.id === userId);
-  if (userIndex !== -1) {
-    data.User[userIndex] = req.body;
-    saveData(data);
-    res.status(200).json(data.User[userIndex]);
-  } else {
-    res.status(404).send("User not found");
+// Create a new user
+app.post("/User", async (req, res) => {
+  const { Nama, Password } = req.body;
+  const id = Math.random().toString(36).substring(2, 15);
+  try {
+    await pool.query("INSERT INTO `user` (id, Nama, Password) VALUES (?, ?, ?)", [id, Nama, Password]);
+    res.status(201).json({ id, Nama, Password });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
-app.delete("/User/:id", (req, res) => {
-  const data = getData();
-  const userId = req.params.id; // userId is a string
-  const userIndex = data.User.findIndex((u) => u.id === userId);
-  if (userIndex !== -1) {
-    data.User.splice(userIndex, 1);
-    saveData(data);
-    res.status(200).send("User deleted successfully");
-  } else {
-    res.status(404).send("User not found");
+// Update a user by ID
+app.put("/User/:id", async (req, res) => {
+  const { id } = req.params;
+  const { Nama, Password } = req.body;
+  try {
+    const [result] = await pool.query("UPDATE `user` SET Nama = ?, Password = ? WHERE id = ?", [Nama, Password, id]);
+
+    if (result.affectedRows > 0) {
+      res.status(200).json({ id, Nama, Password });
+    } else {
+      res.status(404).send("User not found");
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Delete a user by ID
+app.delete("/User/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const [result] = await pool.query("DELETE FROM `user` WHERE id = ?", [id]);
+
+    if (result.affectedRows > 0) {
+      res.status(200).send("User deleted successfully");
+    } else {
+      res.status(404).send("User not found");
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 

@@ -1,6 +1,6 @@
 <template>
   <nav class="nav">
-    <button class="btn btn-primary" @click="toggleMenu" id="menu-toggle">
+    <button class="btn btn-primary" @click="$emit('toggle-sidebar')" id="menu-toggle">
       <font-awesome-icon :icon="['fas', 'bars']" />
     </button>
     <router-link
@@ -25,9 +25,16 @@
     >
       CETAK BUKU AGENDA SURAT MASUK
     </router-link>
-    <router-link to="/Informasi" class="large-icon">
+
+    <!-- Conditionally display the Informasi link based on login status -->
+    <router-link
+      v-if="isLoggedIn"
+      to="/Informasi"
+      class="large-icon"
+    >
       <font-awesome-icon :icon="['fas', 'circle-info']" class="icon-large" />
     </router-link>
+
     <a @click.prevent="logout" class="logout-btn" href="#">Logout</a>
   </nav>
 </template>
@@ -44,11 +51,11 @@ export default {
       const user = JSON.parse(localStorage.getItem("user-info"));
       return user && user.role !== "admin";
     },
+    isLoggedIn() {
+      return !!localStorage.getItem("user-info");
+    }
   },
   methods: {
-    toggleMenu() {
-      document.getElementById("wrapper").classList.toggle("toggled");
-    },
     logout() {
       localStorage.clear();
       this.$router.push({ name: "LandingPage" }).then(() => {
@@ -61,6 +68,8 @@ export default {
   },
 };
 </script>
+
+
 
 <style scoped>
 .nav {
