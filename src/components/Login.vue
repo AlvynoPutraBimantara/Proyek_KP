@@ -42,7 +42,9 @@ export default {
           const user = result.data[0];
           localStorage.setItem("user-info", JSON.stringify(user));
           localStorage.removeItem("guest");
-          if (user.role === "admin") {
+
+          // Redirect based on the user role
+          if (user.Role === "admin") {
             this.$router.push({ name: "BukuAgendaMasuk" });
           } else {
             this.$router.push({ name: "BukuAgendaMasuk" });
@@ -61,7 +63,7 @@ export default {
     let user = localStorage.getItem("user-info");
     if (user) {
       const parsedUser = JSON.parse(user);
-      if (parsedUser.role === "admin") {
+      if (parsedUser.Role === "admin") {
         this.$router.push({ name: "BukuAgendaMasuk" });
       } else {
         this.$router.push({ name: "BukuAgendaMasuk" });
@@ -70,6 +72,8 @@ export default {
   },
 };
 </script>
+
+
 
 <style scoped>
 .login-container {

@@ -40,11 +40,11 @@ export default {
     },
     isAdmin() {
       const user = JSON.parse(localStorage.getItem("user-info"));
-      return user && user.role === "admin";
+      return user && user.Role === "admin";
     },
     isUser() {
       const user = JSON.parse(localStorage.getItem("user-info"));
-      return user && user.role !== "admin";
+      return user && user.Role !== "admin";
     },
   },
   methods: {
@@ -66,8 +66,7 @@ export default {
 };
 </script>
 
-
-
+R
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

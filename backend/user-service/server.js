@@ -1,4 +1,4 @@
-// E:\KP\Proyek-KP-master\backend\user-service\server.js
+// server.js
 
 const express = require("express");
 const cors = require("cors");
@@ -50,6 +50,7 @@ app.get("/User", async (req, res) => {
   }
 });
 
+
 // Fetch a user by ID
 app.get("/User/:id", async (req, res) => {
   const { id } = req.params;
@@ -68,11 +69,11 @@ app.get("/User/:id", async (req, res) => {
 
 // Create a new user
 app.post("/User", async (req, res) => {
-  const { Nama, Password } = req.body;
+  const { Nama, Password, Role } = req.body; // Include role in request
   const id = Math.random().toString(36).substring(2, 15);
   try {
-    await pool.query("INSERT INTO `user` (id, Nama, Password) VALUES (?, ?, ?)", [id, Nama, Password]);
-    res.status(201).json({ id, Nama, Password });
+    await pool.query("INSERT INTO `user` (id, Nama, Password, Role) VALUES (?, ?, ?, ?)", [id, Nama, Password, Role || "user"]);
+    res.status(201).json({ id, Nama, Password, Role: Role || "user" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -81,12 +82,12 @@ app.post("/User", async (req, res) => {
 // Update a user by ID
 app.put("/User/:id", async (req, res) => {
   const { id } = req.params;
-  const { Nama, Password } = req.body;
+  const { Nama, Password, Role } = req.body; // Include role in update
   try {
-    const [result] = await pool.query("UPDATE `user` SET Nama = ?, Password = ? WHERE id = ?", [Nama, Password, id]);
+    const [result] = await pool.query("UPDATE `user` SET Nama = ?, Password = ?, Role = ? WHERE id = ?", [Nama, Password, Role, id]);
 
     if (result.affectedRows > 0) {
-      res.status(200).json({ id, Nama, Password });
+      res.status(200).json({ id, Nama, Password, Role });
     } else {
       res.status(404).send("User not found");
     }
