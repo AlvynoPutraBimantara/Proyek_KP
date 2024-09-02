@@ -191,6 +191,50 @@
       "tahun": 2024,
       "pdfUrl": "http://localhost:3005/uploads/1724380233267-18. Dinas Komunikasi dan Informatika Prov. Jatim (Partisipasi JPRA 2024).pdf",
       "id": "09561111111"
+    },
+    {
+      "suratDari": "Test15",
+      "tanggalSurat": "30/08/2024",
+      "noSurat": "Test15",
+      "perihal": "Test15",
+      "diterimaTanggal": "30/08/2024",
+      "noAgenda": "Test15",
+      "sifat": "Biasa",
+      "disposisiSekretaris": "Test15",
+      "disposisiKasumpeg": "Test15",
+      "tanggalDisposisi": "30/08/2024",
+      "bulan": "AGUSTUS",
+      "tahun": 2024,
+      "pdfUrl": "http://localhost:3005/uploads/1725002716856-40. Sekretariat Daerah (Rapat Persipan Sosialisasi Pengadaan Barjas Pemerintah yg Berkelanjutan).pdf",
+      "id": "095611111111"
+    },
+    {
+      "suratDari": "Test16",
+      "tanggalSurat": "30/08/2024",
+      "noSurat": "Test16",
+      "perihal": "Test16",
+      "diterimaTanggal": "30/08/2024",
+      "noAgenda": "Test16",
+      "sifat": "Biasa",
+      "disposisiSekretaris": "Test16",
+      "disposisiKasumpeg": "Test16",
+      "tanggalDisposisi": "30/08/2024",
+      "bulan": "AGUSTUS",
+      "tahun": 2024,
+      "pdfUrl": "http://localhost:3005/uploads/1725003899776-27. Sekretariat Daerah Provinsi Jawa Timur (Pemberitahuan Jadwal Pengisian f-01 & f-03 PEKPPP Prov. Jatim).pdf",
+      "id": "IHT4"
+    },
+    {
+      "suratDari": "Test17",
+      "tanggalSurat": "30/08/2024",
+      "noSurat": "Test17",
+      "perihal": "Test17",
+      "diterimaTanggal": "30/08/2024",
+      "noAgenda": "Test17",
+      "tanggalDisposisi": "30/08/2024",
+      "bulan": "AGUSTUS",
+      "tahun": 2024,
+      "id": "IHT41"
     }
   ]
 }

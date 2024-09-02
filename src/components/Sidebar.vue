@@ -18,7 +18,7 @@
         >BUKU AGENDA SURAT KELUAR</router-link
       >
       <router-link
-        to="/SuratMasuk"
+        to="/SuratKeluar"
         class="list-group-item list-group-item-action bg-light"
         >INPUT SURAT KELUAR</router-link
       >

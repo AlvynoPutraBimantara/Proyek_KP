@@ -102,7 +102,7 @@ export default {
       selectedMonth: "",
       selectedYear: "",
       months: [
-       "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
+        "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
         "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
       ],
       years: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
@@ -147,6 +147,11 @@ export default {
           formattedData.pdfUrl = `http://localhost:3005${response.data.pdfUrl}`;
         }
 
+        // Remove empty fields from formattedData
+        Object.keys(formattedData).forEach(key => {
+          if (!formattedData[key]) delete formattedData[key];
+        });
+
         const result = await axios.put(`http://localhost:3003/SuratMasuk/${id}`, formattedData);
         if (result.status === 200) {
           this.$router.push({ name: "BukuAgendaMasuk" });
@@ -185,8 +190,8 @@ export default {
     }
   }
 };
-
 </script>
+
 <style scoped>
 .main-container {
   display: flex;
@@ -201,59 +206,37 @@ export default {
   padding: 20px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  flex: 1;
 }
 
-.update {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 10px;
+.pdf-viewer iframe {
+  border: none;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
-.form-group label {
-  width: 150px;
-  margin-right: 10px;
+label {
+  font-weight: bold;
 }
 
-.update input,
-.update select,
-.update button {
-  display: block;
+input, select, button {
+  width: 100%;
   padding: 10px;
-  width: 400px;
-  box-sizing: border-box;
+  font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 16px;
 }
 
-.update button {
-  background-color: #007bff;
+button {
+  background-color: #4CAF50;
   color: white;
-  border: none;
   cursor: pointer;
+  border: none;
   margin-top: 20px;
 }
 
-.update button:hover {
-  background-color: #0056b3;
-}
-
-.pdf-viewer {
-  flex: 0 1 50%;
-  max-width: 100%;
+button:hover {
+  background-color: #45a049;
 }
 </style>
-

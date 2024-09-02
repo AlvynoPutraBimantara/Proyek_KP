@@ -60,6 +60,7 @@
             <label for="tanggalDisposisi">Tanggal Disposisi</label>
             <input type="date" id="tanggalDisposisi" v-model="SuratMasuk.tanggalDisposisi" />
           </div>
+
           <div class="form-group">
             <label for="bulan">Bulan</label>
             <select id="bulan" v-model="selectedMonth">
@@ -79,6 +80,7 @@
               </option>
             </select>
           </div>
+          
           <button type="button" @click="triggerFileUpload">LAMPIRAN</button>
           <button type="submit">SIMPAN</button>
           <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
@@ -88,7 +90,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 import axios from "axios";
@@ -111,54 +112,51 @@ export default {
       },
       pdfFile: null,
       pdfUrl: null,
-      selectedMonth: "", // Add selectedMonth data property
-      selectedYear: "", // Add selectedYear data property
+      selectedMonth: "", 
+      selectedYear: "", 
       months: [
         "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
         "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
-      ], // Add months array
+      ], 
       years: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
     };
   },
   methods: {
     async submitProduct() {
-      if (this.validateForm()) {
-        try {
-          const formattedData = {
-            ...this.SuratMasuk,
-            tanggalSurat: this.formatDate(this.SuratMasuk.tanggalSurat),
-            diterimaTanggal: this.formatDate(this.SuratMasuk.diterimaTanggal),
-            tanggalDisposisi: this.formatDate(this.SuratMasuk.tanggalDisposisi),
-            bulan: this.selectedMonth, // Include selected month
-            tahun: this.selectedYear // Include selected year
-          };
+      try {
+        const formattedData = {
+          ...this.SuratMasuk,
+          tanggalSurat: this.formatDate(this.SuratMasuk.tanggalSurat),
+          diterimaTanggal: this.formatDate(this.SuratMasuk.diterimaTanggal),
+          tanggalDisposisi: this.formatDate(this.SuratMasuk.tanggalDisposisi),
+          bulan: this.selectedMonth, 
+          tahun: this.selectedYear 
+        };
 
-          if (this.pdfFile) {
-            const formData = new FormData();
-            formData.append("pdf", this.pdfFile);
-            const response = await axios.post(
-              "http://localhost:3005/uploads",
-              formData
-            );
-            formattedData.pdfUrl = `http://localhost:3005${response.data.pdfUrl}`;
+        Object.keys(formattedData).forEach(key => {
+          if (formattedData[key] === "") {
+            delete formattedData[key];
           }
+        });
 
-          const result = await axios.post("http://localhost:3003/SuratMasuk", formattedData);
-          if (result.status === 201) {
-            this.$router.push({ name: "BukuAgendaMasuk" });
-          }
-        } catch (error) {
-          console.error("Error adding product:", error);
-          alert("An error occurred while adding the product. Please try again later.");
+        if (this.pdfFile) {
+          const formData = new FormData();
+          formData.append("pdf", this.pdfFile);
+          const response = await axios.post(
+            "http://localhost:3005/uploads",
+            formData
+          );
+          formattedData.pdfUrl = `http://localhost:3005${response.data.pdfUrl}`;
         }
-      } else {
-        alert("Lengkapi semua kolom.");
+
+        const result = await axios.post("http://localhost:3003/SuratMasuk", formattedData);
+        if (result.status === 201) {
+          this.$router.push({ name: "BukuAgendaMasuk" });
+        }
+      } catch (error) {
+        console.error("Error adding product:", error);
+        alert("An error occurred while adding the product. Please try again later.");
       }
-    },
-    validateForm() {
-      return Object.values(this.SuratMasuk).every(value => value !== "") &&
-             this.selectedMonth !== "" &&
-             this.selectedYear !== "";
     },
     formatDate(dateString) {
       if (!dateString) return "";
@@ -184,7 +182,6 @@ export default {
     }
   }
 };
-
 </script>
 
 <style scoped>
@@ -218,11 +215,10 @@ export default {
 .form-group {
   display: flex;
   flex-direction: row;
- font-size: 18px;
- text-align: left;
- font-weight: bold;
+  font-size: 18px;
+  text-align: left;
+  font-weight: bold;
   margin-bottom: 10px;
-  
 }
 
 .form-group label {
@@ -255,8 +251,7 @@ export default {
 }
 
 .pdf-viewer {
-  flex: 0 1 50%;
-  max-width: 100%;
+  flex: 0 1 60%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 </style>
-

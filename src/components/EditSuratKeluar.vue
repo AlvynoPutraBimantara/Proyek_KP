@@ -102,7 +102,7 @@ export default {
       selectedMonth: "",
       selectedYear: "",
       months: [
-       "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
+        "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
         "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
       ],
       years: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
@@ -133,11 +133,11 @@ export default {
       try {
         const formattedData = {
           ...this.DataProduk,
-          tanggalSurat: this.formatDateToBackend(this.DataProduk.tanggalSurat),
-          diterimaTanggal: this.formatDateToBackend(this.DataProduk.diterimaTanggal),
-          tanggalDisposisi: this.formatDateToBackend(this.DataProduk.tanggalDisposisi),
-          bulan: this.selectedMonth,
-          tahun: this.selectedYear
+          tanggalSurat: this.DataProduk.tanggalSurat ? this.formatDateToBackend(this.DataProduk.tanggalSurat) : "",
+          diterimaTanggal: this.DataProduk.diterimaTanggal ? this.formatDateToBackend(this.DataProduk.diterimaTanggal) : "",
+          tanggalDisposisi: this.DataProduk.tanggalDisposisi ? this.formatDateToBackend(this.DataProduk.tanggalDisposisi) : "",
+          bulan: this.selectedMonth || "",
+          tahun: this.selectedYear || ""
         };
 
         if (this.pdfFile) {
@@ -175,7 +175,7 @@ export default {
         this.pdfFile = file;
         const reader = new FileReader();
         reader.onload = (e) => {
-          const blob = new Blob([e.target.result], { type: 'application/pdf' });
+          const blob = new Blob([e.target.result], { type: "application/pdf" });
           this.pdfUrl = URL.createObjectURL(blob);
         };
         reader.readAsArrayBuffer(file);
@@ -185,7 +185,6 @@ export default {
     }
   }
 };
-
 </script>
 
 <style scoped>
@@ -212,49 +211,29 @@ export default {
 .update {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 10px;
+  gap: 15px;
 }
 
 .form-group {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 10px;
+  flex-direction: column;
+  gap: 5px;
 }
 
-.form-group label {
-  width: 150px;
-  margin-right: 10px;
-}
-
-.update input,
-.update select,
-.update button {
-  display: block;
+button {
   padding: 10px;
-  width: 400px;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-.update button {
+  border: none;
   background-color: #007bff;
   color: white;
-  border: none;
+  border-radius: 4px;
   cursor: pointer;
-  margin-top: 20px;
 }
 
-.update button:hover {
+button:hover {
   background-color: #0056b3;
 }
 
 .pdf-viewer {
-  flex: 0 1 50%;
-  max-width: 100%;
+  flex: 1;
 }
 </style>
-
