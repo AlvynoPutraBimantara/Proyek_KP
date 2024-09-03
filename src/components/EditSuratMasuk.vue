@@ -9,31 +9,31 @@
         <form class="update" @submit.prevent="submitProduct">
           <div class="form-group">
             <label for="suratDari">Surat Dari</label>
-            <input type="text" id="suratDari" v-model="DataProduk.suratDari" autocomplete="off" />
+            <input type="text" id="suratDari" v-model="SuratMasuk.suratDari" autocomplete="off" />
           </div>
           <div class="form-group">
             <label for="tanggalSurat">Tanggal Surat</label>
-            <input type="date" id="tanggalSurat" v-model="DataProduk.tanggalSurat" />
+            <input type="date" id="tanggalSurat" v-model="SuratMasuk.tanggalSurat" />
           </div>
           <div class="form-group">
             <label for="noSurat">No. Surat</label>
-            <input type="text" id="noSurat" v-model="DataProduk.noSurat" autocomplete="off" />
+            <input type="text" id="noSurat" v-model="SuratMasuk.noSurat" autocomplete="off" />
           </div>
           <div class="form-group">
             <label for="perihal">Perihal</label>
-            <input type="text" id="perihal" v-model="DataProduk.perihal" autocomplete="off" />
+            <input type="text" id="perihal" v-model="SuratMasuk.perihal" autocomplete="off" />
           </div>
           <div class="form-group">
             <label for="diterimaTanggal">Diterima Tanggal</label>
-            <input type="date" id="diterimaTanggal" v-model="DataProduk.diterimaTanggal" />
+            <input type="date" id="diterimaTanggal" v-model="SuratMasuk.diterimaTanggal" />
           </div>
           <div class="form-group">
             <label for="noAgenda">No. Agenda</label>
-            <input type="text" id="noAgenda" v-model="DataProduk.noAgenda" autocomplete="off" />
+            <input type="text" id="noAgenda" v-model="SuratMasuk.noAgenda" autocomplete="off" />
           </div>
           <div class="form-group">
             <label for="sifat">Sifat</label>
-            <select id="sifat" v-model="DataProduk.sifat">
+            <select id="sifat" v-model="SuratMasuk.sifat">
               <option disabled value="">Pilih Sifat</option>
               <option value="Biasa">Biasa</option>
               <option value="Penting">Penting</option>
@@ -41,15 +41,15 @@
           </div>
           <div class="form-group">
             <label for="disposisiSekretaris">Disposisi Sekretaris</label>
-            <input type="text" id="disposisiSekretaris" v-model="DataProduk.disposisiSekretaris" autocomplete="off" />
+            <input type="text" id="disposisiSekretaris" v-model="SuratMasuk.disposisiSekretaris" autocomplete="off" />
           </div>
           <div class="form-group">
             <label for="disposisiKasumpeg">Disposisi Kasumpeg</label>
-            <input type="text" id="disposisiKasumpeg" v-model="DataProduk.disposisiKasumpeg" autocomplete="off" />
+            <input type="text" id="disposisiKasumpeg" v-model="SuratMasuk.disposisiKasumpeg" autocomplete="off" />
           </div>
           <div class="form-group">
             <label for="tanggalDisposisi">Tanggal Disposisi</label>
-            <input type="date" id="tanggalDisposisi" v-model="DataProduk.tanggalDisposisi" />
+            <input type="date" id="tanggalDisposisi" v-model="SuratMasuk.tanggalDisposisi" />
           </div>
           <div class="form-group">
             <label for="bulan">Bulan</label>
@@ -85,7 +85,7 @@ export default {
   name: "EditSuratMasuk",
   data() {
     return {
-      DataProduk: {
+      SuratMasuk: {
         suratDari: "",
         tanggalSurat: "",
         noSurat: "",
@@ -113,7 +113,7 @@ export default {
     try {
       const result = await axios.get(`http://localhost:3003/SuratMasuk/${id}`);
       const data = result.data;
-      this.DataProduk = {
+      this.SuratMasuk = {
         ...data,
         tanggalSurat: this.formatDateToInput(data.tanggalSurat),
         diterimaTanggal: this.formatDateToInput(data.diterimaTanggal),
@@ -132,10 +132,10 @@ export default {
       const id = this.$route.params.id;
       try {
         const formattedData = {
-          ...this.DataProduk,
-          tanggalSurat: this.formatDateToBackend(this.DataProduk.tanggalSurat),
-          diterimaTanggal: this.formatDateToBackend(this.DataProduk.diterimaTanggal),
-          tanggalDisposisi: this.formatDateToBackend(this.DataProduk.tanggalDisposisi),
+          ...this.SuratMasuk,
+          tanggalSurat: this.formatDate(this.SuratMasuk.tanggalSurat),
+          diterimaTanggal: this.formatDate(this.SuratMasuk.diterimaTanggal),
+          tanggalDisposisi: this.formatDate(this.SuratMasuk.tanggalDisposisi),
           bulan: this.selectedMonth,
           tahun: this.selectedYear
         };
@@ -143,33 +143,29 @@ export default {
         if (this.pdfFile) {
           const formData = new FormData();
           formData.append("pdf", this.pdfFile);
-          const response = await axios.post("http://localhost:3005/uploads", formData);
-          formattedData.pdfUrl = `http://localhost:3005${response.data.pdfUrl}`;
-        }
 
-        // Remove empty fields from formattedData
-        Object.keys(formattedData).forEach(key => {
-          if (!formattedData[key]) delete formattedData[key];
-        });
+          const response = await axios.post("http://localhost:3005/uploads", formData);
+          formattedData.pdfUrl = `http://localhost:3005/uploads/${response.data.fileId}`; // Store the URL directly
+        }
 
         const result = await axios.put(`http://localhost:3003/SuratMasuk/${id}`, formattedData);
         if (result.status === 200) {
           this.$router.push({ name: "BukuAgendaMasuk" });
         }
       } catch (error) {
-        console.error("Error updating product:", error);
-        alert("An error occurred while updating the product. Please try again later.");
+        console.error("Error updating data:", error);
+        alert("Error saat update data");
       }
     },
-    formatDateToInput(date) {
-      if (!date) return "";
-      const [day, month, year] = date.split("/");
-      return `${year}-${month}-${day}`;
-    },
-    formatDateToBackend(date) {
-      if (!date) return "";
-      const [year, month, day] = date.split("-");
+    formatDate(dateString) {
+      if (!dateString) return "";
+      const [year, month, day] = dateString.split("-");
       return `${day}/${month}/${year}`;
+    },
+    formatDateToInput(dateString) {
+      if (!dateString) return "";
+      const [day, month, year] = dateString.split("/");
+      return `${year}-${month}-${day}`;
     },
     triggerFileUpload() {
       this.$refs.fileInput.click();
@@ -180,12 +176,11 @@ export default {
         this.pdfFile = file;
         const reader = new FileReader();
         reader.onload = (e) => {
-          const blob = new Blob([e.target.result], { type: 'application/pdf' });
-          this.pdfUrl = URL.createObjectURL(blob);
+          this.pdfUrl = e.target.result;
         };
-        reader.readAsArrayBuffer(file);
+        reader.readAsDataURL(file);
       } else {
-        alert("Please select a valid PDF file.");
+        alert("Please upload a PDF file.");
       }
     }
   }
@@ -197,18 +192,25 @@ export default {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 10px;
+  gap: 20px; /* Increase gap for better spacing */
   padding: 10px;
 }
 
+.pdf-viewer {
+  flex: 2; /* Take up more space compared to the update-container */
+}
+
 .update-container {
-  max-width: 800px;
+  flex: 1; /* Take up less space compared to the pdf-viewer */
+  max-width: 600px;
   padding: 20px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .pdf-viewer iframe {
+  width: 100%;
+  height: 1080px;
   border: none;
 }
 

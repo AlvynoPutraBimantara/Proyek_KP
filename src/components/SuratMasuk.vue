@@ -114,72 +114,61 @@ export default {
       pdfUrl: null,
       selectedMonth: "", 
       selectedYear: "", 
-      months: [
-        "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
-        "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
-      ], 
+      months: ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"], 
       years: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
     };
   },
   methods: {
     async submitProduct() {
-      try {
-        const formattedData = {
-          ...this.SuratMasuk,
-          tanggalSurat: this.formatDate(this.SuratMasuk.tanggalSurat),
-          diterimaTanggal: this.formatDate(this.SuratMasuk.diterimaTanggal),
-          tanggalDisposisi: this.formatDate(this.SuratMasuk.tanggalDisposisi),
-          bulan: this.selectedMonth, 
-          tahun: this.selectedYear 
-        };
+    try {
+      const formattedData = {
+        ...this.SuratMasuk,
+        tanggalSurat: this.formatDate(this.SuratMasuk.tanggalSurat),
+        diterimaTanggal: this.formatDate(this.SuratMasuk.diterimaTanggal),
+        tanggalDisposisi: this.formatDate(this.SuratMasuk.tanggalDisposisi),
+        bulan: this.selectedMonth,
+        tahun: this.selectedYear
+      };
 
-        Object.keys(formattedData).forEach(key => {
-          if (formattedData[key] === "") {
-            delete formattedData[key];
-          }
-        });
+      if (this.pdfFile) {
+        const formData = new FormData();
+        formData.append("pdf", this.pdfFile);
 
-        if (this.pdfFile) {
-          const formData = new FormData();
-          formData.append("pdf", this.pdfFile);
-          const response = await axios.post(
-            "http://localhost:3005/uploads",
-            formData
-          );
-          formattedData.pdfUrl = `http://localhost:3005${response.data.pdfUrl}`;
-        }
-
-        const result = await axios.post("http://localhost:3003/SuratMasuk", formattedData);
-        if (result.status === 201) {
-          this.$router.push({ name: "BukuAgendaMasuk" });
-        }
-      } catch (error) {
-        console.error("Error adding product:", error);
-        alert("An error occurred while adding the product. Please try again later.");
+        const response = await axios.post("http://localhost:3005/uploads", formData);
+        formattedData.pdfUrl = `http://localhost:3005/uploads/${response.data.fileId}`; // Store the URL directly
       }
-    },
-    formatDate(dateString) {
-      if (!dateString) return "";
-      const [year, month, day] = dateString.split("-");
-      return `${day}/${month}/${year}`;
-    },
-    triggerFileUpload() {
-      this.$refs.fileInput.click();
-    },
-    handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (file && file.type === "application/pdf") {
-        this.pdfFile = file;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const blob = new Blob([e.target.result], { type: 'application/pdf' });
-          this.pdfUrl = URL.createObjectURL(blob);
-        };
-        reader.readAsArrayBuffer(file);
-      } else {
-        alert("Please select a valid PDF file.");
+
+      const result = await axios.post("http://localhost:3003/SuratMasuk", formattedData);
+      if (result.status === 201) {
+        this.$router.push({ name: "BukuAgendaMasuk" });
       }
+    } catch (error) {
+      console.error("Error input data:", error);
+      alert("Error saat input data");
     }
+  },
+  formatDate(dateString) {
+    if (!dateString) return "";
+    const [year, month, day] = dateString.split("-");
+    return `${day}/${month}/${year}`;
+  },
+  triggerFileUpload() {
+    this.$refs.fileInput.click();
+  },
+  handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file && file.type === "application/pdf") {
+      this.pdfFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const blob = new Blob([e.target.result], { type: 'application/pdf' });
+        this.pdfUrl = URL.createObjectURL(blob);
+      };
+      reader.readAsArrayBuffer(file);
+    } else {
+      alert("Please select a valid PDF file.");
+    }
+  }
   }
 };
 </script>

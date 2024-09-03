@@ -1,39 +1,65 @@
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+const mysql = require("mysql2/promise");
+require("dotenv").config();
 
 const app = express();
 const port = 3005;
 
 app.use(cors());
 
-const uploadsDir = path.join(__dirname, "uploads");
-
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
-});
+const storage = multer.memoryStorage(); 
 const upload = multer({ storage });
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || '127.0.0.1',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'panigale',
+  database: process.env.DB_NAME || 'bukuagenda',
+});
 
-app.post("/uploads", upload.single("pdf"), (req, res) => {
+app.post("/uploads", upload.single("pdf"), async (req, res) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded.");
   }
-  const pdfUrl = `/uploads/${req.file.filename}`;
-  res.status(201).json({ pdfUrl });
+
+  try {
+    const connection = await pool.getConnection();
+    const [result] = await connection.query(
+      "INSERT INTO Lampiran (filename, data, mimetype) VALUES (?, ?, ?)",
+      [req.file.originalname, req.file.buffer, req.file.mimetype]
+    );
+    connection.release();
+    const fileId = result.insertId;
+    res.json({ fileId }); // Return the file ID
+  } catch (error) {
+    console.error("Error storing file:", error);
+    res.status(500).send("Internal server error");
+  }
 });
+
+app.get("/uploads/:id", async (req, res) => {
+  const fileId = req.params.id;
+
+  try {
+    const connection = await pool.getConnection();
+    const [rows] = await connection.query("SELECT * FROM Lampiran WHERE id = ?", [fileId]);
+
+    if (rows.length === 0) {
+      res.status(404).send("File not found");
+      return;
+    }
+
+    const file = rows[0];
+    res.setHeader("Content-Type", file.mimetype);
+    res.send(file.data);
+  } catch (error) {
+    console.error("Error retrieving file:", error);
+    res.status(500).send("Internal server error");
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`File upload service running on port ${port}`);

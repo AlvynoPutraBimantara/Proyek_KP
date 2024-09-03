@@ -25,6 +25,13 @@ services:
       context: ./backend/file-upload-service
     ports:
       - "3005:3005"
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: panigale
+      DB_NAME: bukuagenda
+    depends_on:
+      - mysql
     volumes:
       - ./backend/file-upload-service:/usr/src/app
       - ./backend/file-upload-service/uploads:/usr/src/app/uploads
@@ -53,9 +60,17 @@ services:
       context: ./backend/surat-masuk-service
     ports:
       - "3003:3003"
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: panigale
+      DB_NAME: bukuagenda
+    depends_on:
+      - mysql
     volumes:
       - ./backend/surat-masuk-service:/usr/src/app
     command: ["node", "server.js"]
+
 
   user-service:
     build:
