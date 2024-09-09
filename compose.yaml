@@ -1,10 +1,10 @@
 
 services:
   mysql:
-    image: mysql:8.0.39
+    image: mysql:latest
     container_name: mysql-container
     environment:
-      MYSQL_ROOT_PASSWORD: panigale
+      MYSQL_ROOT_PASSWORD: 1234
       MYSQL_DATABASE: bukuagenda
     ports:
       - "3333:3306"
@@ -28,7 +28,7 @@ services:
     environment:
       DB_HOST: mysql
       DB_USER: root
-      DB_PASSWORD: panigale
+      DB_PASSWORD: 1234
       DB_NAME: bukuagenda
     depends_on:
       - mysql
@@ -63,7 +63,7 @@ services:
     environment:
       DB_HOST: mysql
       DB_USER: root
-      DB_PASSWORD: panigale
+      DB_PASSWORD: 1234
       DB_NAME: bukuagenda
     depends_on:
       - mysql
@@ -82,7 +82,7 @@ services:
     environment:
       DB_HOST: mysql
       DB_USER: root
-      DB_PASSWORD: panigale
+      DB_PASSWORD: 1234
       DB_NAME: bukuagenda
       DB_PORT: 3306
     depends_on:

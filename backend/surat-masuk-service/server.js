@@ -2,7 +2,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const db = require("./db"); // Adjust the import based on your actual db connection
+const db = require("./db"); 
 
 const app = express();
 const port = 3003;
@@ -10,12 +10,10 @@ const port = 3003;
 app.use(cors());
 app.use(bodyParser.json());
 
-// Function to generate a random 4-character alphanumeric ID
 function generateId() {
   return Math.random().toString(36).substring(2, 6).toUpperCase();
 }
 
-// GET all SuratMasuk
 app.get("/SuratMasuk", async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM suratmasuk");
@@ -26,7 +24,6 @@ app.get("/SuratMasuk", async (req, res) => {
   }
 });
 
-// GET SuratMasuk by ID
 app.get("/SuratMasuk/:id", async (req, res) => {
   const id = req.params.id;
   try {
@@ -42,10 +39,9 @@ app.get("/SuratMasuk/:id", async (req, res) => {
   }
 });
 
-// POST new SuratMasuk
 app.post("/SuratMasuk", async (req, res) => {
   const data = req.body;
-  const newId = generateId(); // Generate a 4-character ID
+  const newId = generateId(); 
 
   try {
     const [result] = await db.query(
@@ -65,7 +61,7 @@ app.post("/SuratMasuk", async (req, res) => {
         data.disposisiSekretaris,
         data.disposisiKasumpeg,
         data.tanggalDisposisi,
-        data.pdfUrl, // Ensure this field is included
+        data.pdfUrl, 
         data.bulan,
         data.tahun
       ]
@@ -77,8 +73,6 @@ app.post("/SuratMasuk", async (req, res) => {
   }
 });
 
-
-// PUT update SuratMasuk by ID
 app.put("/SuratMasuk/:id", async (req, res) => {
   const data = req.body;
   const id = req.params.id;
@@ -127,7 +121,6 @@ app.put("/SuratMasuk/:id", async (req, res) => {
   }
 });
 
-// DELETE SuratMasuk by ID
 app.delete("/SuratMasuk/:id", async (req, res) => {
   const id = req.params.id;
   try {

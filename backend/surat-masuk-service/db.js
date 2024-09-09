@@ -2,15 +2,16 @@ const mysql = require('mysql2');
 require('dotenv').config();
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST || '127.0.0.1',
+  host: process.env.DB_HOST || 'mysql',  // Use 'mysql' as host inside Docker
   port: process.env.DB_PORT || 3306,
   user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'panigale',
+  password: process.env.DB_PASSWORD || '1234',
   database: process.env.DB_NAME || 'bukuagenda',
-  connectionLimit: 10,
+  connectionLimit: 100,
   waitForConnections: true,
   queueLimit: 0
 });
+
 
 pool.on('error', (err) => {
   console.error('MySQL Pool Error:', err.message);
