@@ -41,9 +41,10 @@ app.post("/uploads", upload.single("pdf"), async (req, res) => {
 
 app.get("/uploads/:id", async (req, res) => {
   const fileId = req.params.id;
+  let connection;
 
   try {
-    const connection = await pool.getConnection();
+    connection = await pool.getConnection();
     const [rows] = await connection.query("SELECT * FROM Lampiran WHERE id = ?", [fileId]);
 
     if (rows.length === 0) {
@@ -57,8 +58,11 @@ app.get("/uploads/:id", async (req, res) => {
   } catch (error) {
     console.error("Error retrieving file:", error);
     res.status(500).send("Internal server error");
+  } finally {
+    if (connection) connection.release();
   }
 });
+
 
 
 app.listen(port, () => {
