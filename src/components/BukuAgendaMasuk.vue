@@ -27,7 +27,7 @@
     </div>
     <div class="main-container">
       <div v-if="selectedPdfUrl" class="pdf-viewer">
-        <iframe :key="pdfIframeKey" :src="selectedPdfUrl" width="100%" height="100%"></iframe>
+        <iframe :src="selectedPdfUrl" width="100%" height="100%"></iframe>
       </div>
       <div class="table-container">
         <table>
@@ -202,7 +202,7 @@ export default {
       sortMenu: "",
       searchQuery: "",
       selectedPdfUrl: null,
-      pdfIframeKey: 0, // Added to force iframe reload
+      showPdfViewer: true,
       selectedMonth: "",
       selectedYear: "",
       months: [
@@ -610,13 +610,9 @@ export default {
     printData() {
       window.print();
     },
-    togglePdfView(pdfUrl) {
-      if (this.selectedPdfUrl === pdfUrl) {
-        this.selectedPdfUrl = null;
-      } else {
-        this.selectedPdfUrl = pdfUrl;
-        this.pdfIframeKey++; // Increment the key to reload the iframe
-      }
+    togglePdfView(url) {
+      this.pdfViewerActive = !!url; // Set to true if URL is provided, false otherwise
+      this.selectedPdfUrl = url;
     },
   },
   mounted() {
