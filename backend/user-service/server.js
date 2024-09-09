@@ -113,5 +113,5 @@ app.delete("/User/:id", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`User service running on port ${port}`);
+  console.log(`User service berjalan di-Port ${port}`);
 });

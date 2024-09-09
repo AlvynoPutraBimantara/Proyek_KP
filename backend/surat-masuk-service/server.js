@@ -137,5 +137,5 @@ app.delete("/SuratMasuk/:id", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Surat Masuk service running on port ${port}`);
+  console.log(`Surat Masuk service berjalan di-Port ${port}`);
 });

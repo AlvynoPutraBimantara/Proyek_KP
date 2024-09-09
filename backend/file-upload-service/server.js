@@ -62,5 +62,5 @@ app.get("/uploads/:id", async (req, res) => {
 
 
 app.listen(port, () => {
-  console.log(`File upload service running on port ${port}`);
+  console.log(`File upload service berjalan di-Port port ${port}`);
 });

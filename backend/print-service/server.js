@@ -296,7 +296,7 @@ const printServiceRouter = express.Router(); // Membuat router baru untuk layana
   app.use("/pdf", express.static(pdfDir));
 
   app.listen(port, () => {
-    console.log(`Server berjalan di http://localhost:${port}`); // Memulai server dan mencatat URL
+    console.log(`service berjalan di-Port http://localhost:${port}`); // Memulai server dan mencatat URL
   });
 
   process.on("SIGINT", async () => {

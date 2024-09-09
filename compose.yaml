@@ -51,6 +51,13 @@ services:
       context: ./backend/surat-keluar-service
     ports:
       - "3004:3004"
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: 1234
+      DB_NAME: bukuagenda
+    depends_on:
+      - mysql
     volumes:
       - ./backend/surat-keluar-service:/usr/src/app
     command: ["node", "server.js"]
