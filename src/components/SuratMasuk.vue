@@ -2,9 +2,11 @@
   <div>
     <h1>INPUT SURAT MASUK</h1>
     <div class="main-container">
+      <!-- PDF Preview Section -->
       <div v-if="pdfUrl" class="pdf-viewer">
         <iframe :src="pdfUrl" width="100%" height="1080px"></iframe>
       </div>
+      
       <div class="update-container">
         <form class="update" @submit.prevent="submitProduct">
           <div class="form-group">
@@ -81,10 +83,10 @@
             </select>
           </div>
           
+          <!-- Button to Trigger File Upload -->
           <button type="button" @click="triggerFileUpload">LAMPIRAN</button>
           <button type="submit">SIMPAN</button>
           <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
-          
         </form>
       </div>
     </div>
@@ -110,8 +112,8 @@ export default {
         disposisiKasumpeg: "",
         tanggalDisposisi: ""
       },
-      pdfFile: null,
-      pdfUrl: null,
+      pdfFile: null, // PDF file reference
+      pdfUrl: null,  // PDF preview URL
       selectedMonth: "", 
       selectedYear: "", 
       months: ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"], 
@@ -120,55 +122,59 @@ export default {
   },
   methods: {
     async submitProduct() {
-    try {
-      const formattedData = {
-        ...this.SuratMasuk,
-        tanggalSurat: this.formatDate(this.SuratMasuk.tanggalSurat),
-        diterimaTanggal: this.formatDate(this.SuratMasuk.diterimaTanggal),
-        tanggalDisposisi: this.formatDate(this.SuratMasuk.tanggalDisposisi),
-        bulan: this.selectedMonth,
-        tahun: this.selectedYear
-      };
+      try {
+        const formattedData = {
+          ...this.SuratMasuk,
+          tanggalSurat: this.formatDate(this.SuratMasuk.tanggalSurat),
+          diterimaTanggal: this.formatDate(this.SuratMasuk.diterimaTanggal),
+          tanggalDisposisi: this.formatDate(this.SuratMasuk.tanggalDisposisi),
+          bulan: this.selectedMonth,
+          tahun: this.selectedYear
+        };
 
-      if (this.pdfFile) {
-        const formData = new FormData();
-        formData.append("pdf", this.pdfFile);
+        // Upload PDF file
+        if (this.pdfFile) {
+          const formData = new FormData();
+          formData.append("pdf", this.pdfFile);
 
-        const response = await axios.post("http://localhost:3005/uploads", formData);
-        formattedData.pdfUrl = `http://localhost:3005/uploads/${response.data.fileId}`; // Store the URL directly
+          const response = await axios.post("http://localhost:3005/uploads", formData);
+          formattedData.pdfUrl = `http://localhost:3005/uploads/${response.data.fileId}`;
+        }
+
+        // Submit form data
+        const result = await axios.post("http://localhost:3003/SuratMasuk", formattedData);
+        if (result.status === 201) {
+          this.$router.push({ name: "BukuAgendaMasuk" });
+        }
+      } catch (error) {
+        console.error("Error input data:", error);
+        alert("Error saat input data");
       }
+    },
+    formatDate(dateString) {
+      if (!dateString) return "";
+      const [year, month, day] = dateString.split("-");
+      return `${day}/${month}/${year}`;
+    },
+    triggerFileUpload() {
+      this.$refs.fileInput.click();
+    },
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file && file.type === "application/pdf") {
+        this.pdfFile = file;
 
-      const result = await axios.post("http://localhost:3003/SuratMasuk", formattedData);
-      if (result.status === 201) {
-        this.$router.push({ name: "BukuAgendaMasuk" });
+        // Generate a preview URL for the selected PDF
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const blob = new Blob([e.target.result], { type: 'application/pdf' });
+          this.pdfUrl = URL.createObjectURL(blob);
+        };
+        reader.readAsArrayBuffer(file);
+      } else {
+        alert("Please select a valid PDF file.");
       }
-    } catch (error) {
-      console.error("Error input data:", error);
-      alert("Error saat input data");
     }
-  },
-  formatDate(dateString) {
-    if (!dateString) return "";
-    const [year, month, day] = dateString.split("-");
-    return `${day}/${month}/${year}`;
-  },
-  triggerFileUpload() {
-    this.$refs.fileInput.click();
-  },
-  handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (file && file.type === "application/pdf") {
-      this.pdfFile = file;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const blob = new Blob([e.target.result], { type: 'application/pdf' });
-        this.pdfUrl = URL.createObjectURL(blob);
-      };
-      reader.readAsArrayBuffer(file);
-    } else {
-      alert("Please select a valid PDF file.");
-    }
-  }
   }
 };
 </script>
