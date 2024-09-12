@@ -192,16 +192,16 @@ export default {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 20px; /* Increase gap for better spacing */
+  gap: 20px;
   padding: 10px;
 }
 
 .pdf-viewer {
-  flex: 2; /* Take up more space compared to the update-container */
+  flex: 2;
 }
 
 .update-container {
-  flex: 1; /* Take up less space compared to the pdf-viewer */
+  flex: 1;
   max-width: 600px;
   padding: 20px;
   background-color: #fff;

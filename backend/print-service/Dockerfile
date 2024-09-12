@@ -8,6 +8,9 @@ WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 RUN npm install
 
+# Install MySQL client and other dependencies
+RUN npm install mysql2
+
 # Install Chromium
 RUN apk add --no-cache \
     chromium \

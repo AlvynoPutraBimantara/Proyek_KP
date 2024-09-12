@@ -5,18 +5,17 @@ const path = require("path");
 const fs = require("fs");
 const ExcelJS = require("exceljs");
 const puppeteer = require("puppeteer");
+const mysql = require("mysql2/promise");
 
 const app = express();
 const port = 3006;
 
-app.use(cors()); // Mengaktifkan CORS untuk permintaan lintas asal
-app.use(express.json()); // Mengaktifkan parsing body JSON di Express
+app.use(cors());
+app.use(express.json());
 
-// Mendefinisikan direktori untuk menyimpan file Excel dan PDF
 const excelDir = path.join(__dirname, "excel");
 const pdfDir = path.join(__dirname, "pdf");
 
-// Membuat direktori jika belum ada
 if (!fs.existsSync(excelDir)) {
   fs.mkdirSync(excelDir);
 }
@@ -25,18 +24,17 @@ if (!fs.existsSync(pdfDir)) {
   fs.mkdirSync(pdfDir);
 }
 
-// Mengonfigurasi pengaturan penyimpanan Multer untuk unggahan file
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, excelDir); // Menyimpan file di direktori 'excel'
+    cb(null, excelDir);
   },
   filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`); // Menamai file dengan awalan timestamp
+    cb(null, `${Date.now()}-${file.originalname}`);
   },
 });
-const upload = multer({ storage }); // Menginisialisasi Multer dengan pengaturan penyimpanan yang ditentukan
+const upload = multer({ storage });
 
-const printServiceRouter = express.Router(); // Membuat router baru untuk layanan cetak
+const printServiceRouter = express.Router();
 
 (async () => {
   const browser = await puppeteer.launch({
@@ -44,70 +42,81 @@ const printServiceRouter = express.Router(); // Membuat router baru untuk layana
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
-  // Rute pembersihan untuk menghapus file PDF dan .xlsx, serta mengosongkan database saat URL root diakses
-  app.get("/", (req, res) => {
-    const db2Path = path.join(__dirname, "db2.json");
+  // MySQL connection
+  const connection = await mysql.createConnection({
+    host: 'mysql',
+    user: 'root',
+    password: '1234',
+    database: 'bukuagenda'
+  });
+
+  // Cleanup route to delete PDF, Excel files, and reset MySQL tables
+  app.get("/", async (req, res) => {
     const pdfFiles = fs.readdirSync(pdfDir);
     const xlsxFiles = fs.readdirSync(excelDir);
 
-    // Menghapus semua file PDF di pdfDir
+    // Remove all PDF files in pdfDir
     pdfFiles.forEach((file) => {
       const filePath = path.join(pdfDir, file);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }
     });
-    console.log("Semua file PDF telah dihapus.");
+    console.log("All PDF files deleted.");
 
-    // Menghapus semua file .xlsx di excelDir
+    // Remove all .xlsx files in excelDir
     xlsxFiles.forEach((file) => {
       const filePath = path.join(excelDir, file);
       if (fs.existsSync(filePath)) {
         fs.unlinkSync(filePath);
       }
     });
-    console.log("Semua file .xlsx telah dihapus.");
+    console.log("All .xlsx files deleted.");
 
-    // Mengosongkan data di db2.json
-    if (fs.existsSync(db2Path)) {
-      fs.writeFileSync(db2Path, JSON.stringify({}, null, 2));
-      console.log("Data di db2.json telah dihapus.");
-    }
+    // Clean up MySQL tables
+    await connection.query("DELETE FROM print");
+    await connection.query("DELETE FROM print2");
+    console.log("Data from print and print2 tables cleared.");
 
-    res.send("Halaman diperbarui. File PDF, file .xlsx, dan data di db2.json telah dihapus.");
+    res.send("Cleanup completed: All PDF, Excel files and database entries cleared.");
   });
 
-  // Rute untuk menangani unggahan file
-  printServiceRouter.post("/", upload.single("xlsx"), (req, res) => {
+  // Route for file upload
+  printServiceRouter.post("/", upload.single("xlsx"), async (req, res) => {
     if (!req.file) {
-      return res.status(400).send("Tidak ada file yang diunggah."); // Mengembalikan kesalahan jika tidak ada file yang diunggah
+      return res.status(400).send("No file uploaded.");
     }
-    const xlsxUrl = `/excel/${req.file.filename}`; // Membuat URL file
-    res.status(201).json({ xlsxUrl }); // Menanggapi dengan URL file yang diunggah
+    const xlsxUrl = `/excel/${req.file.filename}`;
+
+    // Store the Excel file URL in MySQL (print table)
+    await connection.query("INSERT INTO print (fileUrl) VALUES (?)", [xlsxUrl]);
+
+    res.status(201).json({ xlsxUrl });
   });
 
-  // Rute untuk mengambil file berdasarkan nama file
+  // Route to fetch file by filename
   printServiceRouter.get("/:filename", (req, res) => {
     const filePath = path.join(excelDir, req.params.filename);
     if (fs.existsSync(filePath)) {
-      res.sendFile(filePath); // Mengirim file jika ada
+      res.sendFile(filePath);
     } else {
-      res.status(404).send("File tidak ditemukan."); // Mengembalikan 404 jika file tidak ada
+      res.status(404).send("File not found.");
     }
   });
 
-  // Rute untuk menghapus file berdasarkan nama file
-  printServiceRouter.delete("/:filename", (req, res) => {
+  // Route to delete file by filename
+  printServiceRouter.delete("/:filename", async (req, res) => {
     const filePath = path.join(excelDir, req.params.filename);
     if (fs.existsSync(filePath)) {
-      fs.unlinkSync(filePath); // Menghapus file
-      res.status(204).send(); // Mengembalikan 204 No Content
+      fs.unlinkSync(filePath);
+      await connection.query("DELETE FROM print WHERE fileUrl = ?", [`/excel/${req.params.filename}`]);
+      res.status(204).send();
     } else {
-      res.status(404).send("File tidak ditemukan."); // Mengembalikan 404 jika file tidak ada
+      res.status(404).send("File not found.");
     }
   });
 
-  // Rute untuk mengonversi file Excel ke PDF
+  // Route to convert Excel to PDF
   printServiceRouter.post("/ConvertToPDF/:filename", async (req, res) => {
     const { filename } = req.params;
     const excelPath = path.join(excelDir, filename);
@@ -115,7 +124,7 @@ const printServiceRouter = express.Router(); // Membuat router baru untuk layana
     const pdfPath = path.join(pdfDir, pdfFilename);
 
     if (!fs.existsSync(excelPath)) {
-      return res.status(404).send("File Excel tidak ditemukan."); // Mengembalikan 404 jika file Excel tidak ada
+      return res.status(404).send("Excel file not found.");
     }
 
     try {
@@ -200,67 +209,52 @@ const printServiceRouter = express.Router(); // Membuat router baru untuk layana
         landscape: true,
       });
 
-      // Menyimpan URL PDF ke database
-      const dbPath = path.join(__dirname, "db2.json");
-      let db = JSON.parse(fs.readFileSync(dbPath, "utf8"));
-
-      if (!db.PDF) {
-        db.PDF = [];
-      }
-
-      db.PDF.push({ fileUrl: `/pdf/${pdfFilename}`, originalFile: filename });
-
-      fs.writeFileSync(dbPath, JSON.stringify(db, null, 2));
+      // Store PDF URL in MySQL (print2 table)
+      await connection.query("INSERT INTO print2 (fileUrl, originalFile) VALUES (?, ?)", [`/pdf/${pdfFilename}`, filename]);
 
       res.json({ pdfUrl: `/pdf/${pdfFilename}` });
     } catch (error) {
-      console.error("Kesalahan mengonversi Excel ke PDF:", error);
-      res.status(500).send("Gagal mengonversi file ke PDF.");
+      console.error("Error converting Excel to PDF:", error);
+      res.status(500).send("Failed to convert file to PDF.");
     }
   });
 
-  // Rute untuk menyimpan data "Print" ke dalam db.json
-  printServiceRouter.post("/Print", (req, res) => {
-    const { table, data } = req.body; // Mengambil nama tabel dan data dari body permintaan
+  // Route to save Print data into MySQL (replacing db.json)
+  printServiceRouter.post("/Print", async (req, res) => {
+    const { table, data } = req.body;
     if (!table || !data) {
-      return res.status(400).send("Tabel dan data diperlukan."); // Mengembalikan kesalahan jika tabel atau data hilang
+      return res.status(400).send("Table and data are required.");
     }
 
     try {
-      const dbPath = path.join(__dirname, "db.json"); // Path ke file db.json
-      let db = JSON.parse(fs.readFileSync(dbPath, "utf8")); // Membaca dan memparsing database yang ada
-
-      if (!db[table]) {
-        db[table] = []; // Menginisialisasi tabel jika belum ada
+      // Store Print data in the corresponding MySQL table
+      if (table === 'print') {
+        await connection.query("INSERT INTO print (fileUrl) VALUES (?)", [data.fileUrl]);
+      } else if (table === 'print2') {
+        await connection.query("INSERT INTO print2 (fileUrl, originalFile) VALUES (?, ?)", [data.fileUrl, data.originalFile]);
       }
-
-      db[table].push(data); // Menambahkan data baru ke tabel yang ditentukan
-      fs.writeFileSync(dbPath, JSON.stringify(db, null, 2)); // Menulis database yang diperbarui kembali ke file
-
-      res.status(201).send("Data berhasil disimpan."); // Mengirim respons sukses
+      
+      res.status(201).send("Data saved successfully.");
     } catch (error) {
-      console.error("Kesalahan menyimpan data:", error); // Mencatat kesalahan
-      res.status(500).send("Gagal menyimpan data."); // Mengirim respons kesalahan
+      console.error("Error saving data:", error);
+      res.status(500).send("Failed to save data.");
     }
   });
 
-  // Rute untuk membersihkan file PDF yang disimpan dan data Print
+  // Route to clean up stored PDF and Print data
   printServiceRouter.post("/cleanup", async (req, res) => {
-    const dbPath = path.join(__dirname, "db2.json");
-    const printDbPath = path.join(__dirname, "db.json"); // Path ke file db.json
-    const pdfFiles = fs.readdirSync(pdfDir); // Membaca semua file di direktori pdf
-
+    const pdfFiles = fs.readdirSync(pdfDir);
     try {
-      // Menghapus semua file PDF di pdfDir
+      // Remove all PDF files in pdfDir
       pdfFiles.forEach((file) => {
         const filePath = path.join(pdfDir, file);
         if (fs.existsSync(filePath)) {
           fs.unlinkSync(filePath);
         }
       });
-      console.log("Semua file PDF telah dihapus.");
+      console.log("All PDF files deleted.");
 
-      // Menghapus semua file .xlsx di excelDir
+      // Remove all Excel files in excelDir
       const xlsxFiles = fs.readdirSync(excelDir);
       xlsxFiles.forEach((file) => {
         const filePath = path.join(excelDir, file);
@@ -268,40 +262,25 @@ const printServiceRouter = express.Router(); // Membuat router baru untuk layana
           fs.unlinkSync(filePath);
         }
       });
-      console.log("Semua file .xlsx telah dihapus.");
+      console.log("All Excel files deleted.");
 
-      // Mengosongkan data di db2.json
-      if (fs.existsSync(dbPath)) {
-        fs.writeFileSync(dbPath, JSON.stringify({}, null, 2));
-        console.log("Data di db2.json telah dihapus.");
-      }
+      // Clear MySQL tables
+      await connection.query("DELETE FROM print");
+      await connection.query("DELETE FROM print2");
+      console.log("Data from print and print2 tables cleared.");
 
-      // Mengosongkan data di db.json
-      if (fs.existsSync(printDbPath)) {
-        fs.writeFileSync(printDbPath, JSON.stringify({}, null, 2));
-        console.log("Data di db.json telah dihapus.");
-      }
-
-      res.send("File PDF, file .xlsx, data di db2.json, dan db.json telah dihapus.");
+      res.send("All files and data cleared.");
     } catch (error) {
-      console.error("Kesalahan selama pembersihan:", error);
-      res.status(500).send("Gagal melakukan pembersihan.");
+      console.error("Error cleaning up data:", error);
+      res.status(500).send("Failed to clean up files and data.");
     }
   });
 
-  app.use("/print-service", printServiceRouter); // Menggunakan router layanan cetak untuk semua rute '/print-service'
-
-  // Menyajikan file statis dari direktori 'excel' dan 'pdf'
   app.use("/excel", express.static(excelDir));
   app.use("/pdf", express.static(pdfDir));
+  app.use("/print-service", printServiceRouter);
 
   app.listen(port, () => {
-    console.log(`service berjalan di-Port http://localhost:${port}`); // Memulai server dan mencatat URL
-  });
-
-  process.on("SIGINT", async () => {
-    console.log("Menutup browser...");
-    await browser.close();
-    process.exit();
+    console.log(`Print service listening at http://localhost:${port}`);
   });
 })();

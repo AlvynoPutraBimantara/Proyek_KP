@@ -42,6 +42,13 @@ services:
       context: ./backend/print-service
     ports:
       - "3006:3006"
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: 1234
+      DB_NAME: bukuagenda
+    depends_on:
+      - mysql
     volumes:
       - ./backend/print-service:/usr/src/app
     command: ["node", "server.js"]
