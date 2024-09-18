@@ -74,11 +74,13 @@ const printServiceRouter = express.Router();
     console.log("All .xlsx files deleted.");
 
     // Clean up MySQL tables
+    await connection.query("DELETE FROM excel");
+    await connection.query("DELETE FROM pdf");
     await connection.query("DELETE FROM print");
     await connection.query("DELETE FROM print2");
-    console.log("Data from print and print2 tables cleared.");
+    console.log("Data from database cleared.");
 
-    res.send("Cleanup completed: All PDF, Excel files and database entries cleared.");
+    res.send("Cleanup completed:  database entries cleared.");
   });
 
   // Route for file upload
@@ -87,9 +89,13 @@ const printServiceRouter = express.Router();
       return res.status(400).send("No file uploaded.");
     }
     const xlsxUrl = `/excel/${req.file.filename}`;
+    const xlsxData = fs.readFileSync(req.file.path);
 
-    // Store the Excel file URL in MySQL (print table)
-    await connection.query("INSERT INTO print (fileUrl) VALUES (?)", [xlsxUrl]);
+    // Store the Excel file in MySQL (bukuagenda.excel)
+    await connection.query(
+      "INSERT INTO excel (filename, file) VALUES (?, ?)",
+      [req.file.filename, xlsxData]
+    );
 
     res.status(201).json({ xlsxUrl });
   });
@@ -109,7 +115,7 @@ const printServiceRouter = express.Router();
     const filePath = path.join(excelDir, req.params.filename);
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
-      await connection.query("DELETE FROM print WHERE fileUrl = ?", [`/excel/${req.params.filename}`]);
+      await connection.query("DELETE FROM excel WHERE filename = ?", [req.params.filename]);
       res.status(204).send();
     } else {
       res.status(404).send("File not found.");
@@ -209,8 +215,13 @@ const printServiceRouter = express.Router();
         landscape: true,
       });
 
-      // Store PDF URL in MySQL (print2 table)
-      await connection.query("INSERT INTO print2 (fileUrl, originalFile) VALUES (?, ?)", [`/pdf/${pdfFilename}`, filename]);
+      const pdfData = fs.readFileSync(pdfPath);
+
+      // Store the PDF file in MySQL (bukuagenda.pdf)
+      await connection.query(
+        "INSERT INTO pdf (filename, file, original_filename) VALUES (?, ?, ?)",
+        [pdfFilename, pdfData, filename]
+      );
 
       res.json({ pdfUrl: `/pdf/${pdfFilename}` });
     } catch (error) {
@@ -264,15 +275,17 @@ const printServiceRouter = express.Router();
       });
       console.log("All Excel files deleted.");
 
-      // Clear MySQL tables
+      // Clean up MySQL tables
+      await connection.query("DELETE FROM excel");
+      await connection.query("DELETE FROM pdf");
       await connection.query("DELETE FROM print");
       await connection.query("DELETE FROM print2");
-      console.log("Data from print and print2 tables cleared.");
+      console.log("Data from database cleared.");
 
-      res.send("All files and data cleared.");
+      res.send("Cleanup completed.");
     } catch (error) {
-      console.error("Error cleaning up data:", error);
-      res.status(500).send("Failed to clean up files and data.");
+      console.error("Error during cleanup:", error);
+      res.status(500).send("Cleanup failed.");
     }
   });
 
@@ -281,6 +294,6 @@ const printServiceRouter = express.Router();
   app.use("/print-service", printServiceRouter);
 
   app.listen(port, () => {
-    console.log(`Print service listening at http://localhost:${port}`);
+    console.log(`Print service running on port ${port}`);
   });
 })();
