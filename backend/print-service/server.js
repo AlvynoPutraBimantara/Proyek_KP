@@ -80,7 +80,7 @@ const printServiceRouter = express.Router();
     await connection.query("DELETE FROM print2");
     console.log("Data from database cleared.");
 
-    res.send("Cleanup completed:  database entries cleared.");
+    res.send("Cleanup completed: database entries cleared.");
   });
 
   // Route for file upload
@@ -96,6 +96,9 @@ const printServiceRouter = express.Router();
       "INSERT INTO excel (filename, file) VALUES (?, ?)",
       [req.file.filename, xlsxData]
     );
+
+ // Store the Excel file URL in the print table
+ await connection.query("INSERT INTO print (fileUrl) VALUES (?)", [xlsxUrl]);
 
     res.status(201).json({ xlsxUrl });
   });
@@ -223,6 +226,13 @@ const printServiceRouter = express.Router();
         [pdfFilename, pdfData, filename]
       );
 
+      // Store the PDF file URL and original Excel file in the print2 table
+      const pdfUrl = `/pdf/${pdfFilename}`;
+      await connection.query(
+        "INSERT INTO print2 (fileUrl, originalFile) VALUES (?, ?)",
+        [pdfUrl, filename]
+      );
+      
       res.json({ pdfUrl: `/pdf/${pdfFilename}` });
     } catch (error) {
       console.error("Error converting Excel to PDF:", error);
@@ -278,9 +288,7 @@ const printServiceRouter = express.Router();
       // Clean up MySQL tables
       await connection.query("DELETE FROM excel");
       await connection.query("DELETE FROM pdf");
-      await connection.query("DELETE FROM print");
-      await connection.query("DELETE FROM print2");
-      console.log("Data from database cleared.");
+      console.log("Data from excel and pdf tables cleared.");
 
       res.send("Cleanup completed.");
     } catch (error) {
@@ -297,3 +305,4 @@ const printServiceRouter = express.Router();
     console.log(`Print service running on port ${port}`);
   });
 })();
+
