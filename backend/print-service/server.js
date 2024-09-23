@@ -288,6 +288,8 @@ const printServiceRouter = express.Router();
       // Clean up MySQL tables
       await connection.query("DELETE FROM excel");
       await connection.query("DELETE FROM pdf");
+      await connection.query("DELETE FROM print");
+      await connection.query("DELETE FROM print2");
       console.log("Data from excel and pdf tables cleared.");
 
       res.send("Cleanup completed.");
