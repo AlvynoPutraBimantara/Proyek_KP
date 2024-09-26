@@ -288,7 +288,9 @@ const printServiceRouter = express.Router();
       // Clean up MySQL tables
       await connection.query("DELETE FROM excel");
       await connection.query("DELETE FROM pdf");
-      console.log("Data from excel and pdf tables cleared.");
+      await connection.query("DELETE FROM print");
+      await connection.query("DELETE FROM print2");
+      console.log("Data from database cleared.");
 
       res.send("Cleanup completed.");
     } catch (error) {
@@ -305,4 +307,3 @@ const printServiceRouter = express.Router();
     console.log(`Print service running on port ${port}`);
   });
 })();
-
