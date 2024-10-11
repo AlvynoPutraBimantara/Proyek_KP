@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 
 # Install dependencies only for production
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm ci --only=production
 
 # Copy the rest of the application code
 COPY . .

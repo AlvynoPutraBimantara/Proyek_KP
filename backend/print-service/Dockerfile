@@ -14,7 +14,7 @@ WORKDIR /usr/src/app
 COPY package.json package-lock.json ./
 
 # Install production dependencies only, reduces image size
-RUN npm install
+RUN npm ci --only=production
 
 # Install MySQL2, kept separate for caching
 RUN npm install mysql2

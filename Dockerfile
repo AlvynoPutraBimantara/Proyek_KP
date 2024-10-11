@@ -9,7 +9,7 @@ WORKDIR /usr/src/app
 
 # Install dependencies (including devDependencies)
 COPY package.json package-lock.json ./
-RUN npm install
+RUN npm ci --only=production
 
 # Set proper permissions for node_modules/.cache
 RUN mkdir -p node_modules/.cache && chmod -R 777 node_modules/.cache

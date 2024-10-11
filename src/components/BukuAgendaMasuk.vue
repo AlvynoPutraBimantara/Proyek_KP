@@ -367,31 +367,32 @@ export default {
       }
     },
     async exportToPdf() {
-      const doc = new jsPDF();
-      doc.setFontSize(22);
-      doc.text("BUKU AGENDA SURAT MASUK", 20, 20);
+  const doc = new jsPDF();
+  doc.setFontSize(22);
+  doc.text("BUKU AGENDA SURAT MASUK", 20, 20);
 
-      // Add table content (example, add more details as per your need)
-      doc.setFontSize(12);
-      doc.text("Example content here...", 20, 30);
+  // Add table content (example, add more details as per your need)
+  doc.setFontSize(12);
+  doc.text("Example content here...", 20, 30);
 
-      // Convert PDF document to base64 string
-      const pdfData = doc.output("datauristring").split(",")[1];
-      const filename = `buku-agenda-${this.selectedMonth}-${this.selectedYear}.pdf`;
+  // Convert PDF document to base64 string
+  const pdfData = doc.output("datauristring").split(",")[1];
+  const filename = `buku-agenda-${this.selectedMonth}-${this.selectedYear}.pdf`;
 
-      try {
-        // Send generated PDF to backend for storage
-        await axios.post("http://localhost:3006/print-service/upload-pdf", {
-          filename,
-          pdfData,
-        });
+  try {
+    // Send generated PDF to backend for storage
+    const response = await axios.post("http://localhost:3006/print-service/upload-pdf", {
+      filename,
+      pdfData,
+    });
 
-        // Redirect to PreviewBukuAgendaMasuk after successful generation
-        this.$router.push({ name: "PreviewBukuAgendaMasuk" });
-      } catch (error) {
-        console.error("Error uploading PDF:", error);
-      }
-    },
+    // Redirect to PreviewBukuAgendaMasuk with the fileUrl from the response
+    this.$router.push({ name: "PreviewBukuAgendaMasuk", query: { fileUrl: response.data.fileUrl } });
+  } catch (error) {
+    console.error("Error uploading PDF:", error);
+  }
+}
+,
     async exportToExcel(storeInBackend = false) {
       const data = this.sortedSuratMasuk.map((item, index) => ({
         "No.": index + 1,

@@ -47,11 +47,11 @@ export default {
   methods: {
     // Method to load file URL from the query parameter of the current route
     loadFile() {
-      const fileUrl = this.$route.query.fileUrl; // Extract file URL from route query parameters
-      if (fileUrl) {
-        this.fileUrl = `http://localhost:3006${fileUrl}`; // Assign the file URL to 'fileUrl'
-      }
-    },
+    const fileUrl = this.$route.query.fileUrl;  // Get the URL from the route
+    if (fileUrl) {
+      this.pdfUrl = `http://localhost:3006${fileUrl}`; // Assign the full file URL to 'pdfUrl'
+    }
+  },
 
     // Method to send a request to the server to convert the Excel file to a PDF
     async viewFileAsPDF() {

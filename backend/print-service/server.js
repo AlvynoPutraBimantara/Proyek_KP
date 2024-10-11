@@ -9,7 +9,7 @@ const mysql = require("mysql2/promise");
 
 const app = express();
 const port = 3006;
-
+const pool = require('./db');
 app.use(cors());
 app.use(express.json());
 
@@ -125,32 +125,34 @@ const printServiceRouter = express.Router();
     }
   });
 
-// Add a new route to handle PDF upload from frontend
-printServiceRouter.post("/upload-pdf", async (req, res) => {
-  const { filename, pdfData } = req.body;
-
-  if (!pdfData || !filename) {
-    return res.status(400).send("PDF data or filename is missing.");
-  }
-
-  try {
-    // Convert base64 encoded PDF data back to binary
-    const pdfBuffer = Buffer.from(pdfData, "base64");
-
-    // Store the PDF file in MySQL (bukuagenda.pdf)
-    await connection.query(
-      "INSERT INTO pdf (filename, file) VALUES (?, ?)",
-      [filename, pdfBuffer]
-    );
-
-    // Respond with success and redirect to preview page
-    res.status(201).json({ message: "PDF stored successfully" });
-  } catch (error) {
-    console.error("Error storing PDF:", error);
-    res.status(500).send("Failed to store PDF.");
-  }
-});
-
+  printServiceRouter.post("/upload-pdf", async (req, res) => {
+    const { filename, pdfData } = req.body;
+  
+    if (!pdfData || !filename) {
+      return res.status(400).send("PDF data or filename is missing.");
+    }
+  
+    try {
+      // Convert base64 encoded PDF data back to binary
+      const pdfBuffer = Buffer.from(pdfData, "base64");
+  
+      // Create a URL for the PDF file (this could be based on where the files are stored)
+      const pdfUrl = `/pdf/${filename}`;
+  
+      // Store the PDF file in MySQL (bukuagenda.pdf)
+      await pool.query(
+        "INSERT INTO pdf (filename, file, fileUrl) VALUES (?, ?, ?)",
+        [filename, pdfBuffer, pdfUrl]
+      );
+  
+      // Respond with success and the file URL
+      res.status(201).json({ message: "PDF stored successfully", fileUrl: pdfUrl });
+    } catch (error) {
+      console.error("Error storing PDF:", error);
+      res.status(500).send("Failed to store PDF.");
+    }
+  });
+  
 
   // Route to convert Excel to PDF
   printServiceRouter.post("/ConvertToPDF/:filename", async (req, res) => {
