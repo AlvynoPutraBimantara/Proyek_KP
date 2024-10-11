@@ -14,7 +14,7 @@
           <option v-for="year in years" :key="year" :value="year">{{ year }}</option>
         </select>
         <button @click="exportToExcel(false)" class="export-button">Export ke Excel</button>
-        <button @click="exportToExcel(true)" class="print-button">
+        <button @click="exportToPdf" class="print-button">
           <font-awesome-icon :icon="['fas', 'print']" /> Cetak
         </button>
       </div>
@@ -192,6 +192,7 @@
 import axios from "axios";
 import * as SheetJSStyle from "sheetjs-style";
 import naturalSort from "javascript-natural-sort";
+import jsPDF from "jspdf";
 
 export default {
   name: "BukuAgendaMasuk",
@@ -363,6 +364,32 @@ export default {
     confirmDelete(id) {
       if (confirm("Apakah anda yakin akan menghapus?")) {
         this.HapusSurat(id);
+      }
+    },
+    async exportToPdf() {
+      const doc = new jsPDF();
+      doc.setFontSize(22);
+      doc.text("BUKU AGENDA SURAT MASUK", 20, 20);
+
+      // Add table content (example, add more details as per your need)
+      doc.setFontSize(12);
+      doc.text("Example content here...", 20, 30);
+
+      // Convert PDF document to base64 string
+      const pdfData = doc.output("datauristring").split(",")[1];
+      const filename = `buku-agenda-${this.selectedMonth}-${this.selectedYear}.pdf`;
+
+      try {
+        // Send generated PDF to backend for storage
+        await axios.post("http://localhost:3006/print-service/upload-pdf", {
+          filename,
+          pdfData,
+        });
+
+        // Redirect to PreviewBukuAgendaMasuk after successful generation
+        this.$router.push({ name: "PreviewBukuAgendaMasuk" });
+      } catch (error) {
+        console.error("Error uploading PDF:", error);
       }
     },
     async exportToExcel(storeInBackend = false) {

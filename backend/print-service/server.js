@@ -125,6 +125,33 @@ const printServiceRouter = express.Router();
     }
   });
 
+// Add a new route to handle PDF upload from frontend
+printServiceRouter.post("/upload-pdf", async (req, res) => {
+  const { filename, pdfData } = req.body;
+
+  if (!pdfData || !filename) {
+    return res.status(400).send("PDF data or filename is missing.");
+  }
+
+  try {
+    // Convert base64 encoded PDF data back to binary
+    const pdfBuffer = Buffer.from(pdfData, "base64");
+
+    // Store the PDF file in MySQL (bukuagenda.pdf)
+    await connection.query(
+      "INSERT INTO pdf (filename, file) VALUES (?, ?)",
+      [filename, pdfBuffer]
+    );
+
+    // Respond with success and redirect to preview page
+    res.status(201).json({ message: "PDF stored successfully" });
+  } catch (error) {
+    console.error("Error storing PDF:", error);
+    res.status(500).send("Failed to store PDF.");
+  }
+});
+
+
   // Route to convert Excel to PDF
   printServiceRouter.post("/ConvertToPDF/:filename", async (req, res) => {
     const { filename } = req.params;

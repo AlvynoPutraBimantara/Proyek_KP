@@ -55,20 +55,25 @@ export default {
 
     // Method to send a request to the server to convert the Excel file to a PDF
     async viewFileAsPDF() {
-      const fileName = this.fileUrl.split("/").pop(); // Extract the filename from the 'fileUrl'
-      try {
-        // Send a request to the backend to convert the Excel file to PDF using the filename
-        const response = await axios.post(
-          `http://localhost:3006/print-service/ConvertToPDF/${encodeURIComponent(fileName)}`
-        );
-        // Set the PDF URL based on the response from the server
-        this.pdfUrl = `http://localhost:3006${response.data.pdfUrl}`;
-      } catch (error) {
-        console.error("Error converting file to PDF:", error); // Log error if conversion fails
-      } finally {
-        this.loading = false; // Set loading to false once the operation is done
-      }
-    },
+  const fileName = this.fileUrl.split("/").pop();
+
+  try {
+    // Fetch PDF from the correct server path using the filename
+    const response = await axios.get(
+      `http://localhost:3006/pdf/${fileName}`, // Updated to match the backend route
+      { responseType: "blob" } // Ensure response is in binary format
+    );
+
+    const pdfBlob = new Blob([response.data], { type: "application/pdf" });
+    this.pdfUrl = URL.createObjectURL(pdfBlob);  // Create a URL for the PDF file
+
+    this.loading = false;
+  } catch (error) {
+    console.error("Error fetching PDF from server:", error);
+    this.loading = false;
+  }
+}
+,
 
     // Method to clean up files on the server when the user navigates away
     async cleanupFiles() {
