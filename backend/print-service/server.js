@@ -108,29 +108,7 @@ const printServiceRouter = express.Router();
     }
   });
 
-  // Route to save Print data into MySQL (replacing db.json)
-  printServiceRouter.post("/Print", async (req, res) => {
-    const { table, data } = req.body;
-    if (!table || !data) {
-      return res.status(400).send("Table and data are required.");
-    }
-
-    try {
-      // Store Print data in the corresponding MySQL table
-      if (table === 'print') {
-        await connection.query("INSERT INTO print (fileUrl) VALUES (?)", [data.fileUrl]);
-      } else if (table === 'print2') {
-        await connection.query("INSERT INTO print2 (fileUrl, originalFile) VALUES (?, ?)", [data.fileUrl, data.originalFile]);
-      }
-      
-      res.status(201).send("Data saved successfully.");
-    } catch (error) {
-      console.error("Error saving data:", error);
-      res.status(500).send("Failed to save data.");
-    }
-  });
-
-  // Route to clean up stored PDF and Print data
+  // Route to clean up stored PDF data
   printServiceRouter.post("/cleanup", async (req, res) => {
     const pdfFiles = fs.readdirSync(pdfDir);
     try {
@@ -145,8 +123,6 @@ const printServiceRouter = express.Router();
 
       // Clean up MySQL tables
       await connection.query("DELETE FROM pdf");
-      await connection.query("DELETE FROM print");
-      await connection.query("DELETE FROM print2");
       console.log("Data from database cleared.");
 
       res.send("Cleanup completed.");

@@ -470,7 +470,7 @@ export default {
 
   // Convert PDF document to base64 string
   const pdfData = doc.output("datauristring").split(",")[1];
-  const filename = `Buku-agenda-bulan-${this.selectedMonth}-${this.selectedYear}.pdf`;
+  const filename = `Buku agenda keluar bulan ${this.selectedMonth}-${this.selectedYear}.pdf`;
 
   try {
     // Send generated PDF to backend for storage
