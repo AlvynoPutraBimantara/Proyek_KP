@@ -47,25 +47,27 @@ export default {
   methods: {
     // Method to load file URL from the query parameter of the current route
     loadFile() {
-    const fileUrl = this.$route.query.fileUrl;  // Get the URL from the route
-    if (fileUrl) {
-      this.pdfUrl = `http://localhost:3006${fileUrl}`; // Assign the full file URL to 'pdfUrl'
-    }
-  },
+  const fileUrl = this.$route.query.fileUrl;  // Get the file URL from the route query
+  if (fileUrl) {
+    this.fileUrl = fileUrl;  // Save the URL for use in `viewFileAsPDF`
+  }
+}
+,
 
-    // Method to send a request to the server to convert the Excel file to a PDF
-    async viewFileAsPDF() {
+  // Method to send a request to the server to fetch the PDF blob from the database
+  async viewFileAsPDF() {
   const fileName = this.fileUrl.split("/").pop();
 
   try {
-    // Fetch PDF from the correct server path using the filename
+    // Fetch the PDF blob from the backend
     const response = await axios.get(
-      `http://localhost:3006/pdf/${fileName}`, // Updated to match the backend route
-      { responseType: "blob" } // Ensure response is in binary format
+      `http://localhost:3006/print-service/pdf/${fileName}`, 
+      { responseType: "blob" }  // Ensure the response is a binary blob
     );
 
+    // Create a blob URL for the PDF file
     const pdfBlob = new Blob([response.data], { type: "application/pdf" });
-    this.pdfUrl = URL.createObjectURL(pdfBlob);  // Create a URL for the PDF file
+    this.pdfUrl = URL.createObjectURL(pdfBlob);
 
     this.loading = false;
   } catch (error) {

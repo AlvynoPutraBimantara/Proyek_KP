@@ -2,9 +2,11 @@
   <div>
     <h1>INPUT SURAT KELUAR</h1>
     <div class="main-container">
+      <!-- PDF Preview Section -->
       <div v-if="pdfUrl" class="pdf-viewer">
         <iframe :src="pdfUrl" width="100%" height="1080px"></iframe>
       </div>
+      
       <div class="update-container">
         <form class="update" @submit.prevent="submitProduct">
           <div class="form-group">
@@ -60,6 +62,7 @@
             <label for="tanggalDisposisi">Tanggal Disposisi</label>
             <input type="date" id="tanggalDisposisi" v-model="SuratKeluar.tanggalDisposisi" />
           </div>
+
           <div class="form-group">
             <label for="bulan">Bulan</label>
             <select id="bulan" v-model="selectedMonth">
@@ -79,8 +82,10 @@
               </option>
             </select>
           </div>
-          <button type="button" @click="triggerFileUpload">Lampiran</button>
-          <button type="submit">Masukan</button>
+          
+          <!-- Button to Trigger File Upload -->
+          <button type="button" @click="triggerFileUpload">LAMPIRAN</button>
+          <button type="submit">SIMPAN</button>
           <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none;" />
         </form>
       </div>
@@ -107,14 +112,11 @@ export default {
         disposisiKasumpeg: "",
         tanggalDisposisi: ""
       },
-      pdfFile: null,
-      pdfUrl: null,
-      selectedMonth: "",
-      selectedYear: "",
-      months: [
-        "JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI",
-        "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"
-      ],
+      pdfFile: null, // PDF file reference
+      pdfUrl: null,  // PDF preview URL
+      selectedMonth: "", 
+      selectedYear: "", 
+      months: ["JANUARI", "FEBRUARI", "MARET", "APRIL", "MEI", "JUNI", "JULI", "AGUSTUS", "SEPTEMBER", "OKTOBER", "NOVEMBER", "DESEMBER"], 
       years: [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041, 2042, 2043, 2044]
     };
   },
@@ -130,23 +132,23 @@ export default {
           tahun: this.selectedYear
         };
 
+        // Upload PDF file
         if (this.pdfFile) {
           const formData = new FormData();
           formData.append("pdf", this.pdfFile);
-          const response = await axios.post(
-            "http://localhost:3005/uploads",
-            formData
-          );
-          formattedData.pdfUrl = `http://localhost:3005${response.data.pdfUrl}`;
+
+          const response = await axios.post("http://localhost:3005/uploads", formData);
+          formattedData.pdfUrl = `http://localhost:3005/uploads/${response.data.fileId}`;
         }
 
+        // Submit form data
         const result = await axios.post("http://localhost:3004/SuratKeluar", formattedData);
         if (result.status === 201) {
           this.$router.push({ name: "BukuAgendaKeluar" });
         }
       } catch (error) {
-        console.error("Error adding product:", error);
-        alert("An error occurred while adding the product. Please try again later.");
+        console.error("Error input data:", error);
+        alert("Error saat input data");
       }
     },
     formatDate(dateString) {
@@ -161,6 +163,8 @@ export default {
       const file = event.target.files[0];
       if (file && file.type === "application/pdf") {
         this.pdfFile = file;
+
+        // Generate a preview URL for the selected PDF
         const reader = new FileReader();
         reader.onload = (e) => {
           const blob = new Blob([e.target.result], { type: 'application/pdf' });
@@ -200,13 +204,15 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px;
+  padding: 10px;
 }
 
 .form-group {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  font-size: 18px;
+  text-align: left;
+  font-weight: bold;
   margin-bottom: 10px;
 }
 
@@ -232,7 +238,7 @@ export default {
   color: white;
   border: none;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 10px;
 }
 
 .update button:hover {
@@ -240,7 +246,7 @@ export default {
 }
 
 .pdf-viewer {
-  flex: 0 1 50%;
-  max-width: 100%;
+  flex: 0 1 60%;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 </style>

@@ -18,15 +18,7 @@
     >
       INPUT SURAT MASUK
     </router-link>
-    <router-link
-      v-if="isAdmin || isUser"
-      to="/PreviewBukuAgendaMasuk"
-      :class="{ active: isActive('/PreviewBukuAgendaMasuk') }"
-    >
-      CETAK BUKU AGENDA SURAT MASUK
-    </router-link>
-
-    <!-- Conditionally display the Informasi link based on login status -->
+    
     <router-link
       v-if="isLoggedIn"
       to="/Informasi"

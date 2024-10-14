@@ -1,4 +1,5 @@
 
+
 <template>
   <div class="data-produk-container">
     <div class="header-container">
@@ -192,7 +193,8 @@
 import axios from "axios";
 import * as SheetJSStyle from "sheetjs-style";
 import naturalSort from "javascript-natural-sort";
-import jsPDF from "jspdf";
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 export default {
   name: "BukuAgendaMasuk",
@@ -234,7 +236,6 @@ export default {
     },
     filteredSuratMasuk() {
       let filtered = this.SuratMasuk;
-
       // Filter by selected month and year
       if (this.selectedMonth) {
         filtered = filtered.filter((item) => item.bulan === this.selectedMonth);
@@ -242,7 +243,6 @@ export default {
       if (this.selectedYear) {
         filtered = filtered.filter((item) => item.tahun === this.selectedYear);
       }
-
       // Filter by search query
       if (this.searchQuery) {
         const searchQueryLower = this.searchQuery.toLowerCase();
@@ -260,7 +260,6 @@ export default {
             item.tanggalDisposisi.toLowerCase().includes(searchQueryLower)
         );
       }
-
       // Sort filtered data
       if (this.sortKey) {
         filtered = filtered.slice().sort((a, b) => {
@@ -297,7 +296,6 @@ export default {
           if (month1 !== month2) return month1 - month2;
           return day1 - day2;
         };
-
         switch (this.sortKey) {
           case "tanggalSurat_asc":
           case "tanggalSurat_desc":
@@ -366,18 +364,113 @@ export default {
         this.HapusSurat(id);
       }
     },
-    async exportToPdf() {
-  const doc = new jsPDF();
-  doc.setFontSize(22);
-  doc.text("BUKU AGENDA SURAT MASUK", 20, 20);
 
-  // Add table content (example, add more details as per your need)
-  doc.setFontSize(12);
-  doc.text("Example content here...", 20, 30);
+    async exportToPdf() {
+  const doc = new jsPDF({
+    orientation: "landscape",
+    unit: "pt",
+    format: "legal", 
+  });
+
+  const pageWidth = doc.internal.pageSize.getWidth();
+
+  doc.setFontSize(22);
+  const title = "BUKU AGENDA SURAT MASUK";
+  const titleWidth = doc.getTextWidth(title);
+  doc.text(title, (pageWidth - titleWidth) / 2, 40); 
+
+  
+  doc.setFontSize(18);
+  const subtitle = `BULAN ${this.selectedMonth} ${this.selectedYear}`;
+  const subtitleWidth = doc.getTextWidth(subtitle);
+  doc.text(subtitle, (pageWidth - subtitleWidth) / 2, 65); 
+
+  const headers = [
+    [
+      "NO.", 
+      "SURAT DARI",
+      "TGL. SURAT",
+      "NO. SURAT",
+      "PERIHAL",
+      "DITERIMA TGL.",
+      "NO. AGENDA",
+      "SIFAT",
+      "DISPOSISI SEKRETARIS",
+      "DISPOSISI KASUMPEG",
+      "TGL DISPOSISI",
+    ],
+    [
+      { content: "1", styles: { fillColor: [255, 255, 0] } }, 
+      { content: "2", styles: { fillColor: [255, 255, 0] } },
+      { content: "3", styles: { fillColor: [255, 255, 0] } },
+      { content: "4", styles: { fillColor: [255, 255, 0] } },
+      { content: "5", styles: { fillColor: [255, 255, 0] } },
+      { content: "6", styles: { fillColor: [255, 255, 0] } },
+      { content: "7", styles: { fillColor: [255, 255, 0] } },
+      { content: "8", styles: { fillColor: [255, 255, 0] } },
+      { content: "9", styles: { fillColor: [255, 255, 0] } },
+      { content: "10", styles: { fillColor: [255, 255, 0] } },
+      { content: "11", styles: { fillColor: [255, 255, 0] } },
+    ],
+  ];
+
+  const data = this.sortedSuratMasuk.map((item, index) => [
+    index + 1,
+    item.suratDari,
+    item.tanggalSurat,
+    item.noSurat,
+    item.perihal,
+    item.diterimaTanggal,
+    item.noAgenda,
+    item.sifat,
+    item.disposisiSekretaris,
+    item.disposisiKasumpeg,
+    item.tanggalDisposisi,
+  ]);
+
+  doc.autoTable({
+  head: headers,
+  body: data,
+  theme: "grid",
+  headStyles: {
+    fillColor: [157, 195, 230],
+    textColor: [0, 0, 0],
+    halign: "center",
+    valign: "middle",
+  },
+  bodyStyles: {
+    fillColor: false,
+    textColor: [0, 0, 0],
+    halign: "center",
+    valign: "middle",
+  },
+  styles: {
+    fontSize: 8,
+    cellPadding: 5,
+    lineColor: [0, 0, 0],
+    lineWidth: 0.25,
+  },
+  columnStyles: {
+    0: { cellWidth: 'auto' },  
+    1: { cellWidth: 'auto' },
+    2: { cellWidth: 'auto' },
+    3: { cellWidth: 'auto' },
+    4: { cellWidth: 'auto' },
+    5: { cellWidth: 'auto' },
+    6: { cellWidth: 'auto' },
+    7: { cellWidth: 'auto' },
+    8: { cellWidth: 'auto' },
+    9: { cellWidth: 'auto' },
+    10: { cellWidth: 'auto' },
+  },
+  startY: 80,
+  margin: { left: 10, right: 10 },
+});
+
 
   // Convert PDF document to base64 string
   const pdfData = doc.output("datauristring").split(",")[1];
-  const filename = `buku-agenda-${this.selectedMonth}-${this.selectedYear}.pdf`;
+  const filename = `Buku-Agenda-Bulan-${this.selectedMonth}-${this.selectedYear}.pdf`;
 
   try {
     // Send generated PDF to backend for storage
@@ -391,222 +484,181 @@ export default {
   } catch (error) {
     console.error("Error uploading PDF:", error);
   }
+},
+async exportToExcel() {
+  const data = this.sortedSuratMasuk.map((item, index) => ({
+    "No.": index + 1,
+    "Surat Dari": item.suratDari,
+    "Tgl. Surat": item.tanggalSurat,
+    "No. Surat": item.noSurat,
+    Perihal: item.perihal,
+    "Diterima Tgl.": item.diterimaTanggal,
+    "No. Agenda": item.noAgenda,
+    Sifat: item.sifat,
+    "Disposisi Sekretaris": item.disposisiSekretaris,
+    "Disposisi Kasumpeg": item.disposisiKasumpeg,
+    "Tgl Disposisi": item.tanggalDisposisi,
+  }));
+
+  const worksheet = {};
+
+  const headers = [
+    ["BUKU AGENDA SURAT MASUK DI TATA USAHA"],
+    ["BULAN " + this.selectedMonth + " " + this.selectedYear],
+    [],
+    [
+      "NO.",
+      "   SURAT DARI   ",
+      "TGL. SURAT",
+      "    NO. SURAT   ",
+      "   PERIHAL                           ",
+      "DITERIMA TGL",
+      "NO. AGENDA",
+      "SIFAT",
+      "DISPOSISI SEKRETARIS",
+      "DISPOSISI KASUMPEG",
+      "TGL DISPOSISI",
+    ],
+    ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
+  ];
+
+  const commonAlignment = {
+    horizontal: "center",
+    vertical: "center",
+    wrapText: true,
+  };
+
+  const styles = {
+    header: {
+      font: { bold: true, sz: 22 },
+      alignment: { horizontal: "center", vertical: "middle" },
+      wrapText: true,
+    },
+    subHeader: {
+      fill: { fgColor: { rgb: "9DC3E6" } },
+      font: { bold: true, sz: 12 },
+      alignment: commonAlignment,
+      border: {
+        top: { style: "thin" },
+        bottom: { style: "thin" },
+        left: { style: "thin" },
+        right: { style: "thin" },
+      },
+    },
+    columnNumbers: {
+      fill: { fgColor: { rgb: "FFFF00" } },
+      font: { bold: true, sz: 12 },
+      alignment: commonAlignment,
+      border: {
+        top: { style: "thin" },
+        bottom: { style: "thin" },
+        left: { style: "thin" },
+        right: { style: "thin" },
+      },
+    },
+    thickBorder: {
+      border: {
+        top: { style: "thick" },
+        bottom: { style: "thick" },
+        left: { style: "thick" },
+        right: { style: "thick" },
+      },
+    },
+    thinBorder: {
+      font: { sz: 10 },
+      border: {
+        top: { style: "thin" },
+        bottom: { style: "thin" },
+        left: { style: "thin" },
+        right: { style: "thin" },
+      },
+    },
+  };
+
+  // Add headers to the worksheet
+  headers.forEach((row, rowIndex) => {
+    row.forEach((cell, colIndex) => {
+      const cellRef = SheetJSStyle.utils.encode_cell({
+        r: rowIndex,
+        c: colIndex + 1,
+      });
+      worksheet[cellRef] = {
+        v: cell,
+        s:
+          rowIndex === 0 || rowIndex === 1
+            ? styles.header
+            : rowIndex === 3
+              ? styles.subHeader
+              : styles.columnNumbers,
+      };
+    });
+  });
+
+  // Merge cells for the title and the second row
+  worksheet["!merges"] = [
+    { s: { r: 0, c: 1 }, e: { r: 0, c: 11 } },
+    { s: { r: 1, c: 1 }, e: { r: 1, c: 11 } },
+  ];
+
+  // Add data to the worksheet
+  data.forEach((row, rowIndex) => {
+    Object.values(row).forEach((cell, colIndex) => {
+      const cellRef = SheetJSStyle.utils.encode_cell({
+        r: rowIndex + headers.length,
+        c: colIndex + 1,
+      });
+      worksheet[cellRef] = {
+        v: cell,
+        s: { ...styles.thinBorder, alignment: commonAlignment },
+      };
+    });
+  });
+
+  // Calculate column widths based on the widest text in each column
+  const colWidths = headers[3].map((header, colIndex) => {
+    const headerWidth = header.length;
+    const maxDataWidth = Math.max(
+      ...data.map(
+        (row) => (row[headers[3][colIndex]] || "").toString().length
+      )
+    );
+    return { wch: Math.max(headerWidth, maxDataWidth) + 5 };
+  });
+
+  // Define the range to cover the entire table with the added empty column
+  const range = {
+    s: { c: 1, r: 0 },
+    e: { c: 11, r: data.length + headers.length - 1 },
+  };
+  worksheet["!ref"] = SheetJSStyle.utils.encode_range(range);
+
+  // Set column widths dynamically based on content
+  worksheet["!cols"] = [{ wch: 5 }].concat(colWidths);
+
+  // Define the workbook and append the worksheet
+  const workbook = SheetJSStyle.utils.book_new();
+  SheetJSStyle.utils.book_append_sheet(workbook, worksheet, "BukuAgendaMasuk");
+
+  const excelBuffer = SheetJSStyle.write(workbook, {
+    bookType: "xlsx",
+    type: "array",
+  });
+
+  const blob = new Blob([excelBuffer], {
+    type: "application/octet-stream",
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.setAttribute(
+    "download",
+    `Buku Agenda Surat Masuk ${this.selectedMonth} ${this.selectedYear}.xlsx`
+  );
+  document.body.appendChild(link);
+  link.click();
 }
 ,
-    async exportToExcel(storeInBackend = false) {
-      const data = this.sortedSuratMasuk.map((item, index) => ({
-        "No.": index + 1,
-        "Surat Dari": item.suratDari,
-        "Tgl. Surat": item.tanggalSurat,
-        "No. Surat": item.noSurat,
-        Perihal: item.perihal,
-        "Diterima Tgl.": item.diterimaTanggal,
-        "No. Agenda": item.noAgenda,
-        Sifat: item.sifat,
-        "Disposisi Sekretaris": item.disposisiSekretaris,
-        "Disposisi Kasumpeg": item.disposisiKasumpeg,
-        "Tgl Disposisi": item.tanggalDisposisi,
-      }));
-
-      const worksheet = {};
-
-      const headers = [
-        ["BUKU AGENDA SURAT MASUK DI TATA USAHA"],
-        ["BULAN " + this.selectedMonth + " " + this.selectedYear],
-        [],
-        [
-          "NO.",
-          "   SURAT DARI   ",
-          "TGL. SURAT",
-          "    NO. SURAT   ",
-          "   PERIHAL                           ",
-          "DITERIMA TGL",
-          "NO. AGENDA",
-          "SIFAT",
-          "DISPOSISI SEKRETARIS",
-          "DISPOSISI KASUMPEG",
-          "TGL DISPOSISI",
-        ],
-        ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"],
-      ];
-
-      const commonAlignment = {
-        horizontal: "center",
-        vertical: "center",
-        wrapText: true,
-      };
-
-      const styles = {
-        header: {
-          font: { bold: true, sz: 22 },
-          alignment: { horizontal: "center", vertical: "middle" },
-          wrapText: true,
-        },
-        subHeader: {
-          fill: { fgColor: { rgb: "9DC3E6" } },
-          font: { bold: true, sz: 12 },
-          alignment: commonAlignment,
-          border: {
-            top: { style: "thin" },
-            bottom: { style: "thin" },
-            left: { style: "thin" },
-            right: { style: "thin" },
-          },
-        },
-        columnNumbers: {
-          fill: { fgColor: { rgb: "FFFF00" } },
-          font: { bold: true, sz: 12 },
-          alignment: commonAlignment,
-          border: {
-            top: { style: "thin" },
-            bottom: { style: "thin" },
-            left: { style: "thin" },
-            right: { style: "thin" },
-          },
-        },
-        thickBorder: {
-          border: {
-            top: { style: "thick" },
-            bottom: { style: "thick" },
-            left: { style: "thick" },
-            right: { style: "thick" },
-          },
-        },
-        thinBorder: {
-          font: { sz: 10 },
-          border: {
-            top: { style: "thin" },
-            bottom: { style: "thin" },
-            left: { style: "thin" },
-            right: { style: "thin" },
-          },
-        },
-      };
-
-
-      // Add headers to the worksheet
-      headers.forEach((row, rowIndex) => {
-        row.forEach((cell, colIndex) => {
-          const cellRef = SheetJSStyle.utils.encode_cell({
-            r: rowIndex,
-            c: colIndex + 1,
-          });
-          worksheet[cellRef] = {
-            v: cell,
-            s:
-              rowIndex === 0 || rowIndex === 1
-                ? styles.header
-                : rowIndex === 3
-                  ? styles.subHeader
-                  : styles.columnNumbers,
-          };
-        });
-      });
-
-      // Merge cells for the title and the second row
-      worksheet["!merges"] = [
-        { s: { r: 0, c: 1 }, e: { r: 0, c: 11 } },
-        { s: { r: 1, c: 1 }, e: { r: 1, c: 11 } },
-      ];
-
-      // Add data to the worksheet
-      data.forEach((row, rowIndex) => {
-        Object.values(row).forEach((cell, colIndex) => {
-          const cellRef = SheetJSStyle.utils.encode_cell({
-            r: rowIndex + headers.length,
-            c: colIndex + 1,
-          });
-          worksheet[cellRef] = {
-            v: cell,
-            s: { ...styles.thinBorder, alignment: commonAlignment },
-          };
-        });
-      });
-
-      // Calculate column widths based on the widest text in each column
-      const colWidths = headers[3].map((header, colIndex) => {
-        const headerWidth = header.length;
-        const maxDataWidth = Math.max(
-          ...data.map(
-            (row) => (row[headers[3][colIndex]] || "").toString().length
-          )
-        );
-        return { wch: Math.max(headerWidth, maxDataWidth) + 5 };
-      });
-
-      // Define the range to cover the entire table with the added empty column
-      const range = {
-        s: { c: 1, r: 0 },
-        e: { c: 11, r: data.length + headers.length - 1 },
-      };
-      worksheet["!ref"] = SheetJSStyle.utils.encode_range(range);
-
-      // Set column widths dynamically based on content
-      worksheet["!cols"] = [{ wch: 5 }].concat(colWidths);
-
-      // Define the workbook and append the worksheet
-      const workbook = SheetJSStyle.utils.book_new();
-      SheetJSStyle.utils.book_append_sheet(
-        workbook,
-        worksheet,
-        "BukuAgendaMasuk"
-      );
-
-      const excelBuffer = SheetJSStyle.write(workbook, {
-        bookType: "xlsx",
-        type: "array",
-      });
-
-      const blob = new Blob([excelBuffer], {
-        type: "application/octet-stream",
-      });
-
-      if (!storeInBackend) {
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.setAttribute(
-          "download",
-          `Buku Agenda Surat Masuk ${this.selectedMonth} ${this.selectedYear}.xlsx`
-        );
-        document.body.appendChild(link);
-        link.click();
-      } else {
-        const formData = new FormData();
-        formData.append(
-          "xlsx",
-          blob,
-          `Buku Agenda Surat Masuk ${this.selectedMonth} ${this.selectedYear}.xlsx`
-        );
-
-        try {
-          const response = await axios.post(
-            "http://localhost:3006/print-service",
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
-
-          const xlsxUrl = response.data.xlsxUrl;
-
-          // Simpan file ke database "Print"
-          await axios.post("http://localhost:3006/print-service/Print", {
-            table: "Print",
-            data: { fileUrl: xlsxUrl },
-          });
-
-          this.$router.push({
-            name: "PreviewBukuAgendaMasuk",
-            query: { fileUrl: xlsxUrl },
-          });
-        } catch (error) {
-          console.error("Error storing file in backend:", error);
-        }
-      }
-    },
 
     applyFilters() {
       // This function will be triggered when the dropdowns change.
@@ -842,5 +894,4 @@ button:hover {
 .close-button.pdf-button .fa-circle-xmark {
   font-size: 20px; 
 }
-
 </style>
