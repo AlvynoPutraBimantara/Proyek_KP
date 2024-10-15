@@ -15,7 +15,7 @@ body {
 
 #sidebar-wrapper {
   min-height: 100vh;
-  margin-left: -300px; /* Hide the sidebar by default */
+  margin-left: -300px; 
   -webkit-transition: margin 0.25s ease-out;
   -moz-transition: margin 0.25s ease-out;
   -o-transition: margin 0.25s ease-out;
@@ -61,11 +61,11 @@ body {
 }
 
 .bg-light {
-  background-color: skyblue !important;
+  background-color: 	#00A36C!important;
 }
 
 #page-content-wrapper {
-  background-color: #cfe2f3;
+  background-color: 	#C1E1C1;
 }
 
 .info {

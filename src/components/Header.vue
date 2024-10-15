@@ -1,6 +1,6 @@
 <template>
   <nav class="nav">
-    <button class="btn btn-primary" @click="$emit('toggle-sidebar')" id="menu-toggle">
+    <button class="bg-light" @click="$emit('toggle-sidebar')" id="menu-toggle">
       <font-awesome-icon :icon="['fas', 'bars']" />
     </button>
     <router-link
@@ -65,7 +65,7 @@ export default {
 
 <style scoped>
 .nav {
-  background-color: darkblue;
+  background-color: #355E3B;
   display: flex;
   align-items: center;
   padding: 1vh 10px;
@@ -82,7 +82,7 @@ export default {
 }
 
 .icon-large {
-  font-size: 30px; /* Adjust the size as needed */
+  font-size: 30px; 
 }
 
 .nav a,

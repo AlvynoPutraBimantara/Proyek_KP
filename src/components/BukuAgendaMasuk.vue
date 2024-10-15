@@ -235,55 +235,65 @@ export default {
       );
     },
     filteredSuratMasuk() {
-      let filtered = this.SuratMasuk;
-      // Filter by selected month and year
-      if (this.selectedMonth) {
-        filtered = filtered.filter((item) => item.bulan === this.selectedMonth);
-      }
-      if (this.selectedYear) {
-        filtered = filtered.filter((item) => item.tahun === this.selectedYear);
-      }
-      // Filter by search query
-      if (this.searchQuery) {
-        const searchQueryLower = this.searchQuery.toLowerCase();
-        filtered = filtered.filter(
-          (item) =>
-            item.suratDari.toLowerCase().includes(searchQueryLower) ||
-            item.tanggalSurat.toLowerCase().includes(searchQueryLower) ||
-            item.noSurat.toLowerCase().includes(searchQueryLower) ||
-            item.perihal.toLowerCase().includes(searchQueryLower) ||
-            item.diterimaTanggal.toLowerCase().includes(searchQueryLower) ||
-            item.noAgenda.toLowerCase().includes(searchQueryLower) ||
-            item.sifat.toLowerCase().includes(searchQueryLower) ||
-            item.disposisiSekretaris.toLowerCase().includes(searchQueryLower) ||
-            item.disposisiKasumpeg.toLowerCase().includes(searchQueryLower) ||
-            item.tanggalDisposisi.toLowerCase().includes(searchQueryLower)
+    let filtered = this.SuratMasuk;
+    const searchQueryLower = this.searchQuery.toLowerCase();
+
+    if (this.selectedMonth) {
+      filtered = filtered.filter((item) => item.bulan === this.selectedMonth);
+    }
+    if (this.selectedYear) {
+      filtered = filtered.filter((item) => item.tahun === this.selectedYear);
+    }
+
+    if (this.searchQuery) {
+      filtered = filtered.filter((item) => {
+        const monthMatch = this.months.find((month) =>
+          month.toLowerCase().includes(searchQueryLower)
         );
-      }
-      // Sort filtered data
-      if (this.sortKey) {
-        filtered = filtered.slice().sort((a, b) => {
-          const keys = this.sortKey.split("_");
-          const key = keys[0];
-          const order = keys[1];
-          let modifier = 1;
+        const yearMatch = this.years.find((year) =>
+          year.toString().toLowerCase().includes(searchQueryLower)
+        );
 
-          if (order === "desc") {
-            modifier = -1;
-          }
+        return (
+          item.suratDari.toLowerCase().includes(searchQueryLower) ||
+          item.tanggalSurat.toLowerCase().includes(searchQueryLower) ||
+          item.noSurat.toLowerCase().includes(searchQueryLower) ||
+          item.perihal.toLowerCase().includes(searchQueryLower) ||
+          item.diterimaTanggal.toLowerCase().includes(searchQueryLower) ||
+          item.noAgenda.toLowerCase().includes(searchQueryLower) ||
+          item.sifat.toLowerCase().includes(searchQueryLower) ||
+          item.disposisiSekretaris.toLowerCase().includes(searchQueryLower) ||
+          item.disposisiKasumpeg.toLowerCase().includes(searchQueryLower) ||
+          item.tanggalDisposisi.toLowerCase().includes(searchQueryLower) ||
+          (item.bulan && monthMatch && item.bulan.toLowerCase().includes(monthMatch.toLowerCase())) ||
+          (item.tahun && yearMatch && item.tahun.toString().toLowerCase().includes(searchQueryLower))
+        );
+      });
+    }
 
-          if (a[key] < b[key]) {
-            return -1 * modifier;
-          }
-          if (a[key] > b[key]) {
-            return 1 * modifier;
-          }
-          return 0;
-        });
-      }
+    if (this.sortKey) {
+      filtered = filtered.slice().sort((a, b) => {
+        const keys = this.sortKey.split("_");
+        const key = keys[0];
+        const order = keys[1];
+        let modifier = 1;
 
-      return filtered;
-    },
+        if (order === "desc") {
+          modifier = -1;
+        }
+
+        if (a[key] < b[key]) {
+          return -1 * modifier;
+        }
+        if (a[key] > b[key]) {
+          return 1 * modifier;
+        }
+        return 0;
+      });
+    }
+
+    return filtered;
+  },
     sortedSuratMasuk() {
     let sortedArray = this.filteredSuratMasuk.slice();
 
@@ -343,15 +353,20 @@ export default {
   },
   methods: {
     loadData() {
-      axios
-        .get("http://localhost:3003/SuratMasuk")
-        .then((response) => {
-          this.SuratMasuk = response.data;
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
+    axios
+      .get("http://localhost:3003/SuratMasuk")
+      .then((response) => {
+        // Sort by tanggalSurat in descending order to display the newest first
+        this.SuratMasuk = response.data.sort((a, b) => {
+          const dateA = new Date(a.tanggalSurat.split("/").reverse().join("-"));
+          const dateB = new Date(b.tanggalSurat.split("/").reverse().join("-"));
+          return dateB - dateA;
         });
-    },
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  },
     async HapusSurat(id) {
       let result = await axios.delete("http://localhost:3003/SuratMasuk/" + id);
       console.warn(result);
@@ -369,7 +384,7 @@ export default {
   const doc = new jsPDF({
     orientation: "landscape",
     unit: "pt",
-    format: "legal", 
+    format: "A4", 
   });
 
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -714,6 +729,7 @@ h1 {
 .month-dropdown,
 .year-dropdown {
   padding: 5px;
+  background-color: rgba(255, 255, 255, 0.7); 
 }
 
 .header {
@@ -741,31 +757,23 @@ h1 {
   overflow-x: auto;
   margin: 5px;
   padding: 5px;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.5); /* Slightly transparent background */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   height: 720px;
   overflow-y: auto;
 }
 
-.table-container table {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid black;
-  font-size: 13px;
-  font-weight: normal;
-}
-
 .table-container th,
 .table-container td {
-  border: 1px solid #ddd;
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Slightly transparent border */
   padding: 4px;
   text-align: left;
   word-wrap: break-word;
   white-space: normal;
   word-break: break-word;
   overflow-wrap: break-word;
- 
+  background-color: rgba(255, 255, 255, 0.4); /* Slightly transparent cells */
 }
 
 .table-container .wide-column {
@@ -777,12 +785,12 @@ h1 {
 }
 
 th {
-  background-color: #f4f4f4;
+  background-color: rgba(244, 244, 244, 0.6); /* Slightly transparent header */
 }
 
 .sort-menu {
   position: absolute;
-  background: white;
+  background-color: rgba(255, 255, 255, 0.4);
   border: 1px solid #ccc;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 1000;
@@ -803,7 +811,7 @@ th {
 
 button {
   padding: 0.05vw 0.1vw;
-  background-color: #007bff;
+  background-color: 	blue;
   color: white;
   border: none;
   font-size: 12px;
@@ -813,7 +821,7 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: skyblue;
 }
 
 .clear-button{
@@ -855,6 +863,7 @@ button:hover {
   border-radius: 4px;
   margin-right: 21vw;
   height:4vh;
+  background-color: rgba(255, 255, 255, 0.7);
 }
 
 .print-button {

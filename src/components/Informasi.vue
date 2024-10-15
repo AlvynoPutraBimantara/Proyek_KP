@@ -54,7 +54,9 @@
       </div>
       <div class="card">
         <img src="@/assets/images/3.jpg" alt="Image 3" />
-        <p>Untuk mencetak spreadsheet maka klik tombol yang ditandai dengan kotak merah pada pojok kanan atas</p>
+        <ol><li>Untuk mencetak spreadsheet maka klik tombol yang ditandai dengan kotak merah pada pojok kanan atas</li>
+          <li>Idealnya Spreadsheet dicetak dengan kertas berukuran "A4" </li>
+        </ol>
       </div>
 
       <div class="card" >
