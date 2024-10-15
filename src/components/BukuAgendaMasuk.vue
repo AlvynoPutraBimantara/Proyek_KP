@@ -706,7 +706,7 @@ async exportToExcel() {
       window.print();
     },
     togglePdfView(url) {
-      this.pdfViewerActive = !!url; // Set to true if URL is provided, false otherwise
+      this.pdfViewerActive = !!url; 
       this.selectedPdfUrl = url;
     },
   },

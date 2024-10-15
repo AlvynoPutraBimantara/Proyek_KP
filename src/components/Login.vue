@@ -123,7 +123,7 @@ export default {
   width: 300px;
   height: 40px;
   border: 1px solid black;
-  background: darkblue;
+  background: #355E3B;
   color: white;
   cursor: pointer;
   margin-right: auto;

@@ -63,7 +63,7 @@ export default {
   height: 50px;
   font-size: large;
   cursor: pointer;
-  background-color: darkblue;
+  background-color: #355E3B;
   color: white;
   border: none;
   transition: background-color 0.3s ease;
@@ -72,7 +72,7 @@ export default {
 }
 
 .button:hover {
-  background-color: navy;
+  background-color: lightgreen;
 }
 
 .landing-content {
