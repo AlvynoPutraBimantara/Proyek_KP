@@ -1,9 +1,7 @@
-// server.js
-
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const pool = require("./db");
+const pool = require("./db");  // Import the db pool
 
 const app = express();
 const port = process.env.PORT || 3002;
@@ -11,10 +9,10 @@ const port = process.env.PORT || 3002;
 app.use(cors());
 app.use(bodyParser.json());
 
+// Test database connection
 app.get("/test-db-connection", async (req, res) => {
   try {
-    // eslint-disable-next-line no-unused-vars
-    const [rows] = await pool.query("SELECT 1");
+    await pool.query("SELECT 1");  // Simple test query
     res.status(200).send("Database connection successful");
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -50,7 +48,6 @@ app.get("/User", async (req, res) => {
   }
 });
 
-
 // Fetch a user by ID
 app.get("/User/:id", async (req, res) => {
   const { id } = req.params;
@@ -73,7 +70,7 @@ app.post("/User", async (req, res) => {
   const id = Math.random().toString(36).substring(2, 15);
   try {
     await pool.query("INSERT INTO `user` (id, Nama, Password, Role) VALUES (?, ?, ?, ?)", [id, Nama, Password, Role || "user"]);
-    res.status(201).json({ id, Nama, Password, Role: Role || "user" });
+    res.status(201).json({ id, Nama, Role: Role || "user" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -87,7 +84,7 @@ app.put("/User/:id", async (req, res) => {
     const [result] = await pool.query("UPDATE `user` SET Nama = ?, Password = ?, Role = ? WHERE id = ?", [Nama, Password, Role, id]);
 
     if (result.affectedRows > 0) {
-      res.status(200).json({ id, Nama, Password, Role });
+      res.status(200).json({ id, Nama, Role });
     } else {
       res.status(404).send("User not found");
     }
@@ -112,6 +109,7 @@ app.delete("/User/:id", async (req, res) => {
   }
 });
 
+// Start the server
 app.listen(port, () => {
   console.log(`User service berjalan di-Port ${port}`);
 });

@@ -2,7 +2,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const db = require("./db"); 
+const db = require("./db");  // Import the connection pool from db.js
 
 const app = express();
 const port = 3004;
@@ -10,10 +10,12 @@ const port = 3004;
 app.use(cors());
 app.use(bodyParser.json());
 
+// Generate a random 4-character ID
 function generateId() {
   return Math.random().toString(36).substring(2, 6).toUpperCase();
 }
 
+// GET all records from suratkeluar
 app.get("/SuratKeluar", async (req, res) => {
   try {
     const [rows] = await db.query("SELECT * FROM suratkeluar");
@@ -24,6 +26,7 @@ app.get("/SuratKeluar", async (req, res) => {
   }
 });
 
+// GET a single record by id
 app.get("/SuratKeluar/:id", async (req, res) => {
   const id = req.params.id;
   try {
@@ -39,9 +42,10 @@ app.get("/SuratKeluar/:id", async (req, res) => {
   }
 });
 
+// POST a new record into suratkeluar
 app.post("/SuratKeluar", async (req, res) => {
   const data = req.body;
-  const newId = generateId(); 
+  const newId = generateId();  // Generate new ID
 
   try {
     const [result] = await db.query(
@@ -73,6 +77,7 @@ app.post("/SuratKeluar", async (req, res) => {
   }
 });
 
+// PUT (update) a record by id
 app.put("/SuratKeluar/:id", async (req, res) => {
   const data = req.body;
   const id = req.params.id;
@@ -121,6 +126,7 @@ app.put("/SuratKeluar/:id", async (req, res) => {
   }
 });
 
+// DELETE a record by id
 app.delete("/SuratKeluar/:id", async (req, res) => {
   const id = req.params.id;
   try {
@@ -136,6 +142,7 @@ app.delete("/SuratKeluar/:id", async (req, res) => {
   }
 });
 
+// Start the server
 app.listen(port, () => {
-  console.log(`Surat Keluar service berjalan di-Port ${port}`);
+  console.log(`Surat Keluar service running on port ${port}`);
 });

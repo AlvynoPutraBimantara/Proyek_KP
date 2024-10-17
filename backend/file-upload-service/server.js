@@ -1,7 +1,10 @@
+// D:\Proyek-KP-master\backend\file-upload-service\index.js
+
 const express = require("express");
 const cors = require("cors");
 const multer = require("multer");
-const mysql = require("mysql2/promise");
+const pool = require("./db");  // Import the pool from db.js
+
 require("dotenv").config();
 
 const app = express();
@@ -9,15 +12,8 @@ const port = 3005;
 
 app.use(cors());
 
-const storage = multer.memoryStorage(); 
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
-
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || 'mysql',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || '1234',
-});
 
 app.post("/uploads", upload.single("pdf"), async (req, res) => {
   if (!req.file) {
@@ -30,9 +26,9 @@ app.post("/uploads", upload.single("pdf"), async (req, res) => {
       "INSERT INTO Lampiran (filename, data, mimetype) VALUES (?, ?, ?)",
       [req.file.originalname, req.file.buffer, req.file.mimetype]
     );
-    connection.release();
+    connection.release();  // Release the connection back to the pool
     const fileId = result.insertId;
-    res.json({ fileId }); // Return the file ID
+    res.json({ fileId });
   } catch (error) {
     console.error("Error storing file:", error);
     res.status(500).send("Internal server error");
@@ -63,8 +59,6 @@ app.get("/uploads/:id", async (req, res) => {
   }
 });
 
-
-
 app.listen(port, () => {
-  console.log(`File upload service berjalan di-Port port ${port}`);
+  console.log(`File upload service running on port ${port}`);
 });
