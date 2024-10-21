@@ -5,6 +5,7 @@ const pool = require("./db");  // Import the db pool
 
 const app = express();
 const port = process.env.PORT || 3002;
+require("dotenv").config();
 
 app.use(cors());
 app.use(bodyParser.json());

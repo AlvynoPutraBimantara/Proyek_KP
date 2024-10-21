@@ -9,6 +9,7 @@ const port = 3004;
 
 app.use(cors());
 app.use(bodyParser.json());
+require("dotenv").config();
 
 // Generate a random 4-character ID
 function generateId() {

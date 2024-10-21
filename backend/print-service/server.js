@@ -11,6 +11,7 @@ const app = express();
 const port = 3006;
 app.use(cors());
 app.use(express.json());
+require("dotenv").config();
 
 const pdfDir = path.join(__dirname, "pdf");
 

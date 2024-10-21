@@ -12,16 +12,16 @@ services:
 
   api-gateway:
     build:
-      context: ../api-gateway  # Update path to reflect new structure
+      context: ../api-gateway
     ports:
       - "3001:3001"
     volumes:
-      - ../api-gateway:/usr/src/app  # Update path to reflect new structure
+      - ../api-gateway:/usr/src/app
     command: ["node", "server.js"]
 
   file-upload-service:
     build:
-      context: ../backend/file-upload-service  # Update to the new path
+      context: ../backend/file-upload-service
     ports:
       - "3005:3005"
     environment:
@@ -32,13 +32,13 @@ services:
     depends_on:
       - mysql
     volumes:
-      - ../backend/file-upload-service:/usr/src/app  # Update to the new path
-      - ../backend/file-upload-service/uploads:/usr/src/app/uploads  # Update to the new path
+      - ../backend/file-upload-service:/usr/src/app
+      - ../backend/file-upload-service/uploads:/usr/src/app/uploads
     command: ["node", "server.js"]
 
   print-service:
     build:
-      context: ../backend/print-service  # Update to the new path
+      context: ../backend/print-service
     ports:
       - "3006:3006"
     environment:
@@ -49,12 +49,12 @@ services:
     depends_on:
       - mysql
     volumes:
-      - ../backend/print-service:/usr/src/app  # Update to the new path
+      - ../backend/print-service:/usr/src/app
     command: ["node", "server.js"]
 
   surat-keluar-service:
     build:
-      context: ../backend/surat-keluar-service  # Update to the new path
+      context: ../backend/surat-keluar-service
     ports:
       - "3004:3004"
     environment:
@@ -65,12 +65,12 @@ services:
     depends_on:
       - mysql
     volumes:
-      - ../backend/surat-keluar-service:/usr/src/app  # Update to the new path
+      - ../backend/surat-keluar-service:/usr/src/app
     command: ["node", "server.js"]
 
   surat-masuk-service:
     build:
-      context: ../backend/surat-masuk-service  # Update to the new path
+      context: ../backend/surat-masuk-service
     ports:
       - "3003:3003"
     environment:
@@ -81,16 +81,14 @@ services:
     depends_on:
       - mysql
     volumes:
-      - ../backend/surat-masuk-service:/usr/src/app  # Update to the new path
+      - ../backend/surat-masuk-service:/usr/src/app
     command: ["node", "server.js"]
 
   user-service:
     build:
-      context: ../backend/user-service  # Update to the new path
+      context: ../backend/user-service
     ports:
       - "3002:3002"
-    volumes:
-      - ../backend/user-service:/usr/src/app  # Update to the new path
     environment:
       DB_HOST: mysql
       DB_USER: root
@@ -99,6 +97,8 @@ services:
       DB_PORT: 3306
     depends_on:
       - mysql
+    volumes:
+      - ../backend/user-service:/usr/src/app
     command: ["node", "server.js"]
 
   frontend:
@@ -111,7 +111,7 @@ services:
     user: root
     command: ["npm", "run", "serve"]
     volumes:
-      - ../frontend:/usr/src/app/frontend
+      - ../frontend:/usr/src/app
 
 volumes:
   mysql-data:

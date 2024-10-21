@@ -6,6 +6,7 @@ const db = require("./db");  // Importing the MySQL pool from db.js
 
 const app = express();
 const port = 3003;
+require("dotenv").config();
 
 app.use(cors());
 app.use(bodyParser.json());
